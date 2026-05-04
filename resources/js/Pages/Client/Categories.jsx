@@ -2,15 +2,26 @@ import { Head } from "@inertiajs/react";
 import ClientLayout from "@/Layouts/ClientLayout";
 
 const fallbackCategories = [
-    { title: "Made with natural materials.", label: "Postings Awarded Procurement" },
-    { title: "Multifunctional Organizer.", label: "On-going and Completed Projects" },
-    { title: "All in one Design.", label: "Memorandum" },
+    {
+        title: "Made with natural materials.",
+        label: "Postings Awarded Procurement",
+    },
+    // { title: "Eco Desk Organizer.", label: "Approved NTA, Budget" },
+    // { title: "Minimalist Workspace Setup.", label: "Income Per Month" },
+    // { title: "Compact and Space Saving.", label: "Expenditures" },
+    {
+        title: "Multifunctional Organizer.",
+        label: "On-going and Completed Projects",
+    },
     { title: "Perfect Stand.", label: "Executive Orders" },
-    { title: "Different color, same elegance.", label: "Festivities and Tourism Sites" },
-    { title: "Eco Desk Organizer.", label: "Approved NTA, Budget" },
-    { title: "Minimalist Workspace Setup.", label: "Income Per Month" },
-    { title: "Compact and Space Saving.", label: "Expenditures" },
-    { title: "Premium Build Quality.", label: "Ordinance" },
+    // { title: "All in one Design.", label: "Memorandum" },
+    // { title: "Premium Build Quality.", label: "Ordinance" },
+
+    {
+        title: "Different color, same elegance.",
+        label: "Festivities and Tourism Sites",
+    },
+
     { title: "Designed for Productivity.", label: "DOST Services" },
 ];
 
@@ -20,9 +31,9 @@ export default function Categories({ categories = [] }) {
     return (
         <>
             <Head title="Categories" />
-            <div className="h-full w-full text-emerald-950 md:min-h-[70vh]">
-                <div className="mx-auto h-full w-full max-w-[95vw] px-5 py-8 md:max-w-[85vw] md:px-10">
-                    <div className="grid grid-cols-2 gap-3 md:grid-cols-5 lg:gap-8">
+            <div className="grid h-full w-full place-items-center text-emerald-950 md:min-h-[70vh]">
+                <div className="mx-auto w-full max-w-[95vw] px-5 py-8 md:max-w-[85vw] md:px-10">
+                    <div className="grid grid-cols-2 gap-3 md:grid-cols-5 lg:gap-8 ">
                         {categoryItems.map((category) => (
                             <article
                                 key={category.id ?? category.title}
