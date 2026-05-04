@@ -1,7 +1,8 @@
 <?php
 
+use App\Http\Controllers\AdminController;
+use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ProfileController;
-use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -20,6 +21,9 @@ Route::get('/', function () {
     return Inertia::render('Home');
 });
 
+Route::get('/categories', [CategoryController::class, 'publicIndex'])
+    ->name('categories');
+
 // Route::get('/', function () {
 //     return Inertia::render('Home', [
 //         'canLogin' => Route::has('login'),
@@ -29,9 +33,22 @@ Route::get('/', function () {
 //     ]);
 // });
 
-Route::get('/dashboard', function () {
-    return Inertia::render('Dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+Route::middleware(['auth', 'verified'])->group(function () {
+    Route::get('/admin', [AdminController::class, 'dashboard'])
+        ->name('admin.dashboard');
+
+    Route::get('/dashboard', fn () => redirect('/admin'))
+        ->name('dashboard');
+
+    Route::get('/admin/categories', [CategoryController::class, 'adminIndex'])
+        ->name('admin.categories.index');
+    Route::post('/admin/categories', [CategoryController::class, 'store'])
+        ->name('admin.categories.store');
+    Route::put('/admin/categories/{category}', [CategoryController::class, 'update'])
+        ->name('admin.categories.update');
+    Route::delete('/admin/categories/{category}', [CategoryController::class, 'destroy'])
+        ->name('admin.categories.destroy');
+});
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
