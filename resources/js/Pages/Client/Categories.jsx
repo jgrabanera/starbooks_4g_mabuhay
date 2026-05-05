@@ -35,7 +35,7 @@ export default function Categories({ categories = [] }) {
                 <div className="mx-auto w-full max-w-[95vw] px-5 py-8 md:max-w-[85vw] md:px-10">
                     <div className="grid grid-cols-2 gap-3 md:grid-cols-5 lg:gap-8 ">
                         {categoryItems.map((category) => (
-                            <article
+                            <div
                                 key={category.id ?? category.title}
                                 className="overflow-hidden rounded-2xl bg-white/80 shadow-[0_18px_35px_rgba(15,83,72,0.16)] ring-1 ring-emerald-950/5 backdrop-blur"
                             >
@@ -44,7 +44,7 @@ export default function Categories({ categories = [] }) {
                                         {category.label}
                                     </div>
                                 </div>
-                            </article>
+                            </div>
                         ))}
                     </div>
                 </div>
