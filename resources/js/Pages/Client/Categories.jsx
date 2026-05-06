@@ -31,17 +31,19 @@ export default function Categories({ categories = [] }) {
     return (
         <>
             <Head title="Categories" />
-            <div className="grid h-full w-full place-items-center text-emerald-950 md:min-h-[70vh]">
-                <div className="mx-auto w-full max-w-[95vw] px-5 py-8 md:max-w-[85vw] md:px-10">
-                    <div className="grid grid-cols-2 gap-3 md:grid-cols-5 lg:gap-8 ">
+            <div className="grid w-full place-items-center text-emerald-950 md:min-h-[70vh]">
+                <div className="mx-auto w-full max-w-[98rem] px-1 py-4 sm:px-3 sm:py-6 md:px-6 lg:px-8">
+                    <div className="grid w-full max-w-sm grid-cols-1 gap-4 sm:max-w-none sm:grid-cols-2 md:grid-cols-3 lg:gap-6 xl:grid-cols-5 xl:gap-8">
                         {categoryItems.map((category) => (
                             <div
                                 key={category.id ?? category.title}
-                                className="overflow-hidden rounded-2xl bg-white/80 shadow-[0_18px_35px_rgba(15,83,72,0.16)] ring-1 ring-emerald-950/5 backdrop-blur"
+                                className="overflow-hidden rounded-xl bg-white/80 shadow-[0_18px_35px_rgba(15,83,72,0.16)] ring-1 ring-emerald-950/5 backdrop-blur sm:rounded-2xl"
                             >
-                                <div className="relative aspect-[4/3] overflow-hidden">
-                                    <div className="absolute right-4 top-4 rounded-lg bg-emerald-900 px-4 py-3 text-center text-xs font-black uppercase text-white shadow-lg sm:right-6 sm:top-6">
-                                        {category.label}
+                                <div className="relative aspect-[4/3] min-h-40 overflow-hidden">
+                                    <div className="absolute inset-x-3 top-4 flex justify-center sm:inset-x-4 sm:top-6">
+                                        <div className="max-w-full rounded-lg bg-emerald-900 px-3 py-2.5 text-center text-[0.68rem] font-black uppercase leading-tight text-white shadow-lg sm:px-4 sm:py-3 sm:text-xs">
+                                            {category.label}
+                                        </div>
                                     </div>
                                 </div>
                             </div>
