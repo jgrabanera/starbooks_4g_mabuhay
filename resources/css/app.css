@@ -1,3 +1,87 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.client-main {
+    scrollbar-gutter: stable both-edges;
+}
+
+.category-label {
+    overflow-wrap: anywhere;
+}
+
+@media (orientation: portrait) and (min-width: 900px) and (min-height: 1400px) {
+    .client-shell {
+        padding: 2rem 3rem 1.75rem;
+    }
+
+    .client-header {
+        padding-top: 0.25rem;
+    }
+
+    .client-brand-logo {
+        width: min(26vw, 16rem);
+        max-width: 16rem;
+    }
+
+    .client-stage {
+        padding-bottom: 2.5rem;
+        padding-top: 2.5rem;
+    }
+
+    .client-glass-panel {
+        height: min(76dvh, 91rem);
+        max-width: 56rem;
+        width: 86vw;
+    }
+
+    .client-main {
+        max-height: min(76dvh, 91rem);
+    }
+
+    .client-footer {
+        gap: 0.65rem;
+    }
+
+    .client-footer-logo {
+        height: 4rem;
+    }
+
+    .client-footer-text {
+        font-size: 0.95rem;
+    }
+
+    .category-screen {
+        min-height: min(72dvh, 86rem);
+    }
+
+    .category-wrap {
+        max-width: 48rem;
+        padding: 3rem 2rem;
+    }
+
+    .category-grid {
+        gap: 1.75rem;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .category-grid > :last-child:nth-child(odd) {
+        grid-column: 1 / -1;
+        justify-self: center;
+        width: calc((100% - 1.75rem) / 2);
+    }
+
+    .category-card {
+        border-radius: 1.35rem;
+        max-width: 21rem;
+    }
+
+    .category-card-body {
+        min-height: 17.25rem;
+    }
+
+    .category-label {
+        font-size: 0.82rem;
+        padding: 0.95rem 1.15rem;
+    }
+}
