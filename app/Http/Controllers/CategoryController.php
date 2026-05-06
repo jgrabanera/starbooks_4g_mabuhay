@@ -19,7 +19,7 @@ class CategoryController extends Controller
                 ->where('is_active', true)
                 ->orderBy('sort_order')
                 ->orderBy('label')
-                ->get(['id', 'title', 'label', 'description'])
+                ->get(['id', 'title', 'label', 'description', 'image'])
             : [];
 
         return Inertia::render('Client/Categories', [
@@ -29,7 +29,7 @@ class CategoryController extends Controller
 
     public function adminIndex(): Response
     {
-        if (! $this->categoriesTableIsReady()) {
+        if (!$this->categoriesTableIsReady()) {
             return Inertia::render('Admin/Categories', [
                 'categories' => [],
                 'setupNeeded' => true,
@@ -79,7 +79,7 @@ class CategoryController extends Controller
 
     private function categoriesTableIsReady(): bool
     {
-        if (! $this->databaseConnectionLooksAvailable()) {
+        if (!$this->databaseConnectionLooksAvailable()) {
             return false;
         }
 
