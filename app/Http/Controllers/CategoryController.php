@@ -19,7 +19,7 @@ class CategoryController extends Controller
                 ->where('is_active', true)
                 ->orderBy('sort_order')
                 ->orderBy('label')
-                ->get(['id', 'title', 'label', 'description', 'image'])
+                ->get($this->publicCategoryColumns())
             : [];
 
         return Inertia::render('Client/Categories', [
@@ -114,5 +114,18 @@ class CategoryController extends Controller
         fclose($socket);
 
         return true;
+    }
+
+    private function publicCategoryColumns(): array
+    {
+        $columns = ['id', 'title', 'label', 'description'];
+
+        try {
+            return Schema::hasColumn('categories', 'image')
+                ? [...$columns, 'image']
+                : $columns;
+        } catch (Throwable) {
+            return $columns;
+        }
     }
 }

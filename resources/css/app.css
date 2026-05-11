@@ -10,9 +10,228 @@
     overflow-wrap: anywhere;
 }
 
+.category-card {
+    animation: category-card-rise 520ms ease both;
+    animation-delay: var(--category-delay, 0ms);
+    isolation: isolate;
+    min-height: 14rem;
+    padding-top: 3rem;
+}
+
+.category-wrap {
+    max-width: 68rem;
+}
+
+.category-grid {
+    align-items: end;
+    gap: 1.25rem;
+    grid-template-columns: repeat(2, minmax(0, 15rem));
+    justify-content: center;
+}
+
+.category-card-panel {
+    top: 3rem;
+}
+
+.category-card-content {
+    min-height: 14rem;
+    padding: 1.25rem;
+    padding-top: 7rem;
+}
+
+.category-floating-image {
+    height: 10.25rem;
+    right: -1.25rem;
+    top: 0;
+    width: 10.25rem;
+}
+
+.category-card-title {
+    overflow-wrap: anywhere;
+    text-wrap: balance;
+}
+
+.category-description {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
+}
+
+@keyframes category-card-rise {
+    from {
+        opacity: 0;
+        transform: translateY(0.75rem);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .category-card {
+        animation: none;
+    }
+
+    .category-card,
+    .category-card-backdrop,
+    .category-card-image {
+        transition: none;
+    }
+}
+
+@media (orientation: portrait) {
+    .category-grid {
+        column-gap: clamp(1rem, 6vw, 3rem);
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        row-gap: clamp(1rem, 3.2vh, 2rem);
+    }
+
+    .category-wrap {
+        max-width: min(88vw, 48rem);
+        padding-bottom: 1rem;
+        padding-top: 1rem;
+    }
+
+    .category-card {
+        min-height: 15.75rem;
+        padding-top: 3.5rem;
+    }
+
+    .category-card-panel {
+        top: 3.5rem;
+    }
+
+    .category-card-content {
+        min-height: 15.75rem;
+        padding: 1.35rem;
+        padding-top: 8rem;
+    }
+
+    .category-floating-image {
+        height: clamp(10rem, 26vw, 13.25rem);
+        right: clamp(-3.75rem, -6vw, -1.25rem);
+        width: clamp(10rem, 26vw, 13.25rem);
+    }
+
+    .category-card-title {
+        font-size: clamp(0.85rem, 2.05vw, 1.15rem);
+        line-height: 1.32;
+    }
+}
+
+@media (orientation: portrait) and (max-width: 639px) {
+    .category-wrap {
+        padding-left: 0.5rem;
+        padding-right: 0.5rem;
+    }
+
+    .category-grid {
+        gap: 0.75rem;
+    }
+
+    .category-card,
+    .category-card-content {
+        min-height: 11.5rem;
+    }
+
+    .category-card {
+        padding-top: 2rem;
+    }
+
+    .category-card-panel {
+        border-radius: 0.9rem;
+        top: 2rem;
+    }
+
+    .category-card-content {
+        padding: 0.85rem;
+        padding-top: 5.75rem;
+    }
+
+    .category-floating-image {
+        height: 6.5rem;
+        right: -0.35rem;
+        width: 6.5rem;
+    }
+
+    .category-card-title {
+        font-size: 0.78rem;
+        letter-spacing: 0.11em;
+        line-height: 1.1rem;
+    }
+
+    .category-description {
+        display: none;
+    }
+}
+
+@media (orientation: landscape) and (min-width: 900px) {
+    .client-shell {
+        padding: 0.35rem clamp(1rem, 2.4vw, 2rem) 0.5rem;
+    }
+
+    .client-brand-logo {
+        width: min(12vw, 12.5rem);
+    }
+
+    .client-stage {
+        padding-bottom: clamp(0.55rem, 1.4vh, 1rem);
+        padding-top: clamp(0.55rem, 1.4vh, 1rem);
+    }
+
+    .client-main {
+        max-height: calc(100dvh - 7.25rem);
+    }
+
+    .category-screen {
+        min-height: auto;
+    }
+
+    .category-wrap {
+        max-width: min(72rem, 86vw);
+        padding-bottom: 0.45rem;
+        padding-top: 0.45rem;
+    }
+
+    .category-grid {
+        column-gap: clamp(3.25rem, 6.6vw, 8rem);
+        grid-template-columns: repeat(3, minmax(13.5rem, 16rem));
+        row-gap: clamp(1rem, 2.8vh, 2rem);
+    }
+
+    .category-card {
+        min-height: clamp(12rem, 23vh, 14rem);
+        padding-top: clamp(2.6rem, 6vh, 3.25rem);
+    }
+
+    .category-card-panel {
+        top: clamp(2.6rem, 6vh, 3.25rem);
+    }
+
+    .category-card-content {
+        min-height: clamp(12rem, 23vh, 14rem);
+        padding: clamp(1rem, 1.8vw, 1.35rem);
+        padding-top: clamp(6rem, 12vh, 7.25rem);
+    }
+
+    .category-floating-image {
+        height: clamp(8.75rem, 22vh, 11.25rem);
+        right: clamp(-4.25rem, -4.6vw, -2.25rem);
+        width: clamp(8.75rem, 22vh, 11.25rem);
+    }
+
+    .category-card-title {
+        font-size: clamp(0.9rem, 1.3vw, 1.18rem);
+        line-height: 1.35;
+    }
+}
+
 @media (orientation: portrait) and (min-width: 900px) and (min-height: 1400px) {
     .client-shell {
-        padding: 2rem 3rem 1.75rem;
+        padding: 1rem 2.5rem 1.25rem;
     }
 
     .client-header {
@@ -25,8 +244,8 @@
     }
 
     .client-stage {
-        padding-bottom: 2.5rem;
-        padding-top: 2.5rem;
+        padding-bottom: 1.25rem;
+        padding-top: 1.25rem;
     }
 
     .client-glass-panel {
@@ -36,7 +255,7 @@
     }
 
     .client-main {
-        max-height: min(76dvh, 91rem);
+        max-height: min(82dvh, 91rem);
     }
 
     .client-footer {
@@ -52,36 +271,48 @@
     }
 
     .category-screen {
-        min-height: min(72dvh, 86rem);
+        min-height: auto;
     }
 
     .category-wrap {
         max-width: 48rem;
-        padding: 3rem 2rem;
+        padding: 1rem 1.25rem;
     }
 
     .category-grid {
-        gap: 1.75rem;
+        column-gap: 2.75rem;
         grid-template-columns: repeat(2, minmax(0, 1fr));
+        row-gap: 1.35rem;
     }
 
     .category-grid > :last-child:nth-child(odd) {
         grid-column: 1 / -1;
         justify-self: center;
-        width: calc((100% - 1.75rem) / 2);
+        width: calc((100% - 2.75rem) / 2);
     }
 
     .category-card {
-        border-radius: 1.35rem;
-        max-width: 21rem;
+        min-height: 15.5rem;
+        padding-top: 3rem;
     }
 
-    .category-card-body {
-        min-height: 17.25rem;
+    .category-card-panel {
+        top: 3rem;
+    }
+
+    .category-card-content {
+        min-height: 15.5rem;
+        padding-top: 8rem;
+    }
+
+    .category-floating-image {
+        height: 12.75rem;
+        right: -3.5rem;
+        width: 12.75rem;
     }
 
     .category-label {
-        font-size: 0.82rem;
-        padding: 0.95rem 1.15rem;
+        font-size: 0.78rem;
+        padding: 0.72rem 0.95rem;
     }
 }
