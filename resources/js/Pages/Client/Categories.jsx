@@ -1,4 +1,4 @@
-import { Head } from "@inertiajs/react";
+import { Head, Link } from "@inertiajs/react";
 import ClientLayout from "@/Layouts/ClientLayout";
 
 function getImageUrl(image) {
@@ -35,63 +35,68 @@ export default function Categories({ categories = [] }) {
                                 : null;
 
                             return (
-                                <article
-                                    key={
-                                        category.id ??
-                                        category.title ??
-                                        category.label
-                                    }
-                                    className="category-card group relative overflow-visible transition duration-300 ease-out hover:-translate-y-1 focus-within:-translate-y-1"
-                                    style={{
-                                        "--category-delay": `${index * 60}ms`,
-                                    }}
+                                <Link
+                                    key={category.id}
+                                    href={`/categories/${category.slug}`}
                                 >
-                                    <div className="category-card-panel absolute inset-x-0 bottom-0 overflow-hidden rounded-2xl border-2 border-white/85 bg-gradient-to-br from-yellow-700/55 via-lime-700/50 to-yellow-600/60 shadow-[0_18px_38px_rgba(75,58,8,0.3)] backdrop-blur-[2px] transition duration-300 group-hover:shadow-[0_24px_48px_rgba(75,58,8,0.38)]">
+                                    <div
+                                        key={
+                                            category.id ??
+                                            category.title ??
+                                            category.label
+                                        }
+                                        className="category-card group relative overflow-visible transition duration-300 ease-out hover:-translate-y-1 focus-within:-translate-y-1"
+                                        style={{
+                                            "--category-delay": `${index * 60}ms`,
+                                        }}
+                                    >
+                                        <div className="category-card-panel absolute inset-x-0 bottom-0 overflow-hidden rounded-2xl border-2 border-white/85 bg-gradient-to-br from-yellow-700/55 via-lime-700/50 to-yellow-600/60 shadow-[0_18px_38px_rgba(75,58,8,0.3)] backdrop-blur-[2px] transition duration-300 group-hover:shadow-[0_24px_48px_rgba(75,58,8,0.38)]">
+                                            {imageUrl && (
+                                                <img
+                                                    src={imageUrl}
+                                                    alt=""
+                                                    loading="lazy"
+                                                    className="category-card-backdrop absolute inset-0 h-full w-full scale-110 object-cover object-center  transition duration-700 ease-out group-hover:scale-[1.16]"
+                                                />
+                                            )}
+                                            <div className="absolute inset-0 bg-white/60" />
+                                            <div
+                                                className={`absolute inset-0 bg-gradient-to-br ${
+                                                    lightGradients[
+                                                        index %
+                                                            lightGradients.length
+                                                    ]
+                                                }`}
+                                            />
+                                            <div className="absolute inset-0 bg-yellow-950/10" />
+                                        </div>
                                         {imageUrl && (
                                             <img
                                                 src={imageUrl}
-                                                alt=""
+                                                alt={
+                                                    category.title ||
+                                                    category.label ||
+                                                    "Category image"
+                                                }
                                                 loading="lazy"
-                                                className="category-card-backdrop absolute inset-0 h-full w-full scale-110 object-cover object-center  transition duration-700 ease-out group-hover:scale-[1.16]"
+                                                className="category-card-image category-floating-image absolute z-20 rounded-full border-[3px] border-white object-cover object-center shadow-[0_14px_28px_rgba(15,83,72,0.28)] "
                                             />
                                         )}
-                                        <div className="absolute inset-0 bg-white/60" />
-                                        <div
-                                            className={`absolute inset-0 bg-gradient-to-br ${
-                                                lightGradients[
-                                                    index %
-                                                        lightGradients.length
-                                                ]
-                                            }`}
-                                        />
-                                        <div className="absolute inset-0 bg-yellow-950/10" />
-                                    </div>
-                                    {imageUrl && (
-                                        <img
-                                            src={imageUrl}
-                                            alt={
-                                                category.title ||
-                                                category.label ||
-                                                "Category image"
-                                            }
-                                            loading="lazy"
-                                            className="category-card-image category-floating-image absolute z-20 rounded-full border-[3px] border-white object-cover object-center shadow-[0_14px_28px_rgba(15,83,72,0.28)] "
-                                        />
-                                    )}
 
-                                    <div className="category-card-content relative z-10 flex flex-col justify-end">
-                                        {(category.label ||
-                                            category.description) && (
-                                            <div className="relative z-20 text-slate-950">
-                                                {category.label && (
-                                                    <h2 className="category-card-title text-base font-black uppercase leading-tight tracking-[0.16em] sm:text-xl">
-                                                        {category.label}
-                                                    </h2>
-                                                )}
-                                            </div>
-                                        )}
+                                        <div className="category-card-content relative z-10 flex flex-col justify-end">
+                                            {(category.label ||
+                                                category.description) && (
+                                                <div className="relative z-20 text-slate-950">
+                                                    {category.label && (
+                                                        <h2 className="category-card-title text-base font-black uppercase leading-tight tracking-[0.16em] sm:text-xl">
+                                                            {category.label}
+                                                        </h2>
+                                                    )}
+                                                </div>
+                                            )}
+                                        </div>
                                     </div>
-                                </article>
+                                </Link>
                             );
                         })}
                     </div>
