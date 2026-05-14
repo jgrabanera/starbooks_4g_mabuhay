@@ -88,9 +88,9 @@ export default function Categories({ categories = [] }) {
                                                 category.description) && (
                                                 <div className="relative z-20 text-slate-950">
                                                     {category.label && (
-                                                        <h2 className="category-card-title text-base font-black uppercase leading-tight tracking-[0.16em] sm:text-xl">
+                                                        <h3 className="category-card-title text-base font-black uppercase leading-tight tracking-[0.16em] sm:text-xl">
                                                             {category.label}
-                                                        </h2>
+                                                        </h3>
                                                     )}
                                                 </div>
                                             )}
