@@ -1,7 +1,6 @@
 <?php
 
 use App\Http\Controllers\AdminController;
-use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -21,8 +20,11 @@ Route::get('/', function () {
     return Inertia::render('Home');
 });
 
-Route::get('/categories', [CategoryController::class, 'publicIndex'])
+Route::get('/categories', [App\Http\Controllers\Client\CategoryController::class, 'publicIndex'])
     ->name('categories');
+
+Route::get('/sub-categories', [App\Http\Controllers\Client\SubCategoryController::class, 'publicIndex'])
+    ->name('sub-categories');
 
 // Route::get('/', function () {
 //     return Inertia::render('Home', [
@@ -37,7 +39,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/admin', [AdminController::class, 'dashboard'])
         ->name('admin.dashboard');
 
-    Route::get('/dashboard', fn () => redirect('/admin'))
+    Route::get('/dashboard', fn() => redirect('/admin'))
         ->name('dashboard');
 
     Route::get('/admin/categories', [CategoryController::class, 'adminIndex'])
