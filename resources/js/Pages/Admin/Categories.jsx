@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Head, useForm } from "@inertiajs/react";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import DangerButton from "@/Components/DangerButton";
@@ -7,6 +7,7 @@ import InputLabel from "@/Components/InputLabel";
 import PrimaryButton from "@/Components/PrimaryButton";
 import SecondaryButton from "@/Components/SecondaryButton";
 import TextInput from "@/Components/TextInput";
+import axios from "axios";
 
 const emptyCategory = {
     title: "",
@@ -17,7 +18,30 @@ const emptyCategory = {
     is_active: true,
 };
 
-export default function Categories({ auth, categories = [], setupNeeded = false }) {
+export default function Categories({ auth }) {
+    const [categories, setCategories] = useState([]);
+    const [loading, setLoading] = useState(false);
+    // const [errors, setErrors] = useState({});
+
+    const loadCategories = async () => {
+        try {
+            setLoading(true);
+            const res = await axios.get(`/get-categories`);
+            console.log(res);
+
+            setLoading(false);
+            setCategories(res.data);
+        } catch (requestError) {
+            setLoading(false);
+            console.log("Error loading categories:", requestError);
+            setErrors(requestError.response.data.errors);
+        }
+    };
+
+    useEffect(() => {
+        loadCategories();
+        console.log("Categories loaded:", categories);
+    }, []);
     const [editingCategory, setEditingCategory] = useState(null);
     const [search, setSearch] = useState("");
     const {
@@ -40,7 +64,12 @@ export default function Categories({ auth, categories = [], setupNeeded = false 
         }
 
         return categories.filter((category) =>
-            [category.title, category.label, category.image, category.description]
+            [
+                category.title,
+                category.label,
+                category.image,
+                category.description,
+            ]
                 .filter(Boolean)
                 .some((value) => String(value).toLowerCase().includes(term)),
         );
@@ -107,7 +136,11 @@ export default function Categories({ auth, categories = [], setupNeeded = false 
     return (
         <AuthenticatedLayout
             user={auth.user}
-            header={<h2 className="font-semibold text-xl text-gray-800 leading-tight">Category CMS</h2>}
+            header={
+                <h2 className="font-semibold text-xl text-gray-800 leading-tight">
+                    Category CMS
+                </h2>
+            }
         >
             <Head title="Category CMS" />
 
@@ -121,102 +154,167 @@ export default function Categories({ auth, categories = [], setupNeeded = false 
                             {editingCategory ? "Edit Category" : "Add Category"}
                         </h1>
                         <p className="mt-1 text-sm text-gray-600">
-                            Category records appear on the public category screen.
+                            Category records appear on the public category
+                            screen.
                         </p>
-
+                        {/* 
                         {setupNeeded && (
                             <div className="mt-4 rounded-md border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-800">
-                                Run the database migration before adding categories.
+                                Run the database migration before adding
+                                categories.
                             </div>
-                        )}
+                        )} */}
 
-                        <form onSubmit={submitCategory} className="mt-5 space-y-4">
+                        <form
+                            onSubmit={submitCategory}
+                            className="mt-5 space-y-4"
+                        >
                             <div>
-                                <InputLabel htmlFor="label" value="Category Label" />
+                                <InputLabel
+                                    htmlFor="label"
+                                    value="Category Label"
+                                />
                                 <TextInput
                                     id="label"
                                     value={data.label}
-                                    onChange={(event) => setData("label", event.target.value)}
+                                    onChange={(event) =>
+                                        setData("label", event.target.value)
+                                    }
                                     className="mt-1 block w-full"
-                                    disabled={setupNeeded}
+                                    disabled={loading}
                                 />
-                                <InputError message={errors.label} className="mt-2" />
+                                <InputError
+                                    message={errors.label}
+                                    className="mt-2"
+                                />
                             </div>
 
                             <div>
-                                <InputLabel htmlFor="title" value="Short Title" />
+                                <InputLabel
+                                    htmlFor="title"
+                                    value="Short Title"
+                                />
                                 <TextInput
                                     id="title"
                                     value={data.title}
-                                    onChange={(event) => setData("title", event.target.value)}
+                                    onChange={(event) =>
+                                        setData("title", event.target.value)
+                                    }
                                     className="mt-1 block w-full"
-                                    disabled={setupNeeded}
+                                    disabled={loading}
                                 />
-                                <InputError message={errors.title} className="mt-2" />
+                                <InputError
+                                    message={errors.title}
+                                    className="mt-2"
+                                />
                             </div>
 
                             <div>
-                                <InputLabel htmlFor="image" value="Image Path or URL" />
+                                <InputLabel
+                                    htmlFor="image"
+                                    value="Image Path or URL"
+                                />
                                 <TextInput
                                     id="image"
                                     value={data.image}
-                                    onChange={(event) => setData("image", event.target.value)}
+                                    onChange={(event) =>
+                                        setData("image", event.target.value)
+                                    }
                                     className="mt-1 block w-full"
-                                    disabled={setupNeeded}
+                                    disabled={loading}
                                 />
-                                <InputError message={errors.image} className="mt-2" />
+                                <InputError
+                                    message={errors.image}
+                                    className="mt-2"
+                                />
                             </div>
 
                             <div>
-                                <InputLabel htmlFor="description" value="Description" />
+                                <InputLabel
+                                    htmlFor="description"
+                                    value="Description"
+                                />
                                 <textarea
                                     id="description"
                                     value={data.description}
-                                    onChange={(event) => setData("description", event.target.value)}
+                                    onChange={(event) =>
+                                        setData(
+                                            "description",
+                                            event.target.value,
+                                        )
+                                    }
                                     rows="3"
-                                    disabled={setupNeeded}
+                                    disabled={loading}
                                     className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 disabled:bg-gray-100"
                                 />
-                                <InputError message={errors.description} className="mt-2" />
+                                <InputError
+                                    message={errors.description}
+                                    className="mt-2"
+                                />
                             </div>
 
                             <div>
-                                <InputLabel htmlFor="sort_order" value="Sort Order" />
+                                <InputLabel
+                                    htmlFor="sort_order"
+                                    value="Sort Order"
+                                />
                                 <TextInput
                                     id="sort_order"
                                     type="number"
                                     min="0"
                                     value={data.sort_order}
-                                    onChange={(event) => setData("sort_order", event.target.value)}
+                                    onChange={(event) =>
+                                        setData(
+                                            "sort_order",
+                                            event.target.value,
+                                        )
+                                    }
                                     className="mt-1 block w-full"
-                                    disabled={setupNeeded}
+                                    disabled={loading}
                                 />
-                                <InputError message={errors.sort_order} className="mt-2" />
+                                <InputError
+                                    message={errors.sort_order}
+                                    className="mt-2"
+                                />
                             </div>
 
                             <label className="flex items-center gap-3 text-sm font-medium text-gray-700">
                                 <input
                                     type="checkbox"
                                     checked={data.is_active}
-                                    onChange={(event) => setData("is_active", event.target.checked)}
-                                    disabled={setupNeeded}
+                                    onChange={(event) =>
+                                        setData(
+                                            "is_active",
+                                            event.target.checked,
+                                        )
+                                    }
+                                    disabled={loading}
                                     className="rounded border-gray-300 text-indigo-600 shadow-sm focus:ring-indigo-500"
                                 />
                                 Show publicly
                             </label>
 
                             <div className="flex flex-wrap gap-3">
-                                <PrimaryButton disabled={processing || setupNeeded}>
-                                    {processing ? "Saving..." : editingCategory ? "Update" : "Save"}
+                                <PrimaryButton disabled={processing || loading}>
+                                    {processing
+                                        ? "Saving..."
+                                        : editingCategory
+                                          ? "Update"
+                                          : "Save"}
                                 </PrimaryButton>
                                 {editingCategory && (
                                     <>
-                                        <SecondaryButton type="button" onClick={clearForm}>
+                                        <SecondaryButton
+                                            type="button"
+                                            onClick={clearForm}
+                                        >
                                             Cancel
                                         </SecondaryButton>
                                         <DangerButton
                                             type="button"
-                                            onClick={() => deleteCategory(editingCategory)}
+                                            onClick={() =>
+                                                deleteCategory(editingCategory)
+                                            }
                                             disabled={processing}
                                         >
                                             Delete
@@ -230,14 +328,22 @@ export default function Categories({ auth, categories = [], setupNeeded = false 
                     <section className="overflow-hidden rounded-lg bg-white shadow-sm">
                         <div className="flex flex-col justify-between gap-4 border-b border-gray-100 p-5 sm:flex-row sm:items-center">
                             <div>
-                                <h2 className="text-lg font-semibold text-gray-950">Categories</h2>
+                                <h2 className="text-lg font-semibold text-gray-950">
+                                    Categories
+                                </h2>
                                 <p className="mt-1 text-sm text-gray-500">
-                                    {filteredCategories.length} record{filteredCategories.length === 1 ? "" : "s"} shown
+                                    {filteredCategories.length} record
+                                    {filteredCategories.length === 1
+                                        ? ""
+                                        : "s"}{" "}
+                                    shown
                                 </p>
                             </div>
                             <TextInput
                                 value={search}
-                                onChange={(event) => setSearch(event.target.value)}
+                                onChange={(event) =>
+                                    setSearch(event.target.value)
+                                }
                                 className="w-full sm:max-w-xs"
                                 placeholder="Search"
                             />
@@ -281,7 +387,8 @@ export default function Categories({ auth, categories = [], setupNeeded = false 
                                                     {category.title}
                                                 </td>
                                                 <td className="max-w-[12rem] truncate px-6 py-4 text-sm text-gray-600">
-                                                    {category.image || "No image"}
+                                                    {category.image ||
+                                                        "No image"}
                                                 </td>
                                                 <td className="whitespace-nowrap px-6 py-4 text-sm">
                                                     <span
@@ -291,13 +398,19 @@ export default function Categories({ auth, categories = [], setupNeeded = false 
                                                                 : "bg-gray-100 text-gray-600"
                                                         }`}
                                                     >
-                                                        {category.is_active ? "Active" : "Hidden"}
+                                                        {category.is_active
+                                                            ? "Active"
+                                                            : "Hidden"}
                                                     </span>
                                                 </td>
                                                 <td className="whitespace-nowrap px-6 py-4 text-right text-sm">
                                                     <button
                                                         type="button"
-                                                        onClick={() => editCategory(category)}
+                                                        onClick={() =>
+                                                            editCategory(
+                                                                category,
+                                                            )
+                                                        }
                                                         className="font-semibold text-indigo-600 hover:text-indigo-800"
                                                     >
                                                         Edit
@@ -307,7 +420,10 @@ export default function Categories({ auth, categories = [], setupNeeded = false 
                                         ))
                                     ) : (
                                         <tr>
-                                            <td colSpan="6" className="px-6 py-8 text-center text-sm text-gray-500">
+                                            <td
+                                                colSpan="6"
+                                                className="px-6 py-8 text-center text-sm text-gray-500"
+                                            >
                                                 No categories found.
                                             </td>
                                         </tr>
@@ -325,10 +441,15 @@ export default function Categories({ auth, categories = [], setupNeeded = false 
                                     >
                                         <div className="flex items-start justify-between gap-3">
                                             <div>
-                                                <p className="text-sm font-bold text-gray-950">{category.label}</p>
-                                                <p className="mt-1 text-sm text-gray-600">{category.title}</p>
+                                                <p className="text-sm font-bold text-gray-950">
+                                                    {category.label}
+                                                </p>
+                                                <p className="mt-1 text-sm text-gray-600">
+                                                    {category.title}
+                                                </p>
                                                 <p className="mt-1 text-sm text-gray-500">
-                                                    {category.image || "No image"}
+                                                    {category.image ||
+                                                        "No image"}
                                                 </p>
                                             </div>
                                             <span className="rounded-full bg-gray-100 px-3 py-1 text-xs font-semibold text-gray-700">
@@ -337,7 +458,9 @@ export default function Categories({ auth, categories = [], setupNeeded = false 
                                         </div>
                                         <button
                                             type="button"
-                                            onClick={() => editCategory(category)}
+                                            onClick={() =>
+                                                editCategory(category)
+                                            }
                                             className="mt-4 text-sm font-semibold text-indigo-600"
                                         >
                                             Edit
@@ -345,7 +468,9 @@ export default function Categories({ auth, categories = [], setupNeeded = false 
                                     </article>
                                 ))
                             ) : (
-                                <p className="text-sm text-gray-500">No categories found.</p>
+                                <p className="text-sm text-gray-500">
+                                    No categories found.
+                                </p>
                             )}
                         </div>
                     </section>
