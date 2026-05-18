@@ -1,5 +1,6 @@
 import { Head, Link } from "@inertiajs/react";
 import ClientLayout from "@/Layouts/ClientLayout";
+import { use, useEffect, useState } from "react";
 
 function getImageUrl(image) {
     if (/^(https?:|data:|blob:)/i.test(image)) {
@@ -13,7 +14,28 @@ function getImageUrl(image) {
     return `/storage/images/${image.replace(/^storage\/images\//, "")}`;
 }
 
-export default function Categories({ categories = [] }) {
+export default function Categories() {
+    const [categories, setCategories] = useState([]);
+    const [loading, setLoading] = useState(false);
+    const [errors, setErrors] = useState({});
+
+    const loadCategories = async () => {
+        try {
+            setLoading(true);
+            const res = await axios.get(`/get-categories`);
+            setLoading(false);
+            setCategories(res.data);
+        } catch (requestError) {
+            setLoading(false);
+            console.log("Error loading categories:", requestError);
+            setErrors(requestError.response.data.errors);
+        }
+    };
+
+    useEffect(() => {
+        loadCategories();
+    }, []);
+
     const lightGradients = [
         "from-white/50 via-yellow-200/70 to-orange-400/90",
         "from-white/50 via-lime-200/70 to-emerald-300/90",

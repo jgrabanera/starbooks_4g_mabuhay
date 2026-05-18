@@ -4,20 +4,17 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     public function up(): void
     {
         Schema::create('categories', function (Blueprint $table) {
             $table->id();
-            $table->string('title')->nullable();
-            $table->string('label');
+            $table->text('title');
+            $table->text('slug');
             $table->text('description')->nullable();
-            $table->unsignedInteger('sort_order')->default(0);
+            $table->text('image');
             $table->boolean('is_active')->default(true);
             $table->timestamps();
-
-            $table->index(['is_active', 'sort_order']);
         });
     }
 

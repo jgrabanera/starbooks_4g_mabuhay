@@ -19,12 +19,10 @@ use Inertia\Inertia;
 Route::get('/', function () {
     return Inertia::render('Home');
 });
+Route::get('/categories', [App\Http\Controllers\Client\CategoryController::class, 'index']);
+Route::get('/get-categories', [App\Http\Controllers\Client\CategoryController::class, 'getData']);
 
-Route::get('/categories', [App\Http\Controllers\Client\CategoryController::class, 'publicIndex'])
-    ->name('categories');
-
-Route::get('/sub-categories', [App\Http\Controllers\Client\SubCategoryController::class, 'publicIndex'])
-    ->name('sub-categories');
+Route::get('/sub-categories', [App\Http\Controllers\Client\SubCategoryController::class, 'getData']);
 
 // Route::get('/', function () {
 //     return Inertia::render('Home', [
@@ -42,13 +40,13 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard', fn() => redirect('/admin'))
         ->name('dashboard');
 
-    Route::get('/admin/categories', [CategoryController::class, 'adminIndex'])
+    Route::get('/admin/categories', [App\Http\Controllers\Client\CategoryController::class, 'adminIndex'])
         ->name('admin.categories.index');
-    Route::post('/admin/categories', [CategoryController::class, 'store'])
+    Route::post('/admin/categories', [App\Http\Controllers\Client\CategoryController::class, 'store'])
         ->name('admin.categories.store');
-    Route::put('/admin/categories/{category}', [CategoryController::class, 'update'])
+    Route::put('/admin/categories/{category}', [App\Http\Controllers\Client\CategoryController::class, 'update'])
         ->name('admin.categories.update');
-    Route::delete('/admin/categories/{category}', [CategoryController::class, 'destroy'])
+    Route::delete('/admin/categories/{category}', [App\Http\Controllers\Client\CategoryController::class, 'destroy'])
         ->name('admin.categories.destroy');
 });
 

@@ -43,7 +43,9 @@ class AdminController extends Controller
         }
 
         try {
-            return Schema::hasTable('categories');
+            return Schema::hasTable('categories')
+                && Schema::hasColumn('categories', 'slug')
+                && Schema::hasColumn('categories', 'image');
         } catch (Throwable) {
             return false;
         }

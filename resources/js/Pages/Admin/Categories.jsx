@@ -11,6 +11,7 @@ import TextInput from "@/Components/TextInput";
 const emptyCategory = {
     title: "",
     label: "",
+    image: "",
     description: "",
     sort_order: 0,
     is_active: true,
@@ -39,7 +40,7 @@ export default function Categories({ auth, categories = [], setupNeeded = false 
         }
 
         return categories.filter((category) =>
-            [category.title, category.label, category.description]
+            [category.title, category.label, category.image, category.description]
                 .filter(Boolean)
                 .some((value) => String(value).toLowerCase().includes(term)),
         );
@@ -58,26 +59,40 @@ export default function Categories({ auth, categories = [], setupNeeded = false 
         setData({
             title: category.title ?? "",
             label: category.label ?? "",
+            image: category.image ?? "",
             description: category.description ?? "",
             sort_order: category.sort_order ?? 0,
             is_active: Boolean(category.is_active),
         });
     };
 
-    const submitCategory = (event) => {
-        event.preventDefault();
-
+    const createCategory = () => {
         const options = {
             preserveScroll: true,
             onSuccess: clearForm,
         };
 
+        post(route("admin.categories.store"), options);
+    };
+
+    const updateCategory = () => {
+        const options = {
+            preserveScroll: true,
+            onSuccess: clearForm,
+        };
+
+        put(route("admin.categories.update", editingCategory.id), options);
+    };
+
+    const submitCategory = (event) => {
+        event.preventDefault();
+
         if (editingCategory) {
-            put(route("admin.categories.update", editingCategory.id), options);
+            updateCategory();
             return;
         }
 
-        post(route("admin.categories.store"), options);
+        createCategory();
     };
 
     const deleteCategory = (category) => {
@@ -138,6 +153,18 @@ export default function Categories({ auth, categories = [], setupNeeded = false 
                                     disabled={setupNeeded}
                                 />
                                 <InputError message={errors.title} className="mt-2" />
+                            </div>
+
+                            <div>
+                                <InputLabel htmlFor="image" value="Image Path or URL" />
+                                <TextInput
+                                    id="image"
+                                    value={data.image}
+                                    onChange={(event) => setData("image", event.target.value)}
+                                    className="mt-1 block w-full"
+                                    disabled={setupNeeded}
+                                />
+                                <InputError message={errors.image} className="mt-2" />
                             </div>
 
                             <div>
@@ -230,6 +257,9 @@ export default function Categories({ auth, categories = [], setupNeeded = false 
                                             Title
                                         </th>
                                         <th className="px-6 py-3 text-left text-xs font-bold uppercase tracking-wider text-gray-500">
+                                            Image
+                                        </th>
+                                        <th className="px-6 py-3 text-left text-xs font-bold uppercase tracking-wider text-gray-500">
                                             Status
                                         </th>
                                         <th className="px-6 py-3 text-right text-xs font-bold uppercase tracking-wider text-gray-500">
@@ -249,6 +279,9 @@ export default function Categories({ auth, categories = [], setupNeeded = false 
                                                 </td>
                                                 <td className="px-6 py-4 text-sm text-gray-600">
                                                     {category.title}
+                                                </td>
+                                                <td className="max-w-[12rem] truncate px-6 py-4 text-sm text-gray-600">
+                                                    {category.image || "No image"}
                                                 </td>
                                                 <td className="whitespace-nowrap px-6 py-4 text-sm">
                                                     <span
@@ -274,7 +307,7 @@ export default function Categories({ auth, categories = [], setupNeeded = false 
                                         ))
                                     ) : (
                                         <tr>
-                                            <td colSpan="5" className="px-6 py-8 text-center text-sm text-gray-500">
+                                            <td colSpan="6" className="px-6 py-8 text-center text-sm text-gray-500">
                                                 No categories found.
                                             </td>
                                         </tr>
@@ -294,6 +327,9 @@ export default function Categories({ auth, categories = [], setupNeeded = false 
                                             <div>
                                                 <p className="text-sm font-bold text-gray-950">{category.label}</p>
                                                 <p className="mt-1 text-sm text-gray-600">{category.title}</p>
+                                                <p className="mt-1 text-sm text-gray-500">
+                                                    {category.image || "No image"}
+                                                </p>
                                             </div>
                                             <span className="rounded-full bg-gray-100 px-3 py-1 text-xs font-semibold text-gray-700">
                                                 {category.sort_order}
