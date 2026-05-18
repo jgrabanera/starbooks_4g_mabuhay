@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\AdminController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -19,10 +18,11 @@ use Inertia\Inertia;
 Route::get('/', function () {
     return Inertia::render('Home');
 });
-Route::get('/categories', [App\Http\Controllers\Client\CategoryController::class, 'index']);
-Route::get('/get-categories', [App\Http\Controllers\Client\CategoryController::class, 'getData']);
 
-Route::get('/sub-categories', [App\Http\Controllers\Client\SubCategoryController::class, 'getData']);
+Route::get('/categories', [App\Http\Controllers\Client\CategoryController::class, 'index'])->name('client.categories');  // Page
+Route::get('/get-categories', [App\Http\Controllers\Client\CategoryController::class, 'getData'])->name('client.get-categories'); // API Data
+
+Route::get('/sub-categories', [App\Http\Controllers\Client\SubCategoryController::class, 'getData'])->name('client.sub-categories');
 
 // Route::get('/', function () {
 //     return Inertia::render('Home', [
@@ -34,7 +34,7 @@ Route::get('/sub-categories', [App\Http\Controllers\Client\SubCategoryController
 // });
 
 Route::middleware(['auth', 'verified'])->group(function () {
-    Route::get('/admin', [AdminController::class, 'dashboard'])
+    Route::get('/admin', [App\Http\Controllers\Admin\DashboardController::class, 'index'])
         ->name('admin.dashboard');
 
     Route::get('/dashboard', fn() => redirect('/admin'))
