@@ -1,7 +1,7 @@
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Head, Link } from "@inertiajs/react";
 import { useEffect, useState } from "react";
-import { Axios } from "axios";
+import axios from "axios";
 
 export default function Dashboard({ auth }) {
     const [categories, setCategories] = useState([]);
@@ -11,7 +11,7 @@ export default function Dashboard({ auth }) {
     const loadCategories = async () => {
         try {
             setLoading(true);
-            const res = await Axios.get(`/get-categories`);
+            const res = await axios.get(`/admin/get-categories`);
             setLoading(false);
             setCategories(res.data);
         } catch (requestError) {
@@ -24,6 +24,7 @@ export default function Dashboard({ auth }) {
     useEffect(() => {
         loadCategories();
     }, []);
+
     return (
         <AuthenticatedLayout
             user={auth.user}
@@ -51,12 +52,12 @@ export default function Dashboard({ auth }) {
                                     the kiosk category screen.
                                 </p>
                             </div>
-                            {/* <Link
+                            <Link
                                 href={route("admin.categories.index")}
                                 className="inline-flex items-center justify-center rounded-md bg-white px-4 py-2 text-sm font-semibold text-emerald-800 shadow-sm transition hover:bg-emerald-50"
                             >
                                 Manage Categories
-                            </Link> */}
+                            </Link>
                         </div>
                     </section>
 

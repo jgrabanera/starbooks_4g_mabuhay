@@ -1,7 +1,7 @@
 import { Head, Link } from "@inertiajs/react";
 import ClientLayout from "@/Layouts/ClientLayout";
 import { useEffect, useState } from "react";
-import { Axios } from "axios";
+import axios from "axios";
 
 function getImageUrl(image) {
     if (/^(https?:|data:|blob:)/i.test(image)) {
@@ -23,7 +23,9 @@ export default function Categories() {
     const loadCategories = async () => {
         try {
             setLoading(true);
-            const res = await Axios.get(`/get-categories`);
+            const res = await axios.get(`/get-categories`);
+            console.log(res);
+
             setLoading(false);
             setCategories(res.data);
         } catch (requestError) {
@@ -35,6 +37,7 @@ export default function Categories() {
 
     useEffect(() => {
         loadCategories();
+        console.log("Categories loaded:", categories);
     }, []);
 
     const lightGradients = [

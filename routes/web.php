@@ -33,15 +33,16 @@ Route::get('/sub-categories', [App\Http\Controllers\Client\SubCategoryController
 //     ]);
 // });
 
-Route::middleware(['auth', 'verified'])->group(function () {
-    Route::get('/admin', [App\Http\Controllers\Admin\DashboardController::class, 'index'])
-        ->name('admin.dashboard');
+Route::middleware(['auth'])->group(function () {
+    Route::get('/admin', [App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('admin.dashboard');
+    Route::get('/admin/get-categories', [App\Http\Controllers\Admin\DashboardController::class, 'getData'])->name('admin.get-categories');
 
-    Route::get('/dashboard', fn() => redirect('/admin'))
-        ->name('dashboard');
+    Route::get('/dashboard', fn() => redirect('/admin'))->name('dashboard');
 
     Route::get('/admin/categories', [App\Http\Controllers\Client\CategoryController::class, 'adminIndex'])
         ->name('admin.categories.index');
+
+
     Route::post('/admin/categories', [App\Http\Controllers\Client\CategoryController::class, 'store'])
         ->name('admin.categories.store');
     Route::put('/admin/categories/{category}', [App\Http\Controllers\Client\CategoryController::class, 'update'])
