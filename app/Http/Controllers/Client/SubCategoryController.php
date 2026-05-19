@@ -18,8 +18,11 @@ class SubCategoryController extends Controller
             ->where("is_active", 1)
             ->get();
 
+        // return $category;
+
         return Inertia::render('Client/SubCategories', [
             'subCategories' => $subCategories,
+            'category' => $category,
         ]);
     }
     public function getData($slug)
