@@ -24,13 +24,13 @@ export default function ClientLayout({ children }) {
 
                 <footer className="client-footer flex w-full shrink-0 flex-col items-center gap-2 text-center">
                     <img
-                        src="/assets/images/logos/lgu-mabuhay.png"
+                        src="/assets/images/logos/DOST.png"
                         alt="LGU Mabuhay"
                         className="client-footer-logo h-9 w-auto object-contain sm:h-11 lg:h-12"
                     />
                     <p className="client-footer-text text-xs font-medium leading-snug text-black sm:text-sm">
-                        &copy; {new Date().getFullYear()} Starbooks 4G Mabuhay.
-                        All rights reserved.
+                        &copy; {new Date().getFullYear()} DOST STARBOOKS All
+                        rights reserved.
                     </p>
                 </footer>
             </div>

@@ -1,6 +1,6 @@
 import ClientLayout from "@/Layouts/ClientLayout";
 import { Head } from "@inertiajs/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const SubCategories = ({ category, subCategories }) => {
     const pageTabs = [
@@ -25,6 +25,7 @@ const SubCategories = ({ category, subCategories }) => {
     ];
     const [activeTab, setActiveTab] = useState(pageTabs[0].id);
     const [searchQuery, setSearchQuery] = useState("");
+    const [selectedSubCategory, setSelectedSubCategory] = useState(null);
 
     const normalizedSearchQuery = searchQuery.trim().toLowerCase();
     const filteredSubCategories = subCategories.filter((subCategory) => {
@@ -49,6 +50,30 @@ const SubCategories = ({ category, subCategories }) => {
         window.location.href = "/categories";
     };
 
+    const closeSubCategoryModal = () => {
+        setSelectedSubCategory(null);
+    };
+
+    useEffect(() => {
+        if (!selectedSubCategory) {
+            return undefined;
+        }
+
+        const handleKeyDown = (event) => {
+            if (event.key === "Escape") {
+                closeSubCategoryModal();
+            }
+        };
+
+        document.addEventListener("keydown", handleKeyDown);
+        document.body.style.overflow = "hidden";
+
+        return () => {
+            document.removeEventListener("keydown", handleKeyDown);
+            document.body.style.overflow = "";
+        };
+    }, [selectedSubCategory]);
+
     return (
         <>
             <Head title={`${category.title} Sub-Categories`} />
@@ -56,20 +81,20 @@ const SubCategories = ({ category, subCategories }) => {
                 type="button"
                 onClick={handleBack}
                 aria-label="Go back to the previous page"
-                className="fixed left-4 top-4 z-50 flex items-center gap-2 rounded-full border-2 border-white bg-emerald-700 px-5 py-3 text-sm font-bold uppercase tracking-wide text-white shadow-[0_14px_32px_rgba(6,78,59,0.35)] transition duration-200 hover:-translate-y-0.5 hover:bg-emerald-800 focus:outline-none focus:ring-4 focus:ring-yellow-300 sm:left-6 sm:top-6"
+                className="fixed bottom-4 left-4 z-50 flex items-center gap-2 rounded-full border-2 border-white bg-emerald-700 px-4 py-3 text-xs font-bold uppercase tracking-wide text-white shadow-[0_14px_32px_rgba(6,78,59,0.35)] transition duration-200 hover:-translate-y-0.5 hover:bg-emerald-800 focus:outline-none focus:ring-4 focus:ring-yellow-300 sm:bottom-6 sm:left-6 sm:px-5 sm:text-sm"
             >
                 <span aria-hidden="true" className="text-xl leading-none">
-                    ←
+                    &larr;
                 </span>
                 <span>Back</span>
             </button>
-            <div className="subcategory-screen grid w-full self-start place-items-center text-emerald-950 bg-white/50  max-h-screen overflow-y-auto p-10 rounded-lg ">
-                <section className="subcategory-wrap mx-auto w-full px-4 py-4 sm:px-6 md:px-8 h-full md:h-[calc(100vh-22rem)]">
-                    <h1 className="text-center text-2xl font-bold">
+            <div className="subcategory-screen grid max-h-[calc(100dvh-10rem)] w-full self-start place-items-center overflow-y-auto rounded-lg bg-white/50 p-3 text-emerald-950 sm:max-h-[calc(100dvh-12rem)] sm:p-6 lg:p-8">
+                <section className="subcategory-wrap mx-auto w-full max-w-6xl px-1 py-3 sm:px-4 md:px-6">
+                    <h1 className="text-center text-xl font-bold leading-tight sm:text-2xl">
                         {category.title}
                     </h1>
 
-                    <p className="mt-2 text-center text-sm text-gray-600">
+                    <p className="mx-auto mt-2 max-w-3xl text-center text-xs leading-5 text-gray-600 sm:text-sm">
                         {category.description}
                     </p>
 
@@ -78,7 +103,7 @@ const SubCategories = ({ category, subCategories }) => {
                             <div
                                 role="tablist"
                                 aria-label="Category sections"
-                                className="flex min-w-0 flex-1 gap-2 overflow-x-auto"
+                                className="flex w-full min-w-0 flex-1 gap-2 overflow-x-auto pb-1 landscape:pb-0"
                             >
                                 {pageTabs.map((tab) => {
                                     const isActive = activeTab === tab.id;
@@ -92,7 +117,7 @@ const SubCategories = ({ category, subCategories }) => {
                                             aria-disabled={!tab.isAvailable}
                                             disabled={!tab.isAvailable}
                                             onClick={() => setActiveTab(tab.id)}
-                                            className={`flex min-w-36 shrink-0 items-center justify-center gap-2 rounded-xl border px-4 py-3 text-sm font-bold uppercase tracking-wide transition duration-200 focus:outline-none focus:ring-4 focus:ring-yellow-300 ${
+                                            className={`flex min-w-32 shrink-0 items-center justify-center gap-2 rounded-xl border px-3 py-3 text-xs font-bold uppercase tracking-wide transition duration-200 focus:outline-none focus:ring-4 focus:ring-yellow-300 sm:min-w-36 sm:px-4 sm:text-sm ${
                                                 isActive
                                                     ? "border-emerald-800 bg-emerald-700 text-white shadow-[0_12px_24px_rgba(6,78,59,0.28)]"
                                                     : "border-emerald-100 bg-white text-emerald-900 shadow-sm hover:-translate-y-0.5 hover:border-emerald-500 hover:bg-emerald-50"
@@ -123,7 +148,7 @@ const SubCategories = ({ category, subCategories }) => {
                                 })}
                             </div>
 
-                            <div className="flex min-w-64 items-center rounded-xl border border-emerald-100 bg-white px-4 py-3 shadow-sm focus-within:border-emerald-500 focus-within:ring-4 focus-within:ring-yellow-200 portrait:w-full landscape:w-80">
+                            <div className="flex w-full min-w-0 items-center rounded-xl border border-emerald-100 bg-white px-4 py-3 shadow-sm focus-within:border-emerald-500 focus-within:ring-4 focus-within:ring-yellow-200 landscape:w-80 landscape:shrink-0">
                                 <span
                                     aria-hidden="true"
                                     className="mr-3 text-sm font-bold uppercase tracking-wide text-emerald-700"
@@ -151,27 +176,37 @@ const SubCategories = ({ category, subCategories }) => {
                                     No sub-categories found.
                                 </p>
                             ) : (
-                                <div className="mt-5 grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+                                <div className="mt-5 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                                     {filteredSubCategories.map(
                                         (subCategory) => (
-                                            <div
+                                            <button
                                                 key={subCategory.id}
-                                                className="subcategory-card rounded-lg md:max-w-80 border border-gray-200 p-4 bg-white shadow hover:shadow-lg transition duration-300 ease-out  "
+                                                type="button"
+                                                onClick={() =>
+                                                    setSelectedSubCategory(
+                                                        subCategory,
+                                                    )
+                                                }
+                                                aria-haspopup="dialog"
+                                                className="subcategory-card group flex h-full flex-col rounded-lg border border-gray-200 bg-white p-4 text-left shadow transition duration-300 ease-out hover:-translate-y-1 hover:shadow-lg focus:outline-none focus:ring-4 focus:ring-yellow-300"
                                             >
                                                 {subCategory.image && (
                                                     <img
                                                         src={`/storage/images/thumbnails/${subCategory.image}`}
                                                         alt={subCategory.title}
-                                                        className="subcategory-image mb-4 h-40 w-full object-cover rounded"
+                                                        className="subcategory-image mb-4 h-36 w-full rounded object-cover transition duration-300 group-hover:scale-[1.02] sm:h-40"
                                                     />
                                                 )}
                                                 <h2 className="text-lg font-semibold">
                                                     {subCategory.title}
                                                 </h2>
-                                                <p className="text-sm text-gray-600">
+                                                <p className="text-sm leading-6 text-gray-600">
                                                     {subCategory.description}
                                                 </p>
-                                            </div>
+                                                <span className="mt-auto inline-flex w-fit rounded-full bg-emerald-50 px-3 py-1 text-xs font-bold uppercase tracking-wide text-emerald-700">
+                                                    View details
+                                                </span>
+                                            </button>
                                         ),
                                     )}
                                 </div>
@@ -180,6 +215,68 @@ const SubCategories = ({ category, subCategories }) => {
                     )}
                 </section>
             </div>
+            {selectedSubCategory && (
+                <div
+                    className="fixed inset-0 z-[60] flex items-center justify-center bg-emerald-950/70 p-3 backdrop-blur-sm sm:p-4"
+                    onClick={closeSubCategoryModal}
+                >
+                    <div
+                        role="dialog"
+                        aria-modal="true"
+                        aria-labelledby="subcategory-modal-title"
+                        className="relative grid max-h-[92dvh] w-full max-w-4xl overflow-hidden rounded-2xl border border-white/80 bg-white shadow-[0_28px_70px_rgba(6,78,59,0.35)] md:max-h-[90vh] md:grid-cols-[minmax(0,0.95fr)_minmax(0,1.05fr)]"
+                        onClick={(event) => event.stopPropagation()}
+                    >
+                        <button
+                            type="button"
+                            onClick={closeSubCategoryModal}
+                            aria-label="Close sub-category details"
+                            className="absolute right-3 top-3 z-10 flex h-10 w-10 items-center justify-center rounded-full border border-white/80 bg-white/90 text-2xl font-bold leading-none text-emerald-900 shadow-lg transition hover:bg-emerald-700 hover:text-white focus:outline-none focus:ring-4 focus:ring-yellow-300 sm:right-4 sm:top-4"
+                        >
+                            &times;
+                        </button>
+
+                        <div className="bg-emerald-900">
+                            {selectedSubCategory.image ? (
+                                <img
+                                    src={`/storage/images/thumbnails/${selectedSubCategory.image}`}
+                                    alt={selectedSubCategory.title}
+                                    className="h-44 w-full object-cover sm:h-64 md:h-full"
+                                />
+                            ) : (
+                                <div className="flex h-44 w-full items-center justify-center bg-gradient-to-br from-emerald-700 via-emerald-600 to-yellow-500 px-6 text-center text-lg font-black uppercase tracking-wide text-white sm:h-64 sm:px-8 sm:text-xl md:h-full">
+                                    {selectedSubCategory.title}
+                                </div>
+                            )}
+                        </div>
+
+                        <div className="flex max-h-[calc(92dvh-11rem)] flex-col overflow-y-auto p-5 sm:max-h-[calc(92dvh-16rem)] sm:p-8 md:max-h-[90vh]">
+                            <span className="w-fit rounded-full bg-emerald-100 px-3 py-1 text-xs font-bold uppercase tracking-wide text-emerald-800">
+                                {category.title}
+                            </span>
+                            <h2
+                                id="subcategory-modal-title"
+                                className="mt-4 text-xl font-black leading-tight text-emerald-950 sm:text-3xl"
+                            >
+                                {selectedSubCategory.title}
+                            </h2>
+                            <p className="mt-4 text-sm leading-6 text-gray-700 sm:text-base sm:leading-7">
+                                {selectedSubCategory.description ||
+                                    "No description available."}
+                            </p>
+                            <div className="mt-6 flex justify-end sm:mt-8">
+                                <button
+                                    type="button"
+                                    onClick={closeSubCategoryModal}
+                                    className="w-full rounded-full bg-emerald-700 px-6 py-3 text-sm font-bold uppercase tracking-wide text-white shadow-[0_12px_24px_rgba(6,78,59,0.24)] transition hover:-translate-y-0.5 hover:bg-emerald-800 focus:outline-none focus:ring-4 focus:ring-yellow-300 sm:w-auto"
+                                >
+                                    Close
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
         </>
     );
 };
