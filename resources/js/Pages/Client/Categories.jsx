@@ -12,32 +12,28 @@ function getImageUrl(image) {
         return image;
     }
 
-    return `/storage/images/${image.replace(/^storage\/images\//, "")}`;
+    return `/storage/images/thumbnails/${image.replace(/^storage\/images\//, "thumbnails/")}`;
 }
 
 export default function Categories() {
     const [categories, setCategories] = useState([]);
     const [loading, setLoading] = useState(false);
-    const [errors, setErrors] = useState({});
 
     const loadCategories = async () => {
         try {
             setLoading(true);
             const res = await axios.get(`/get-categories`);
-            console.log(res);
 
-            setLoading(false);
             setCategories(res.data);
         } catch (requestError) {
-            setLoading(false);
             console.log("Error loading categories:", requestError);
-            setErrors(requestError.response.data.errors);
+        } finally {
+            setLoading(false);
         }
     };
 
     useEffect(() => {
         loadCategories();
-        console.log("Categories loaded:", categories);
     }, []);
 
     const lightGradients = [
@@ -52,8 +48,20 @@ export default function Categories() {
     return (
         <>
             <Head title="Categories" />
-            <div className="category-screen grid w-full place-items-center text-emerald-950">
+            <div className="category-screen grid w-full self-start place-items-center text-emerald-950">
                 <section className="category-wrap mx-auto w-full px-4 py-4 sm:px-6 md:px-8">
+                    {loading && (
+                        <p className="py-8 text-center text-sm font-semibold uppercase tracking-[0.18em] text-emerald-950">
+                            Loading categories...
+                        </p>
+                    )}
+
+                    {!loading && categories.length === 0 && (
+                        <p className="py-8 text-center text-sm font-semibold uppercase tracking-[0.18em] text-emerald-950">
+                            No categories found.
+                        </p>
+                    )}
+
                     <div className="category-grid mx-auto grid w-full grid-cols-2 xl:gap-24 lg:gap-20">
                         {categories.map((category, index) => {
                             const imageUrl = category.image
@@ -105,17 +113,17 @@ export default function Categories() {
                                                     "Category image"
                                                 }
                                                 loading="lazy"
-                                                className="category-card-image category-floating-image absolute z-20 rounded-full border-[3px] border-white object-cover object-center shadow-[0_14px_28px_rgba(15,83,72,0.28)] "
+                                                className="category-card-image category-floating-image absolute z-20 bg-white rounded-full border-[3px] border-white object-cover object-center shadow-[0_14px_28px_rgba(15,83,72,0.28)] "
                                             />
                                         )}
 
                                         <div className="category-card-content relative z-10 flex flex-col justify-end">
-                                            {(category.label ||
+                                            {(category.title ||
                                                 category.description) && (
                                                 <div className="relative z-20 text-slate-950">
-                                                    {category.label && (
-                                                        <h3 className="category-card-title text-base font-black uppercase leading-tight tracking-[0.16em] sm:text-xl">
-                                                            {category.label}
+                                                    {category.title && (
+                                                        <h3 className="category-card-title text-base font-black uppercase leading-tight tracking-[0.10em] sm:text-xl">
+                                                            {category.title}
                                                         </h3>
                                                     )}
                                                 </div>

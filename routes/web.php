@@ -30,7 +30,7 @@ Route::get('/sub-categories', [App\Http\Controllers\Client\SubCategoryController
 //         'canRegister' => Route::has('register'),
 //         'laravelVersion' => Application::VERSION,
 //         'phpVersion' => PHP_VERSION,
-//     ]);
+//     ]);l
 // });
 
 Route::middleware(['auth'])->group(function () {
