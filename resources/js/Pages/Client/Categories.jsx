@@ -71,7 +71,7 @@ export default function Categories() {
                             return (
                                 <Link
                                     key={category.id}
-                                    href={`/categories/${category.slug}`}
+                                    href={`/categories/sub-categories/${category.slug}`}
                                 >
                                     <div
                                         key={

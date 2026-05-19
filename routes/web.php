@@ -22,7 +22,8 @@ Route::get('/', function () {
 Route::get('/categories', [App\Http\Controllers\Client\CategoryController::class, 'index'])->name('client.categories');  // Page
 Route::get('/get-categories', [App\Http\Controllers\Client\CategoryController::class, 'getData'])->name('client.get-categories'); // API Data
 
-Route::get('/sub-categories', [App\Http\Controllers\Client\SubCategoryController::class, 'getData'])->name('client.sub-categories');
+Route::get('/categories/sub-categories/{slug}', [App\Http\Controllers\Client\SubCategoryController::class, 'index'])->name('client.sub-categories');
+
 
 // Route::get('/', function () {
 //     return Inertia::render('Home', [

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Client;
 
 use App\Http\Controllers\Controller;
+use App\Models\Category;
 use App\Models\SubCategory;
 use Inertia\Inertia;
 use Illuminate\Http\Request;
@@ -10,19 +11,25 @@ use Illuminate\Http\Request;
 class SubCategoryController extends Controller
 {
     //
-    public function publicIndex()
+    public function index($slug)
     {
-        $subCategories = $this->subCategoriesTableIsReady()
-            ? SubCategory::query()
-                ->where('is_active', true)
-                ->orderBy('sort_order')
-                ->orderBy('label')
-                ->get($this->publicSubCategoryColumns())
-            : [];
+        $category = Category::where("slug", $slug)->first();
+        $subCategories = SubCategory::where("category_id", $category->id)
+            ->where("is_active", 1)
+            ->get();
 
         return Inertia::render('Client/SubCategories', [
-            'subCategories' => $subCategories
+            'subCategories' => $subCategories,
+        ]);
+    }
+    public function getData($slug)
+    {
+        $subCategories = SubCategory::where('category_slug', $slug)->get();
+
+        return Inertia::render('Client/SubCategories', [
+            'subCategories' => $subCategories,
         ]);
     }
 
 }
+
