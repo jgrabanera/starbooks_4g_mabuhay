@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { router, useForm } from "@inertiajs/react";
+import { router, useForm, useRemember } from "@inertiajs/react";
 import AdminLayout from "@/Layouts/AdminLayout";
 import DangerButton from "@/Components/DangerButton";
 import InputError from "@/Components/InputError";
@@ -8,7 +8,6 @@ import Modal from "@/Components/Modal";
 import PrimaryButton from "@/Components/PrimaryButton";
 import SecondaryButton from "@/Components/SecondaryButton";
 import TextInput from "@/Components/TextInput";
-import axios from "axios";
 
 const emptyContent = {
     category_id: "",
@@ -19,14 +18,13 @@ const emptyContent = {
     is_active: true,
 };
 
-export default function Contents({ categories }) {
-    const [contents, setContents] = useState([]);
-    const [loading, setLoading] = useState(false);
+export default function Contents({ categories, contents: contentItems = [] }) {
+    const [contents, setContents] = useState(contentItems);
     const [editingContent, setEditingContent] = useState(null);
     const [contentPendingDelete, setContentPendingDelete] = useState(null);
     const [isFormModalOpen, setIsFormModalOpen] = useState(false);
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-    const [search, setSearch] = useState("");
+    const [search, setSearch] = useRemember("", "admin-contents-search");
 
     const {
         data,
@@ -50,22 +48,6 @@ export default function Contents({ categories }) {
             ? selectedCategory.tabs
             : [];
 
-    const loadContents = async () => {
-        try {
-            setLoading(true);
-            const res = await axios.get("/admin/get-contents");
-            setContents(res.data);
-        } catch (requestError) {
-            console.error("Error loading contents:", requestError);
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    useEffect(() => {
-        loadContents();
-    }, []);
-
     const filteredContents = useMemo(() => {
         const term = search.trim().toLowerCase();
 
@@ -84,6 +66,10 @@ export default function Contents({ categories }) {
                 .some((value) => String(value).toLowerCase().includes(term)),
         );
     }, [contents, search]);
+
+    useEffect(() => {
+        setContents(contentItems);
+    }, [contentItems]);
 
     const assignCategoryDefaults = (categoryId) => {
         const matchedCategory = categoryOptions.find(
@@ -157,8 +143,7 @@ export default function Contents({ categories }) {
         post(route("admin.contents.store"), {
             forceFormData: true,
             preserveScroll: true,
-            onSuccess: async () => {
-                await loadContents();
+            onSuccess: () => {
                 closeFormModal();
             },
         });
@@ -168,8 +153,7 @@ export default function Contents({ categories }) {
         router.post(route("admin.contents.update", editingContent.id), data, {
             forceFormData: true,
             preserveScroll: true,
-            onSuccess: async () => {
-                await loadContents();
+            onSuccess: () => {
                 closeFormModal();
             },
         });
@@ -193,8 +177,7 @@ export default function Contents({ categories }) {
 
         destroy(route("admin.contents.destroy", contentPendingDelete.id), {
             preserveScroll: true,
-            onSuccess: async () => {
-                await loadContents();
+            onSuccess: () => {
                 closeDeleteModal();
 
                 if (editingContent?.id === contentPendingDelete.id) {
@@ -234,7 +217,7 @@ export default function Contents({ categories }) {
                         <PrimaryButton
                             type="button"
                             onClick={openCreateModal}
-                            disabled={loading || !canCreateContent}
+                            disabled={processing || !canCreateContent}
                         >
                             Add Content
                         </PrimaryButton>

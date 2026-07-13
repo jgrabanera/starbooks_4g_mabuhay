@@ -2,27 +2,19 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Models\Category;
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Schema;
+use App\Models\Category;
 use Inertia\Inertia;
 use Inertia\Response;
-use Throwable;
 
 class DashboardController extends Controller
 {
-
-    public function index()
+    public function index(): Response
     {
-        return Inertia::render('Admin/Dashboard');
+        return Inertia::render('Admin/Dashboard', [
+            'categories' => Category::query()
+                ->orderByDesc('id')
+                ->get(['id', 'title', 'description', 'is_active']),
+        ]);
     }
-
-    public function getData(Request $request)
-    {
-        $category = Category::orderBy('id', 'desc')->get();
-
-        return response()->json($category);
-    }
-
 }

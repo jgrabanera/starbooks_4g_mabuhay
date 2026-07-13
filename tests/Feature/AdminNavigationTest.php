@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Inertia\Testing\AssertableInertia as Assert;
 use Tests\TestCase;
 
 class AdminNavigationTest extends TestCase
@@ -25,10 +26,16 @@ class AdminNavigationTest extends TestCase
 
         $this->actingAs($user)
             ->get(route('admin.dashboard'))
-            ->assertOk();
+            ->assertOk()
+            ->assertInertia(fn (Assert $page) => $page
+                ->component('Admin/Dashboard')
+                ->has('categories'));
 
         $this->actingAs($user)
             ->get(route('admin.categories.index'))
-            ->assertOk();
+            ->assertOk()
+            ->assertInertia(fn (Assert $page) => $page
+                ->component('Admin/Categories')
+                ->has('categories'));
     }
 }

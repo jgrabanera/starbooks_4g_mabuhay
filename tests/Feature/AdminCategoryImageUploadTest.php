@@ -53,7 +53,7 @@ class AdminCategoryImageUploadTest extends TestCase
             'old image',
         );
 
-        $response = $this->actingAs($user)->put(route('admin.categories.update', $category), [
+        $response = $this->actingAs($user)->post(route('admin.categories.update', $category), [
             'title' => 'Updated Title',
             'description' => 'Updated description',
             'is_active' => false,

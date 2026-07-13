@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { router, useForm } from "@inertiajs/react";
+import { router, useForm, useRemember } from "@inertiajs/react";
 import AdminLayout from "@/Layouts/AdminLayout";
 import DangerButton from "@/Components/DangerButton";
 import InputError from "@/Components/InputError";
@@ -8,7 +8,6 @@ import Modal from "@/Components/Modal";
 import PrimaryButton from "@/Components/PrimaryButton";
 import SecondaryButton from "@/Components/SecondaryButton";
 import TextInput from "@/Components/TextInput";
-import axios from "axios";
 
 const emptyCategory = {
     title: "",
@@ -17,33 +16,16 @@ const emptyCategory = {
     is_active: true,
 };
 
-export default function Categories() {
-    const [categories, setCategories] = useState([]);
-    const [loading, setLoading] = useState(false);
+export default function Categories({ categories: categoryItems = [] }) {
+    const [categories, setCategories] = useState(categoryItems);
     const [editingCategory, setEditingCategory] = useState(null);
     const [tabsCategory, setTabsCategory] = useState(null);
     const [categoryPendingDelete, setCategoryPendingDelete] = useState(null);
     const [isFormModalOpen, setIsFormModalOpen] = useState(false);
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
     const [isTabsModalOpen, setIsTabsModalOpen] = useState(false);
-
-    const loadCategories = async () => {
-        try {
-            setLoading(true);
-            const res = await axios.get(`/get-categories`);
-            setLoading(false);
-            setCategories(res.data);
-        } catch (requestError) {
-            setLoading(false);
-            console.error("Error loading categories:", requestError);
-        }
-    };
-
-    useEffect(() => {
-        loadCategories();
-    }, []);
-
-    const [search, setSearch] = useState("");
+    const [search, setSearch] = useRemember("", "admin-categories-search");
+    const [loading, setLoading] = useState(false);
     const {
         data,
         setData,
@@ -78,6 +60,10 @@ export default function Categories() {
                 .some((value) => String(value).toLowerCase().includes(term)),
         );
     }, [categories, search]);
+
+    useEffect(() => {
+        setCategories(categoryItems);
+    }, [categoryItems]);
 
     const clearForm = () => {
         setEditingCategory(null);
@@ -175,8 +161,7 @@ export default function Categories() {
 
         postTabs(route("admin.categories.tabs.update", tabsCategory.id), {
             preserveScroll: true,
-            onSuccess: async () => {
-                await loadCategories();
+            onSuccess: () => {
                 closeTabsModal();
             },
         });
@@ -186,8 +171,7 @@ export default function Categories() {
         const options = {
             forceFormData: true,
             preserveScroll: true,
-            onSuccess: async () => {
-                await loadCategories();
+            onSuccess: () => {
                 closeFormModal();
             },
         };
@@ -202,8 +186,7 @@ export default function Categories() {
             {
                 forceFormData: true,
                 preserveScroll: true,
-                onSuccess: async () => {
-                    await loadCategories();
+                onSuccess: () => {
                     closeFormModal();
                 },
             },
@@ -228,8 +211,7 @@ export default function Categories() {
 
         destroy(route("admin.categories.destroy", categoryPendingDelete.id), {
             preserveScroll: true,
-            onSuccess: async () => {
-                await loadCategories();
+            onSuccess: () => {
                 closeDeleteModal();
 
                 if (editingCategory?.id === categoryPendingDelete.id) {
@@ -526,7 +508,7 @@ export default function Categories() {
                                     setData("title", event.target.value)
                                 }
                                 className="mt-1 block w-full"
-                                disabled={loading}
+                                disabled={processing}
                             />
                             <InputError
                                 message={errors.title}
@@ -547,7 +529,7 @@ export default function Categories() {
                                     )
                                 }
                                 className="mt-1 block w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm file:mr-4 file:rounded-md file:border-0 file:bg-emerald-50 file:px-3 file:py-2 file:font-semibold file:text-emerald-700 hover:file:bg-emerald-100"
-                                disabled={loading}
+                                disabled={processing}
                             />
                             {editingCategory?.image ? (
                                 <p className="mt-2 text-xs text-gray-500">
@@ -572,7 +554,7 @@ export default function Categories() {
                                     setData("description", event.target.value)
                                 }
                                 rows="3"
-                                disabled={loading}
+                                disabled={processing}
                                 className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 disabled:bg-gray-100"
                             />
                             <InputError
@@ -588,7 +570,7 @@ export default function Categories() {
                                 onChange={(event) =>
                                     setData("is_active", event.target.checked)
                                 }
-                                disabled={loading}
+                                disabled={processing}
                                 className="rounded border-gray-300 text-indigo-600 shadow-sm focus:ring-indigo-500"
                             />
                             Show publicly

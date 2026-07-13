@@ -1,24 +1,7 @@
 import AdminLayout from "@/Layouts/AdminLayout";
 import { Link } from "@inertiajs/react";
-import { useEffect, useState } from "react";
-import axios from "axios";
 
-export default function Dashboard() {
-    const [categories, setCategories] = useState([]);
-
-    const loadCategories = async () => {
-        try {
-            const res = await axios.get(`/admin/get-categories`);
-            setCategories(res.data);
-        } catch (requestError) {
-            console.error("Error loading categories:", requestError);
-        }
-    };
-
-    useEffect(() => {
-        loadCategories();
-    }, []);
-
+export default function Dashboard({ categories = [] }) {
     return (
         <>
             <div className="space-y-6">

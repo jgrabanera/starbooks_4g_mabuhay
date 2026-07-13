@@ -16,7 +16,9 @@ class CategoryController extends Controller
 {
     public function index(): Response
     {
-        return Inertia::render('Admin/Categories');
+        return Inertia::render('Admin/Categories', [
+            'categories' => $this->categories(),
+        ]);
     }
 
     public function store(CategoryRequest $request): RedirectResponse
@@ -96,6 +98,16 @@ class CategoryController extends Controller
     private function buildImageName(string $slug, string $extension): string
     {
         return now()->timestamp . '_' . $slug . '.' . $extension;
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Collection<int, Category>
+     */
+    private function categories()
+    {
+        return Category::query()
+            ->orderByDesc('id')
+            ->get(['id', 'title', 'slug', 'description', 'image', 'tabs', 'is_active']);
     }
 
     /**

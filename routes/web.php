@@ -36,7 +36,6 @@ Route::get('/categories/sub-categories/{slug}', [App\Http\Controllers\Client\Sub
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/admin', [App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('admin.dashboard');
-    Route::get('/admin/get-categories', [App\Http\Controllers\Admin\DashboardController::class, 'getData'])->name('admin.get-categories');
 
     Route::get('/dashboard', fn() => redirect('/admin'))->name('dashboard');
 
@@ -44,8 +43,6 @@ Route::middleware(['auth'])->group(function () {
         ->name('admin.categories.index');
     Route::get('/admin/contents', [App\Http\Controllers\Admin\SubCategoryController::class, 'index'])
         ->name('admin.contents.index');
-    Route::get('/admin/get-contents', [App\Http\Controllers\Admin\SubCategoryController::class, 'getData'])
-        ->name('admin.get-contents');
 
     Route::post('/admin/categories', [App\Http\Controllers\Admin\CategoryController::class, 'store'])
         ->name('admin.categories.store');

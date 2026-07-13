@@ -20,17 +20,8 @@ class SubCategoryController extends Controller
             'categories' => Category::query()
                 ->orderBy('title')
                 ->get(['id', 'title', 'tabs']),
+            'contents' => $this->contents(),
         ]);
-    }
-
-    public function getData()
-    {
-        $contents = SubCategory::query()
-            ->with('category:id,title,tabs')
-            ->orderByDesc('id')
-            ->get();
-
-        return response()->json($contents);
     }
 
     public function store(SubCategoryRequest $request): RedirectResponse
@@ -102,5 +93,16 @@ class SubCategoryController extends Controller
     private function buildImageName(string $slug, string $extension): string
     {
         return now()->timestamp . '_' . $slug . '.' . $extension;
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Collection<int, SubCategory>
+     */
+    private function contents()
+    {
+        return SubCategory::query()
+            ->with('category:id,title,tabs')
+            ->orderByDesc('id')
+            ->get();
     }
 }
