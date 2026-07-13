@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { useForm } from "@inertiajs/react";
+import { router, useForm } from "@inertiajs/react";
 import AdminLayout from "@/Layouts/AdminLayout";
 import DangerButton from "@/Components/DangerButton";
 import InputError from "@/Components/InputError";
@@ -21,9 +21,11 @@ export default function Categories({ auth }) {
     const [categories, setCategories] = useState([]);
     const [loading, setLoading] = useState(false);
     const [editingCategory, setEditingCategory] = useState(null);
+    const [tabsCategory, setTabsCategory] = useState(null);
     const [categoryPendingDelete, setCategoryPendingDelete] = useState(null);
     const [isFormModalOpen, setIsFormModalOpen] = useState(false);
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+    const [isTabsModalOpen, setIsTabsModalOpen] = useState(false);
 
     const loadCategories = async () => {
         try {
@@ -46,13 +48,22 @@ export default function Categories({ auth }) {
         data,
         setData,
         post,
-        put,
         delete: destroy,
         processing,
         errors,
         reset,
         clearErrors,
     } = useForm(emptyCategory);
+    const {
+        data: tabsData,
+        setData: setTabsData,
+        post: postTabs,
+        processing: tabsProcessing,
+        errors: tabErrors,
+        clearErrors: clearTabErrors,
+    } = useForm({
+        tabs: [{ label: "Memorandum" }],
+    });
 
     const filteredCategories = useMemo(() => {
         const term = search.trim().toLowerCase();
@@ -73,6 +84,16 @@ export default function Categories({ auth }) {
         clearErrors();
         reset();
         setData(emptyCategory);
+    };
+
+    const normalizeTabs = (tabs) => {
+        if (!Array.isArray(tabs) || tabs.length === 0) {
+            return [{ label: "Memorandum" }];
+        }
+
+        return tabs.map((tab) => ({
+            label: tab.label ?? "",
+        }));
     };
 
     const closeFormModal = () => {
@@ -107,24 +128,86 @@ export default function Categories({ auth }) {
         setIsDeleteModalOpen(false);
     };
 
+    const openTabsModal = (category) => {
+        setTabsCategory(category);
+        clearTabErrors();
+        setTabsData("tabs", normalizeTabs(category.tabs));
+        setIsTabsModalOpen(true);
+    };
+
+    const closeTabsModal = () => {
+        setTabsCategory(null);
+        clearTabErrors();
+        setTabsData("tabs", [{ label: "Memorandum" }]);
+        setIsTabsModalOpen(false);
+    };
+
+    const updateTabLabel = (index, value) => {
+        const nextTabs = [...tabsData.tabs];
+        nextTabs[index] = {
+            ...nextTabs[index],
+            label: value,
+        };
+        setTabsData("tabs", nextTabs);
+    };
+
+    const addTabField = () => {
+        setTabsData("tabs", [...tabsData.tabs, { label: "" }]);
+    };
+
+    const removeTabField = (index) => {
+        if (tabsData.tabs.length === 1) {
+            return;
+        }
+
+        setTabsData(
+            "tabs",
+            tabsData.tabs.filter((_, tabIndex) => tabIndex !== index),
+        );
+    };
+
+    const submitTabs = (event) => {
+        event.preventDefault();
+
+        if (!tabsCategory) {
+            return;
+        }
+
+        postTabs(route("admin.categories.tabs.update", tabsCategory.id), {
+            preserveScroll: true,
+            onSuccess: async () => {
+                await loadCategories();
+                closeTabsModal();
+            },
+        });
+    };
+
     const createCategory = () => {
         const options = {
             forceFormData: true,
             preserveScroll: true,
-            onSuccess: closeFormModal,
+            onSuccess: async () => {
+                await loadCategories();
+                closeFormModal();
+            },
         };
 
         post(route("admin.categories.store"), options);
     };
 
     const updateCategory = () => {
-        const options = {
-            forceFormData: true,
-            preserveScroll: true,
-            onSuccess: closeFormModal,
-        };
-
-        put(route("admin.categories.update", editingCategory.id), options);
+        router.post(
+            route("admin.categories.update", editingCategory.id),
+            data,
+            {
+                forceFormData: true,
+                preserveScroll: true,
+                onSuccess: async () => {
+                    await loadCategories();
+                    closeFormModal();
+                },
+            },
+        );
     };
 
     const submitCategory = (event) => {
@@ -145,7 +228,8 @@ export default function Categories({ auth }) {
 
         destroy(route("admin.categories.destroy", categoryPendingDelete.id), {
             preserveScroll: true,
-            onSuccess: () => {
+            onSuccess: async () => {
+                await loadCategories();
                 closeDeleteModal();
 
                 if (editingCategory?.id === categoryPendingDelete.id) {
@@ -211,6 +295,9 @@ export default function Categories({ auth }) {
                                         Image
                                     </th>
                                     <th className="px-6 py-3 text-left text-xs font-bold uppercase tracking-wider text-gray-500">
+                                        Tabs
+                                    </th>
+                                    <th className="px-6 py-3 text-left text-xs font-bold uppercase tracking-wider text-gray-500">
                                         Status
                                     </th>
                                     <th className="px-6 py-3 text-right text-xs font-bold uppercase tracking-wider text-gray-500">
@@ -234,6 +321,20 @@ export default function Categories({ auth }) {
                                             <td className="max-w-[12rem] truncate px-6 py-4 text-sm text-gray-600">
                                                 {category.image || "No image"}
                                             </td>
+                                            <td className="px-6 py-4 text-sm text-gray-600">
+                                                <div className="flex max-w-xs flex-wrap gap-2">
+                                                    {(category.tabs ?? []).map(
+                                                        (tab) => (
+                                                            <span
+                                                                key={tab.id}
+                                                                className="rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-700"
+                                                            >
+                                                                {tab.label}
+                                                            </span>
+                                                        ),
+                                                    )}
+                                                </div>
+                                            </td>
                                             <td className="whitespace-nowrap px-6 py-4 text-sm">
                                                 <span
                                                     className={`rounded-full px-3 py-1 text-xs font-semibold ${
@@ -249,6 +350,17 @@ export default function Categories({ auth }) {
                                             </td>
                                             <td className="whitespace-nowrap px-6 py-4 text-right text-sm">
                                                 <div className="flex justify-end gap-4">
+                                                    <button
+                                                        type="button"
+                                                        onClick={() =>
+                                                            openTabsModal(
+                                                                category,
+                                                            )
+                                                        }
+                                                        className="font-semibold text-emerald-700 hover:text-emerald-900"
+                                                    >
+                                                        Tabs
+                                                    </button>
                                                     <button
                                                         type="button"
                                                         onClick={() =>
@@ -278,7 +390,7 @@ export default function Categories({ auth }) {
                                 ) : (
                                     <tr>
                                         <td
-                                            colSpan="5"
+                                            colSpan="6"
                                             className="px-6 py-8 text-center text-sm text-gray-500"
                                         >
                                             No categories found.
@@ -308,6 +420,18 @@ export default function Categories({ auth }) {
                                             <p className="mt-1 text-sm text-gray-500">
                                                 {category.image || "No image"}
                                             </p>
+                                            <div className="mt-3 flex flex-wrap gap-2">
+                                                {(category.tabs ?? []).map(
+                                                    (tab) => (
+                                                        <span
+                                                            key={tab.id}
+                                                            className="rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-700"
+                                                        >
+                                                            {tab.label}
+                                                        </span>
+                                                    ),
+                                                )}
+                                            </div>
                                         </div>
                                         <span className="rounded-full bg-gray-100 px-3 py-1 text-xs font-semibold text-gray-700">
                                             {category.is_active
@@ -321,6 +445,13 @@ export default function Categories({ auth }) {
                                         className="mt-4 text-sm font-semibold text-indigo-600"
                                     >
                                         Edit
+                                    </button>
+                                    <button
+                                        type="button"
+                                        onClick={() => openTabsModal(category)}
+                                        className="mt-2 text-sm font-semibold text-emerald-700"
+                                    >
+                                        Tabs
                                     </button>
                                     <button
                                         type="button"
@@ -527,6 +658,125 @@ export default function Categories({ auth }) {
                             {processing ? "Deleting..." : "Delete"}
                         </DangerButton>
                     </div>
+                </div>
+            </Modal>
+
+            <Modal
+                show={isTabsModalOpen}
+                onClose={closeTabsModal}
+                maxWidth="2xl"
+            >
+                <div className="p-6">
+                    <div className="flex items-start justify-between gap-4">
+                        <div>
+                            <p className="text-xs font-bold uppercase tracking-[0.22em] text-emerald-700">
+                                Category Tabs
+                            </p>
+                            <h2 className="mt-2 text-2xl font-bold text-gray-950">
+                                {tabsCategory?.title ?? "Manage Tabs"}
+                            </h2>
+                            <p className="mt-1 text-sm text-gray-600">
+                                Add the tabs you want to show on this category's
+                                sub-category page.
+                            </p>
+                        </div>
+                        <button
+                            type="button"
+                            onClick={closeTabsModal}
+                            className="rounded-full p-2 text-gray-400 transition hover:bg-gray-100 hover:text-gray-600"
+                        >
+                            <span className="sr-only">Close modal</span>
+                            <svg
+                                className="h-5 w-5"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                strokeWidth="2"
+                            >
+                                <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    d="M6 6l12 12M18 6L6 18"
+                                />
+                            </svg>
+                        </button>
+                    </div>
+
+                    <form onSubmit={submitTabs} className="mt-6 space-y-4">
+                        <div className="space-y-3">
+                            {tabsData.tabs.map((tab, index) => (
+                                <div
+                                    key={`tab-field-${index}`}
+                                    className="flex items-start gap-3"
+                                >
+                                    <div className="flex-1">
+                                        <InputLabel
+                                            htmlFor={`tab-label-${index}`}
+                                            value={`Tab ${index + 1}`}
+                                        />
+                                        <TextInput
+                                            id={`tab-label-${index}`}
+                                            value={tab.label}
+                                            onChange={(event) =>
+                                                updateTabLabel(
+                                                    index,
+                                                    event.target.value,
+                                                )
+                                            }
+                                            className="mt-1 block w-full"
+                                            disabled={tabsProcessing}
+                                            placeholder="Enter tab label"
+                                        />
+                                        <InputError
+                                            message={
+                                                tabErrors[`tabs.${index}.label`]
+                                            }
+                                            className="mt-2"
+                                        />
+                                    </div>
+                                    <button
+                                        type="button"
+                                        onClick={() => removeTabField(index)}
+                                        disabled={
+                                            tabsProcessing ||
+                                            tabsData.tabs.length === 1
+                                        }
+                                        className="mt-7 inline-flex rounded-full border border-rose-200 px-3 py-2 text-xs font-semibold uppercase tracking-wide text-rose-700 transition hover:bg-rose-50 disabled:cursor-not-allowed disabled:opacity-50"
+                                    >
+                                        Remove
+                                    </button>
+                                </div>
+                            ))}
+                        </div>
+
+                        <InputError
+                            message={tabErrors.tabs}
+                            className="mt-2"
+                        />
+
+                        <div className="flex flex-wrap justify-between gap-3 border-t border-slate-100 pt-4">
+                            <SecondaryButton
+                                type="button"
+                                onClick={addTabField}
+                                disabled={tabsProcessing}
+                            >
+                                Add Tab
+                            </SecondaryButton>
+                            <div className="flex flex-wrap gap-3">
+                                <SecondaryButton
+                                    type="button"
+                                    onClick={closeTabsModal}
+                                >
+                                    Cancel
+                                </SecondaryButton>
+                                <PrimaryButton disabled={tabsProcessing}>
+                                    {tabsProcessing
+                                        ? "Saving..."
+                                        : "Save Tabs"}
+                                </PrimaryButton>
+                            </div>
+                        </div>
+                    </form>
                 </div>
             </Modal>
         </AdminLayout>

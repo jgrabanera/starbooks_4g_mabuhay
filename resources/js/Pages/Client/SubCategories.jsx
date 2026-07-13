@@ -3,27 +3,18 @@ import { Head } from "@inertiajs/react";
 import { useEffect, useState } from "react";
 
 const SubCategories = ({ category, subCategories }) => {
-    const pageTabs = [
-        {
-            id: "sub-categories",
-            label: "Memorandum",
-            count: subCategories.length,
-            isAvailable: true,
-        },
-        {
-            id: "services",
-            label: "Executive Orders",
-            count: 0,
-            isAvailable: false,
-        },
-        {
-            id: "providers",
-            label: "Ordinance",
-            count: 0,
-            isAvailable: false,
-        },
-    ];
-    const [activeTab, setActiveTab] = useState(pageTabs[0].id);
+    const storedTabs =
+        Array.isArray(category.tabs) && category.tabs.length > 0
+            ? category.tabs
+            : [{ id: "memorandum-1", label: "Memorandum" }];
+    const primaryTabId = storedTabs[0]?.id ?? "memorandum-1";
+    const pageTabs = storedTabs.map((tab, index) => ({
+        id: tab.id ?? `tab-${index + 1}`,
+        label: tab.label,
+        count: index === 0 ? subCategories.length : 0,
+        isPrimary: index === 0,
+    }));
+    const [activeTab, setActiveTab] = useState(primaryTabId);
     const [searchQuery, setSearchQuery] = useState("");
     const [selectedSubCategory, setSelectedSubCategory] = useState(null);
 
@@ -114,35 +105,23 @@ const SubCategories = ({ category, subCategories }) => {
                                             type="button"
                                             role="tab"
                                             aria-selected={isActive}
-                                            aria-disabled={!tab.isAvailable}
-                                            disabled={!tab.isAvailable}
                                             onClick={() => setActiveTab(tab.id)}
                                             className={`flex min-w-32 shrink-0 items-center justify-center gap-2 rounded-xl border px-3 py-3 text-xs font-bold uppercase tracking-wide transition duration-200 focus:outline-none focus:ring-4 focus:ring-yellow-300 sm:min-w-36 sm:px-4 sm:text-sm ${
                                                 isActive
                                                     ? "border-emerald-800 bg-emerald-700 text-white shadow-[0_12px_24px_rgba(6,78,59,0.28)]"
                                                     : "border-emerald-100 bg-white text-emerald-900 shadow-sm hover:-translate-y-0.5 hover:border-emerald-500 hover:bg-emerald-50"
-                                            } ${
-                                                !tab.isAvailable
-                                                    ? "cursor-not-allowed opacity-70 hover:translate-y-0 hover:border-emerald-100 hover:bg-white"
-                                                    : ""
                                             }`}
                                         >
                                             <span>{tab.label}</span>
-                                            {tab.isAvailable ? (
-                                                <span
-                                                    className={`rounded-full px-2 py-0.5 text-xs ${
-                                                        isActive
-                                                            ? "bg-white/20 text-white"
-                                                            : "bg-emerald-100 text-emerald-800"
-                                                    }`}
-                                                >
-                                                    {tab.count}
-                                                </span>
-                                            ) : (
-                                                <span className="rounded-full bg-gray-100 px-2 py-0.5 text-xs text-gray-500">
-                                                    Soon
-                                                </span>
-                                            )}
+                                            <span
+                                                className={`rounded-full px-2 py-0.5 text-xs ${
+                                                    isActive
+                                                        ? "bg-white/20 text-white"
+                                                        : "bg-emerald-100 text-emerald-800"
+                                                }`}
+                                            >
+                                                {tab.count}
+                                            </span>
                                         </button>
                                     );
                                 })}
@@ -169,7 +148,7 @@ const SubCategories = ({ category, subCategories }) => {
                         </div>
                     </div>
 
-                    {activeTab === "sub-categories" && (
+                    {activeTab === primaryTabId && (
                         <div className="mt-5">
                             {filteredSubCategories.length === 0 ? (
                                 <p className="mt-8 rounded-2xl border border-dashed border-emerald-200 bg-white/80 px-4 py-8 text-center text-sm font-semibold text-emerald-900">
@@ -212,6 +191,12 @@ const SubCategories = ({ category, subCategories }) => {
                                 </div>
                             )}
                         </div>
+                    )}
+
+                    {activeTab !== primaryTabId && (
+                        <p className="mt-8 rounded-2xl border border-dashed border-emerald-200 bg-white/80 px-4 py-8 text-center text-sm font-semibold text-emerald-900">
+                            No items found in this tab yet.
+                        </p>
                     )}
                 </section>
             </div>

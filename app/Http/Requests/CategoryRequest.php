@@ -20,7 +20,7 @@ class CategoryRequest extends FormRequest
         $categoryId = $this->route('category')?->id ?? $this->route('category');
         $imageRules = ['nullable', 'image', 'max:5048', 'mimes:png,jpg,jpeg,webp'];
 
-        if ($this->isMethod('post')) {
+        if ($this->routeIs('admin.categories.store') || $this->routeIs('admin-categories.store')) {
             $imageRules[0] = 'required';
         }
 

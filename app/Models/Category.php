@@ -17,11 +17,13 @@ class Category extends Model
         'slug',
         'description',
         'image',
+        'tabs',
         'is_active',
     ];
 
     protected $casts = [
         'is_active' => 'boolean',
+        'tabs' => 'array',
     ];
 
 }

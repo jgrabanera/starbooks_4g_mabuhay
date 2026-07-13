@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CategoryRequest;
+use App\Http\Requests\UpdateCategoryTabsRequest;
 use App\Models\Category;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Storage;
@@ -33,6 +34,7 @@ class CategoryController extends Controller
             'slug' => $slug,
             'description' => $validated['description'] ?? null,
             'image' => basename($imageName),
+            'tabs' => $this->defaultTabs(),
             'is_active' => (bool) ($validated['is_active'] ?? false),
         ]);
 
@@ -69,6 +71,17 @@ class CategoryController extends Controller
         return to_route('admin.categories.index');
     }
 
+    public function updateTabs(UpdateCategoryTabsRequest $request, Category $category): RedirectResponse
+    {
+        $validated = $request->validated();
+
+        $category->update([
+            'tabs' => $this->normalizeTabs($validated['tabs']),
+        ]);
+
+        return to_route('admin.categories.index');
+    }
+
     public function destroy(Category $category): RedirectResponse
     {
         if (!empty($category->image)) {
@@ -83,5 +96,38 @@ class CategoryController extends Controller
     private function buildImageName(string $slug, string $extension): string
     {
         return now()->timestamp . '_' . $slug . '.' . $extension;
+    }
+
+    /**
+     * @return array<int, array{id: string, label: string}>
+     */
+    private function defaultTabs(): array
+    {
+        return [
+            [
+                'id' => 'memorandum',
+                'label' => 'Memorandum',
+            ],
+        ];
+    }
+
+    /**
+     * @param  array<int, array{label: string}>  $tabs
+     * @return array<int, array{id: string, label: string}>
+     */
+    private function normalizeTabs(array $tabs): array
+    {
+        return collect($tabs)
+            ->map(function (array $tab, int $index): array {
+                $label = trim($tab['label']);
+                $slug = Str::slug($label);
+
+                return [
+                    'id' => $slug !== '' ? $slug . '-' . ($index + 1) : 'tab-' . ($index + 1),
+                    'label' => $label,
+                ];
+            })
+            ->values()
+            ->all();
     }
 }
