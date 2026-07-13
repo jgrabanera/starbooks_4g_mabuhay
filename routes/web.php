@@ -49,11 +49,11 @@ Route::middleware(['auth'])->group(function () {
         ->name('admin.categories.index');
 
 
-    Route::post('/admin/categories', [App\Http\Controllers\Client\CategoryController::class, 'store'])
+    Route::post('/admin/categories', [App\Http\Controllers\Admin\CategoryController::class, 'store'])
         ->name('admin.categories.store');
-    Route::put('/admin/categories/{category}', [App\Http\Controllers\Client\CategoryController::class, 'update'])
+    Route::put('/admin/categories/{category}', [App\Http\Controllers\Admin\CategoryController::class, 'update'])
         ->name('admin.categories.update');
-    Route::delete('/admin/categories/{category}', [App\Http\Controllers\Client\CategoryController::class, 'destroy'])
+    Route::delete('/admin/categories/{category}', [App\Http\Controllers\Admin\CategoryController::class, 'destroy'])
         ->name('admin.categories.destroy');
 });
 

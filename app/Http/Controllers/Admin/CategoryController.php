@@ -2,128 +2,86 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Models\Category;
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Schema;
+use App\Http\Requests\CategoryRequest;
+use App\Models\Category;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use Inertia\Inertia;
 use Inertia\Response;
-use Throwable;
 
 class CategoryController extends Controller
 {
-
-    public function index()
+    public function index(): Response
     {
         return Inertia::render('Admin/Categories');
     }
 
-    public function getData(Request $request)
+    public function store(CategoryRequest $request): RedirectResponse
     {
-        $category = Category::orderBy('id', 'desc')->get();
-
-        return response()->json($category);
-    }
-    public function store(Request $request)
-    {
-        $validatedData = $request->validate(
-
-            [
-                'title' => ['required', 'string', 'unique:categories'],
-                'image' => ['required', 'image', 'max:5048', 'mimes:png,jpg,jpeg,webp'],
-                'description' => ['required', 'string'],
-                'is_active' => 'boolean',
-            ],
-            [
-                'title.required' => 'Category title is required.',
-                'title.unique' => 'Category title already exists. Please try other title.',
-                'description.required' => 'Description is required in new category.',
-                'image.required' => 'Image is required in new category.',
-                'image.image' => 'File must be an image.',
-                'image.max' => 'Image size should be less than 5MB.',
-                'image.mimes' => 'Image file should be JPG, JPEG, PNG, or WEBP.',
-            ]
-        );
-
-        $slug = Str::slug($validatedData['title']);
-        $imagePath = null;
-
-        if ($request->hasFile('image')) {
-            $file = $request->file('image');
-            $filename = time() . '_' . $slug . '.' . $file->getClientOriginalExtension();
-            $file->storeAs('images/thumbnails', $filename, 'public');
-            $imagePath = $filename;
-        }
-
-
-        $category = Category::create([
-            'title' => $validatedData['title'],
-            'slug' => $slug,
-            'description' => $validatedData['description'] ?? null,
-            'status' => $validatedData['status'] ?? null,
-            'image' => $imagePath,
-        ]);
-
-        return response()->json([
-            'status' => 'saved',
-            'message' => 'Category created successfully',
-            'data' => $category,
-        ], 200);
-    }
-
-    public function update(Request $request, $id)
-    {
-
-        //return $request;
-        $validated = $request->validate(
-            [
-                'title' => ['required', 'string', 'unique:categories,title,' . $id],
-                'image' => ['nullable', 'image', 'mimes:png,jpg,jpeg', 'max:5048'],
-                'description' => ['nullable', 'string'],
-                'is_active' => 'boolean',
-            ],
-            [
-                'title.required' => 'Category title is required.',
-                'title.unique' => 'Category title already exists. ',
-                'image.max' => 'Image size should be less than 5MB.',
-            ]
-        );
-
-        $category = Category::findOrFail($id);
+        $validated = $request->validated();
         $slug = Str::slug($validated['title']);
-        $payload = [
-            'title' => $validated['title'],
+        $imageName = $request->file('image')->storeAs(
+            'images/thumbnails',
+            $this->buildImageName($slug, $request->file('image')->extension()),
+            'public',
+        );
+
+        Category::create([
+            'title' => trim($validated['title']),
             'slug' => $slug,
             'description' => $validated['description'] ?? null,
-            'status' => $validated['status'] ?? null,
+            'image' => basename($imageName),
+            'is_active' => (bool) ($validated['is_active'] ?? false),
+        ]);
+
+        return to_route('admin.categories.index');
+    }
+
+    public function update(CategoryRequest $request, Category $category): RedirectResponse
+    {
+        $validated = $request->validated();
+        $slug = Str::slug($validated['title']);
+        $payload = [
+            'title' => trim($validated['title']),
+            'slug' => $slug,
+            'description' => $validated['description'] ?? null,
+            'is_active' => (bool) ($validated['is_active'] ?? false),
         ];
+
         if ($request->hasFile('image')) {
-            $file = $request->file('image');
-            $filename = time() . '_' . $slug . '.' . $file->getClientOriginalExtension();
-            $file->storeAs('images/thumbnails', $filename, 'public');
+            $imageName = $request->file('image')->storeAs(
+                'images/thumbnails',
+                $this->buildImageName($slug, $request->file('image')->extension()),
+                'public',
+            );
 
             if (!empty($category->image)) {
                 Storage::disk('public')->delete('images/thumbnails/' . $category->image);
             }
 
-            $payload['image'] = $filename;
+            $payload['image'] = basename($imageName);
         }
+
         $category->update($payload);
-        return response()->json([
-            'status' => 'updated',
-            'message' => 'Category updated successfully',
-        ], 200);
+
+        return to_route('admin.categories.index');
     }
 
-    public function delete($id)
+    public function destroy(Category $category): RedirectResponse
     {
-        Categories::destroy($id);
+        if (!empty($category->image)) {
+            Storage::disk('public')->delete('images/thumbnails/' . $category->image);
+        }
 
-        return response()->json([
-            'status' => 'deleted',
-            'message' => '',
-        ], 200);
+        $category->delete();
+
+        return to_route('admin.categories.index');
     }
 
+    private function buildImageName(string $slug, string $extension): string
+    {
+        return now()->timestamp . '_' . $slug . '.' . $extension;
+    }
 }

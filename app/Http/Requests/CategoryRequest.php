@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class CategoryRequest extends FormRequest
 {
@@ -16,12 +17,22 @@ class CategoryRequest extends FormRequest
      */
     public function rules(): array
     {
+        $categoryId = $this->route('category')?->id ?? $this->route('category');
+        $imageRules = ['nullable', 'image', 'max:5048', 'mimes:png,jpg,jpeg,webp'];
+
+        if ($this->isMethod('post')) {
+            $imageRules[0] = 'required';
+        }
+
         return [
-            'title' => ['nullable', 'string', 'max:255'],
-            'label' => ['required', 'string', 'max:255'],
-            'image' => ['nullable', 'string', 'max:2048'],
+            'title' => [
+                'required',
+                'string',
+                'max:255',
+                Rule::unique('categories', 'title')->ignore($categoryId),
+            ],
+            'image' => $imageRules,
             'description' => ['nullable', 'string'],
-            'sort_order' => ['required', 'integer', 'min:0'],
             'is_active' => ['boolean'],
         ];
     }
@@ -32,13 +43,13 @@ class CategoryRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'label.required' => 'The category label is required.',
-            'label.max' => 'The category label must not be greater than 255 characters.',
-            'title.max' => 'The short title must not be greater than 255 characters.',
-            'image.max' => 'The image path or URL must not be greater than 2048 characters.',
-            'sort_order.required' => 'The sort order is required.',
-            'sort_order.integer' => 'The sort order must be a whole number.',
-            'sort_order.min' => 'The sort order must be at least 0.',
+            'title.required' => 'The category title is required.',
+            'title.unique' => 'The category title already exists.',
+            'title.max' => 'The category title must not be greater than 255 characters.',
+            'image.required' => 'The category image is required.',
+            'image.image' => 'The uploaded file must be an image.',
+            'image.max' => 'The image size must be less than 5MB.',
+            'image.mimes' => 'The image must be a JPG, JPEG, PNG, or WEBP file.',
         ];
     }
 }
