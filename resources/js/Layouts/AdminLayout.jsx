@@ -44,6 +44,32 @@ const navigationItems = [
             </svg>
         ),
     },
+    {
+        label: "Contents",
+        href: "admin.contents.index",
+        isActive: () => route().current("admin.contents.*"),
+        description: "Manage content per category tab",
+        icon: (
+            <svg
+                className="h-5 w-5"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.8"
+            >
+                <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M7 4.75h10A2.25 2.25 0 0 1 19.25 7v10A2.25 2.25 0 0 1 17 19.25H7A2.25 2.25 0 0 1 4.75 17V7A2.25 2.25 0 0 1 7 4.75Z"
+                />
+                <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M8.5 9.25h7m-7 3.25h7m-7 3.25h4.5"
+                />
+            </svg>
+        ),
+    },
 ];
 
 function SidebarContent({ user, onNavigate = null }) {

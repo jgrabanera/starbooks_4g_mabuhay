@@ -11,7 +11,15 @@ const SubCategories = ({ category, subCategories }) => {
     const pageTabs = storedTabs.map((tab, index) => ({
         id: tab.id ?? `tab-${index + 1}`,
         label: tab.label,
-        count: index === 0 ? subCategories.length : 0,
+        count: subCategories.filter((subCategory) => {
+            if (index === 0) {
+                return (
+                    !subCategory.tab_id || subCategory.tab_id === primaryTabId
+                );
+            }
+
+            return subCategory.tab_id === tab.id;
+        }).length,
         isPrimary: index === 0,
     }));
     const [activeTab, setActiveTab] = useState(primaryTabId);
@@ -20,6 +28,15 @@ const SubCategories = ({ category, subCategories }) => {
 
     const normalizedSearchQuery = searchQuery.trim().toLowerCase();
     const filteredSubCategories = subCategories.filter((subCategory) => {
+        const belongsToActiveTab =
+            activeTab === primaryTabId
+                ? !subCategory.tab_id || subCategory.tab_id === primaryTabId
+                : subCategory.tab_id === activeTab;
+
+        if (!belongsToActiveTab) {
+            return false;
+        }
+
         if (!normalizedSearchQuery) {
             return true;
         }
@@ -148,56 +165,44 @@ const SubCategories = ({ category, subCategories }) => {
                         </div>
                     </div>
 
-                    {activeTab === primaryTabId && (
-                        <div className="mt-5">
-                            {filteredSubCategories.length === 0 ? (
-                                <p className="mt-8 rounded-2xl border border-dashed border-emerald-200 bg-white/80 px-4 py-8 text-center text-sm font-semibold text-emerald-900">
-                                    No sub-categories found.
-                                </p>
-                            ) : (
-                                <div className="mt-5 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-                                    {filteredSubCategories.map(
-                                        (subCategory) => (
-                                            <button
-                                                key={subCategory.id}
-                                                type="button"
-                                                onClick={() =>
-                                                    setSelectedSubCategory(
-                                                        subCategory,
-                                                    )
-                                                }
-                                                aria-haspopup="dialog"
-                                                className="subcategory-card group flex h-full flex-col rounded-lg border border-gray-200 bg-white p-4 text-left shadow transition duration-300 ease-out hover:-translate-y-1 hover:shadow-lg focus:outline-none focus:ring-4 focus:ring-yellow-300"
-                                            >
-                                                {subCategory.image && (
-                                                    <img
-                                                        src={`/storage/images/thumbnails/${subCategory.image}`}
-                                                        alt={subCategory.title}
-                                                        className="subcategory-image mb-4 h-36 w-full rounded object-cover transition duration-300 group-hover:scale-[1.02] sm:h-40"
-                                                    />
-                                                )}
-                                                <h2 className="text-lg font-semibold">
-                                                    {subCategory.title}
-                                                </h2>
-                                                <p className="text-sm leading-6 text-gray-600">
-                                                    {subCategory.description}
-                                                </p>
-                                                <span className="mt-auto inline-flex w-fit rounded-full bg-emerald-50 px-3 py-1 text-xs font-bold uppercase tracking-wide text-emerald-700">
-                                                    View details
-                                                </span>
-                                            </button>
-                                        ),
-                                    )}
-                                </div>
-                            )}
-                        </div>
-                    )}
-
-                    {activeTab !== primaryTabId && (
-                        <p className="mt-8 rounded-2xl border border-dashed border-emerald-200 bg-white/80 px-4 py-8 text-center text-sm font-semibold text-emerald-900">
-                            No items found in this tab yet.
-                        </p>
-                    )}
+                    <div className="mt-5">
+                        {filteredSubCategories.length === 0 ? (
+                            <p className="mt-8 rounded-2xl border border-dashed border-emerald-200 bg-white/80 px-4 py-8 text-center text-sm font-semibold text-emerald-900">
+                                No items found in this tab yet.
+                            </p>
+                        ) : (
+                            <div className="mt-5 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                                {filteredSubCategories.map((subCategory) => (
+                                    <button
+                                        key={subCategory.id}
+                                        type="button"
+                                        onClick={() =>
+                                            setSelectedSubCategory(subCategory)
+                                        }
+                                        aria-haspopup="dialog"
+                                        className="subcategory-card group flex h-full flex-col rounded-lg border border-gray-200 bg-white p-4 text-left shadow transition duration-300 ease-out hover:-translate-y-1 hover:shadow-lg focus:outline-none focus:ring-4 focus:ring-yellow-300"
+                                    >
+                                        {subCategory.image && (
+                                            <img
+                                                src={`/storage/images/thumbnails/${subCategory.image}`}
+                                                alt={subCategory.title}
+                                                className="subcategory-image mb-4 h-36 w-full rounded object-cover transition duration-300 group-hover:scale-[1.02] sm:h-40"
+                                            />
+                                        )}
+                                        <h2 className="text-lg font-semibold">
+                                            {subCategory.title}
+                                        </h2>
+                                        <p className="text-sm leading-6 text-gray-600">
+                                            {subCategory.description}
+                                        </p>
+                                        <span className="mt-auto inline-flex w-fit rounded-full bg-emerald-50 px-3 py-1 text-xs font-bold uppercase tracking-wide text-emerald-700">
+                                            View details
+                                        </span>
+                                    </button>
+                                ))}
+                            </div>
+                        )}
+                    </div>
                 </section>
             </div>
             {selectedSubCategory && (

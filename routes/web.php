@@ -42,7 +42,10 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/admin/categories', [App\Http\Controllers\Admin\CategoryController::class, 'index'])
         ->name('admin.categories.index');
-
+    Route::get('/admin/contents', [App\Http\Controllers\Admin\SubCategoryController::class, 'index'])
+        ->name('admin.contents.index');
+    Route::get('/admin/get-contents', [App\Http\Controllers\Admin\SubCategoryController::class, 'getData'])
+        ->name('admin.get-contents');
 
     Route::post('/admin/categories', [App\Http\Controllers\Admin\CategoryController::class, 'store'])
         ->name('admin.categories.store');
@@ -52,6 +55,13 @@ Route::middleware(['auth'])->group(function () {
         ->name('admin.categories.tabs.update');
     Route::delete('/admin/categories/{category}', [App\Http\Controllers\Admin\CategoryController::class, 'destroy'])
         ->name('admin.categories.destroy');
+
+    Route::post('/admin/contents', [App\Http\Controllers\Admin\SubCategoryController::class, 'store'])
+        ->name('admin.contents.store');
+    Route::post('/admin/contents/{content}', [App\Http\Controllers\Admin\SubCategoryController::class, 'update'])
+        ->name('admin.contents.update');
+    Route::delete('/admin/contents/{content}', [App\Http\Controllers\Admin\SubCategoryController::class, 'destroy'])
+        ->name('admin.contents.destroy');
 });
 
 Route::middleware('auth')->group(function () {

@@ -3,7 +3,7 @@ import { Link } from "@inertiajs/react";
 import { useEffect, useState } from "react";
 import axios from "axios";
 
-export default function Dashboard({ auth }) {
+export default function Dashboard() {
     const [categories, setCategories] = useState([]);
 
     const loadCategories = async () => {
@@ -20,12 +20,7 @@ export default function Dashboard({ auth }) {
     }, []);
 
     return (
-        <AdminLayout
-            user={auth.user}
-            title="Dashboard"
-            description="Monitor the admin workspace and jump into content management from a cleaner left-side navigation."
-            pageTitle="Admin Dashboard"
-        >
+        <>
             <div className="space-y-6">
                 <section className="rounded-[28px] bg-gradient-to-br from-emerald-900 via-teal-800 to-cyan-700 p-6 text-white shadow-xl shadow-emerald-950/10">
                     <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
@@ -139,6 +134,10 @@ export default function Dashboard({ auth }) {
                     </div>
                 </section>
             </div>
-        </AdminLayout>
+        </>
     );
 }
+
+Dashboard.layout = (page) => (
+    <AdminLayout user={page.props.auth.user} children={page} />
+);
