@@ -37,11 +37,6 @@ Route::get('/categories/sub-categories/{slug}', [App\Http\Controllers\Client\Sub
 Route::middleware(['auth'])->group(function () {
     Route::get('/admin', [App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('admin.dashboard');
     Route::get('/admin/get-categories', [App\Http\Controllers\Admin\DashboardController::class, 'getData'])->name('admin.get-categories');
-    Route::post('/admin/categories', [App\Http\Controllers\Admin\DashboardController::class, 'store'])->name('admin-categories.store');
-    Route::post('/admin/categories/{id}', [App\Http\Controllers\Admin\DashboardController::class, 'update'])->name('admin-categories.update');
-    Route::delete('/admin/categories/{id}', [App\Http\Controllers\Admin\DashboardController::class, 'delete'])->name('admin-categories.delete');
-
-
 
     Route::get('/dashboard', fn() => redirect('/admin'))->name('dashboard');
 
@@ -51,9 +46,9 @@ Route::middleware(['auth'])->group(function () {
 
     Route::post('/admin/categories', [App\Http\Controllers\Admin\CategoryController::class, 'store'])
         ->name('admin.categories.store');
-    Route::put('/admin/categories/{category}', [App\Http\Controllers\Admin\CategoryController::class, 'update'])
+    Route::post('/admin/categories/{category}', [App\Http\Controllers\Admin\CategoryController::class, 'update'])
         ->name('admin.categories.update');
-    Route::put('/admin/categories/{category}/tabs', [App\Http\Controllers\Admin\CategoryController::class, 'updateTabs'])
+    Route::post('/admin/categories/{category}/tabs', [App\Http\Controllers\Admin\CategoryController::class, 'updateTabs'])
         ->name('admin.categories.tabs.update');
     Route::delete('/admin/categories/{category}', [App\Http\Controllers\Admin\CategoryController::class, 'destroy'])
         ->name('admin.categories.destroy');
