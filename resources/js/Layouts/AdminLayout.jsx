@@ -36,8 +36,8 @@ export default function AdminLayout({
                     <div className="flex min-h-screen flex-1 flex-col">
                         <header className="border-b border-slate-200 bg-white/90 px-4 py-4 backdrop-blur sm:px-6 lg:px-8">
                             <div className="flex items-center justify-between gap-4">
-                                <div className="flex items-start gap-3">
-                                    <div className="flex flex-col items-start justify-center">
+                                <div className="flex flex-row items-center justify-between gap-3 w-full">
+                                    <div className="flex flex-col items-start justify-center py-1">
                                         <nav
                                             aria-label="Breadcrumb"
                                             className="flex flex-wrap items-center gap-2 text-xs font-google-sans-semibold uppercase tracking-[0.22em] text-slate-500"
@@ -58,7 +58,7 @@ export default function AdminLayout({
                                                                 index ===
                                                                 breadcrumbItems.length -
                                                                     1
-                                                                    ? "text-emerald-700"
+                                                                    ? "text-blue-600"
                                                                     : ""
                                                             }
                                                         >
@@ -72,11 +72,11 @@ export default function AdminLayout({
                                             {currentPageTitle}
                                         </h2>
                                     </div>
-                                    {/* Burger Menu Button */}
+
                                     <button
                                         type="button"
                                         onClick={() => setShowingSidebar(true)}
-                                        className="md:hidden inline-flex h-11 w-11 items-center justify-center rounded-2xl border border-slate-200 bg-white text-slate-700 shadow-sm transition hover:border-slate-300 hover:text-slate-950 "
+                                        className="inline-flex h-11 w-11 items-center justify-center rounded-2xl border border-slate-200 bg-white text-slate-700 shadow-sm transition hover:border-slate-300 hover:text-slate-950 md:hidden"
                                     >
                                         <span className="sr-only">
                                             Open navigation
@@ -96,56 +96,6 @@ export default function AdminLayout({
                                         </svg>
                                     </button>
                                 </div>
-
-                                <div className="hidden rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-right lg:block">
-                                    <p className="text-xs font-semibold uppercase tracking-[0.24em] text-slate-500">
-                                        Signed In
-                                    </p>
-                                    <div className="mt-2 flex items-center justify-end gap-2">
-                                        <p className="text-sm font-semibold text-slate-900">
-                                            {user.name}
-                                        </p>
-                                        <Dropdown>
-                                            <Dropdown.Trigger>
-                                                <button
-                                                    type="button"
-                                                    className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-700 transition hover:border-slate-300 hover:text-slate-950"
-                                                >
-                                                    <svg
-                                                        className="h-4 w-4"
-                                                        viewBox="0 0 20 20"
-                                                        fill="currentColor"
-                                                    >
-                                                        <path
-                                                            fillRule="evenodd"
-                                                            d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"
-                                                            clipRule="evenodd"
-                                                        />
-                                                    </svg>
-                                                </button>
-                                            </Dropdown.Trigger>
-
-                                            <Dropdown.Content
-                                                align="right"
-                                                width="48"
-                                                contentClasses="py-1 bg-white"
-                                            >
-                                                <Dropdown.Link
-                                                    href={route("profile.edit")}
-                                                >
-                                                    Profile
-                                                </Dropdown.Link>
-                                                <Dropdown.Link
-                                                    href={route("logout")}
-                                                    method="post"
-                                                    as="button"
-                                                >
-                                                    Log Out
-                                                </Dropdown.Link>
-                                            </Dropdown.Content>
-                                        </Dropdown>
-                                    </div>
-                                </div>
                             </div>
                         </header>
 
@@ -159,18 +109,18 @@ export default function AdminLayout({
                     <div className="fixed inset-0 z-50 flex lg:hidden">
                         <button
                             type="button"
-                            className="flex-1 bg-slate-950/50 backdrop-blur-sm"
+                            className="flex-1 bg-slate-950/35 backdrop-blur-sm"
                             onClick={() => setShowingSidebar(false)}
                         >
                             <span className="sr-only">Close navigation</span>
                         </button>
-                        <div className="w-full max-w-xs">
+                        <div className="w-full max-w-xs overflow-hidden border-l border-slate-200 bg-white shadow-2xl">
                             <div className="flex h-full flex-col">
-                                <div className="flex justify-end bg-gradient-to-b from-sky-950 via-blue-900 to-indigo-950 px-4 pt-4">
+                                <div className="flex justify-end border-b border-slate-200 bg-white px-4 pt-4">
                                     <button
                                         type="button"
                                         onClick={() => setShowingSidebar(false)}
-                                        className="inline-flex h-10 w-10 items-center justify-center rounded-2xl border border-white/10 text-blue-100 transition hover:bg-white/10 hover:text-white"
+                                        className="inline-flex h-10 w-10 items-center justify-center rounded-2xl border border-slate-200 text-slate-600 transition hover:bg-slate-50 hover:text-slate-900"
                                     >
                                         <span className="sr-only">
                                             Close navigation
