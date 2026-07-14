@@ -760,5 +760,10 @@ export default function Categories({ categories: categoryItems = [] }) {
     );
 }
 Categories.layout = (page) => (
-    <AdminLayout user={page.props.auth.user} children={page} />
+    <AdminLayout
+        user={page.props.auth.user}
+        title="Categories"
+        breadcrumbs={[{ label: "Admin Workspace" }, { label: "Categories" }]}
+        children={page}
+    />
 );

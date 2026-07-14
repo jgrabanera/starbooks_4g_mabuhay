@@ -37,5 +37,10 @@ export default function Dashboard({ categories = [] }) {
 }
 
 Dashboard.layout = (page) => (
-    <AdminLayout user={page.props.auth.user} children={page} />
+    <AdminLayout
+        user={page.props.auth.user}
+        title="Dashboard"
+        breadcrumbs={[{ label: "Admin Workspace" }, { label: "Dashboard" }]}
+        children={page}
+    />
 );

@@ -666,5 +666,10 @@ export default function Contents({ categories, contents: contentItems = [] }) {
     );
 }
 Contents.layout = (page) => (
-    <AdminLayout user={page.props.auth.user} children={page} />
+    <AdminLayout
+        user={page.props.auth.user}
+        title="Contents"
+        breadcrumbs={[{ label: "Admin Workspace" }, { label: "Contents" }]}
+        children={page}
+    />
 );

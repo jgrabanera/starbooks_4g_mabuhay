@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Head } from "@inertiajs/react";
+import Dropdown from "@/Components/Dropdown";
 import SidebarNavigation from "@/Components/SidebarNavigation";
 
 export default function AdminLayout({
@@ -8,8 +9,17 @@ export default function AdminLayout({
     description,
     children,
     pageTitle,
+    breadcrumbs = [],
 }) {
     const [showingSidebar, setShowingSidebar] = useState(false);
+    const breadcrumbItems =
+        breadcrumbs.length > 0
+            ? breadcrumbs
+            : [{ label: "Admin Workspace" }, { label: title ?? "Dashboard" }];
+    const currentPageTitle =
+        breadcrumbItems[breadcrumbItems.length - 1]?.label ??
+        title ??
+        "Dashboard";
 
     return (
         <>
@@ -25,12 +35,48 @@ export default function AdminLayout({
 
                     <div className="flex min-h-screen flex-1 flex-col">
                         <header className="border-b border-slate-200 bg-white/90 px-4 py-4 backdrop-blur sm:px-6 lg:px-8">
-                            <div className="flex items-start justify-between gap-4">
+                            <div className="flex items-center justify-between gap-4">
                                 <div className="flex items-start gap-3">
+                                    <div className="flex flex-col items-start justify-center">
+                                        <nav
+                                            aria-label="Breadcrumb"
+                                            className="flex flex-wrap items-center gap-2 text-xs font-google-sans-semibold uppercase tracking-[0.22em] text-slate-500"
+                                        >
+                                            {breadcrumbItems.map(
+                                                (breadcrumb, index) => (
+                                                    <div
+                                                        key={`${breadcrumb.label}-${index}`}
+                                                        className="flex items-center gap-2"
+                                                    >
+                                                        {index > 0 ? (
+                                                            <span className="text-slate-300">
+                                                                /
+                                                            </span>
+                                                        ) : null}
+                                                        <span
+                                                            className={
+                                                                index ===
+                                                                breadcrumbItems.length -
+                                                                    1
+                                                                    ? "text-emerald-700"
+                                                                    : ""
+                                                            }
+                                                        >
+                                                            {breadcrumb.label}
+                                                        </span>
+                                                    </div>
+                                                ),
+                                            )}
+                                        </nav>
+                                        <h2 className="mt-2 text-2xl font-google-sans-semibold tracking-normal text-slate-950">
+                                            {currentPageTitle}
+                                        </h2>
+                                    </div>
+                                    {/* Burger Menu Button */}
                                     <button
                                         type="button"
                                         onClick={() => setShowingSidebar(true)}
-                                        className="inline-flex h-11 w-11 items-center justify-center rounded-2xl border border-slate-200 bg-white text-slate-700 shadow-sm transition hover:border-slate-300 hover:text-slate-950 lg:hidden"
+                                        className="md:hidden inline-flex h-11 w-11 items-center justify-center rounded-2xl border border-slate-200 bg-white text-slate-700 shadow-sm transition hover:border-slate-300 hover:text-slate-950 "
                                     >
                                         <span className="sr-only">
                                             Open navigation
@@ -49,29 +95,56 @@ export default function AdminLayout({
                                             />
                                         </svg>
                                     </button>
-
-                                    <div>
-                                        <p className="text-xs font-bold uppercase tracking-[0.3em] text-emerald-700">
-                                            Admin Workspace
-                                        </p>
-                                        <h2 className="mt-2 text-2xl font-semibold tracking-tight text-slate-950">
-                                            Dashboard
-                                        </h2>
-                                        {description ? (
-                                            <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-500">
-                                                {description}
-                                            </p>
-                                        ) : null}
-                                    </div>
                                 </div>
 
-                                <div className="hidden rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-right sm:block">
+                                <div className="hidden rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-right lg:block">
                                     <p className="text-xs font-semibold uppercase tracking-[0.24em] text-slate-500">
                                         Signed In
                                     </p>
-                                    <p className="mt-2 text-sm font-semibold text-slate-900">
-                                        {user.name}
-                                    </p>
+                                    <div className="mt-2 flex items-center justify-end gap-2">
+                                        <p className="text-sm font-semibold text-slate-900">
+                                            {user.name}
+                                        </p>
+                                        <Dropdown>
+                                            <Dropdown.Trigger>
+                                                <button
+                                                    type="button"
+                                                    className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-700 transition hover:border-slate-300 hover:text-slate-950"
+                                                >
+                                                    <svg
+                                                        className="h-4 w-4"
+                                                        viewBox="0 0 20 20"
+                                                        fill="currentColor"
+                                                    >
+                                                        <path
+                                                            fillRule="evenodd"
+                                                            d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"
+                                                            clipRule="evenodd"
+                                                        />
+                                                    </svg>
+                                                </button>
+                                            </Dropdown.Trigger>
+
+                                            <Dropdown.Content
+                                                align="right"
+                                                width="48"
+                                                contentClasses="py-1 bg-white"
+                                            >
+                                                <Dropdown.Link
+                                                    href={route("profile.edit")}
+                                                >
+                                                    Profile
+                                                </Dropdown.Link>
+                                                <Dropdown.Link
+                                                    href={route("logout")}
+                                                    method="post"
+                                                    as="button"
+                                                >
+                                                    Log Out
+                                                </Dropdown.Link>
+                                            </Dropdown.Content>
+                                        </Dropdown>
+                                    </div>
                                 </div>
                             </div>
                         </header>

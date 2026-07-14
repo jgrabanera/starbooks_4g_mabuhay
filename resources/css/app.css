@@ -3,56 +3,44 @@
 @tailwind utilities;
 
 @font-face {
-    font-family: "Roboto";
+    font-family: "Google Sans";
     font-style: normal;
-    font-weight: 100 900;
+    font-weight: 400 700;
     font-display: swap;
-    src: url("/fonts/Roboto-VariableFont_wdth,wght.ttf") format("truetype");
+    src: url("/assets/fonts/Google_Sans/GoogleSans-VariableFont_GRAD,opsz,wght.ttf")
+        format("truetype");
 }
 
 @font-face {
-    font-family: "Roboto";
+    font-family: "Google Sans";
     font-style: italic;
-    font-weight: 100 900;
+    font-weight: 400 700;
     font-display: swap;
-    src: url("/fonts/Roboto-Italic-VariableFont_wdth,wght.ttf")
+    src: url("/assets/fonts/Google_Sans/GoogleSans-Italic-VariableFont_GRAD,opsz,wght.ttf")
         format("truetype");
 }
 
-@font-face {
-    font-family: "Nunito";
-    font-style: normal;
-    font-weight: 200 1000;
-    font-display: swap;
-    src: url("/assets/fonts/Nunito/Nunito-VariableFont_wght.ttf")
-        format("truetype");
-}
-
-@font-face {
-    font-family: "Nunito";
-    font-style: italic;
-    font-weight: 200 1000;
-    font-display: swap;
-    src: url("/assets/fonts/Nunito/Nunito-Italic-VariableFont_wght.ttf")
-        format("truetype");
-}
-
-.font-nunito {
-    font-family: "Nunito", sans-serif;
-}
-
-.font-nunito-regular {
-    font-family: "Nunito", sans-serif;
+body {
+    font-family: "Google Sans", sans-serif;
     font-weight: 400;
 }
 
-.font-nunito-semibold {
-    font-family: "Nunito", sans-serif;
+.font-google-sans {
+    font-family: "Google Sans", sans-serif;
+}
+
+.font-google-sans-regular {
+    font-family: "Google Sans", sans-serif;
+    font-weight: 400;
+}
+
+.font-google-sans-semibold {
+    font-family: "Google Sans", sans-serif;
     font-weight: 600;
 }
 
-.font-nunito-bold {
-    font-family: "Nunito", sans-serif;
+.font-google-sans-bold {
+    font-family: "Google Sans", sans-serif;
     font-weight: 700;
 }
 

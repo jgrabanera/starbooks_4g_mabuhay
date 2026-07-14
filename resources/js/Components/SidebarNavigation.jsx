@@ -70,7 +70,7 @@ export default function SidebarNavigation({ user, onNavigate = null }) {
                                         <Icon className="h-5 w-5" />
                                     </span>
                                     <div>
-                                        <p className="text-md font-medium uppercase">
+                                        <p className="text-md font-medium  font-google-sans-semibold">
                                             {item.label}
                                         </p>
                                     </div>
@@ -81,7 +81,7 @@ export default function SidebarNavigation({ user, onNavigate = null }) {
                 </nav>
             </div>
 
-            <div className="border-t border-white/10 px-4 py-5">
+            <div className="border-t border-white/10 px-4 py-5 lg:hidden">
                 <div className="rounded-2xl border border-white/10 bg-white/[0.06] p-4 backdrop-blur-sm">
                     <p className="text-xs font-semibold uppercase tracking-[0.24em] text-blue-200/45">
                         Signed In
