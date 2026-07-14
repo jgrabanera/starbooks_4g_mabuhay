@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Head } from "@inertiajs/react";
-import Dropdown from "@/Components/Dropdown";
 import SidebarNavigation from "@/Components/SidebarNavigation";
+import ApplicationLogo from "@/Components/ApplicationLogo";
 
 export default function AdminLayout({
     user,
@@ -73,28 +73,33 @@ export default function AdminLayout({
                                         </h2>
                                     </div>
 
-                                    <button
-                                        type="button"
-                                        onClick={() => setShowingSidebar(true)}
-                                        className="inline-flex h-11 w-11 items-center justify-center rounded-2xl border border-slate-200 bg-white text-slate-700 shadow-sm transition hover:border-slate-300 hover:text-slate-950 md:hidden"
-                                    >
-                                        <span className="sr-only">
-                                            Open navigation
-                                        </span>
-                                        <svg
-                                            className="h-5 w-5"
-                                            viewBox="0 0 24 24"
-                                            fill="none"
-                                            stroke="currentColor"
-                                            strokeWidth="2"
+                                    <div>
+                                        <ApplicationLogo className="h-12 md:block hidden" />
+                                        <button
+                                            type="button"
+                                            onClick={() =>
+                                                setShowingSidebar(true)
+                                            }
+                                            className="inline-flex h-11 w-11 items-center justify-center rounded-2xl border border-slate-200 bg-white text-slate-700 shadow-sm transition hover:border-slate-300 hover:text-slate-950 md:hidden"
                                         >
-                                            <path
-                                                strokeLinecap="round"
-                                                strokeLinejoin="round"
-                                                d="M4 7h16M4 12h16M4 17h16"
-                                            />
-                                        </svg>
-                                    </button>
+                                            <span className="sr-only">
+                                                Open navigation
+                                            </span>
+                                            <svg
+                                                className="h-5 w-5"
+                                                viewBox="0 0 24 24"
+                                                fill="none"
+                                                stroke="currentColor"
+                                                strokeWidth="2"
+                                            >
+                                                <path
+                                                    strokeLinecap="round"
+                                                    strokeLinejoin="round"
+                                                    d="M4 7h16M4 12h16M4 17h16"
+                                                />
+                                            </svg>
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         </header>

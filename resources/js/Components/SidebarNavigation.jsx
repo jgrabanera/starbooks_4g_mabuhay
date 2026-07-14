@@ -58,7 +58,7 @@ export default function SidebarNavigation({ user, onNavigate = null }) {
                     <HiOutlineCog6Tooth className="h-5 w-5" />
                 </Link>
             </div>
-            <hr className="border-slate-200" />
+            <hr className="border-slate-200 hidden md:block" />
 
             <div className="flex-1 px-4 pb-6">
                 <nav className="mt-4 flex flex-col gap-2">
