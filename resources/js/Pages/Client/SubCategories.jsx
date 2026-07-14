@@ -96,18 +96,14 @@ const SubCategories = ({ category, subCategories }) => {
                 </span>
                 <span>Back</span>
             </button>
-            <div className="subcategory-screen grid max-h-[calc(100dvh-10rem)] w-full self-start place-items-center overflow-y-auto rounded-lg bg-white/50 p-3 text-emerald-950 sm:max-h-[calc(100dvh-12rem)] sm:p-6 lg:p-8">
-                <section className="subcategory-wrap mx-auto w-full max-w-6xl px-1 py-3 sm:px-4 md:px-6">
-                    <h1 className="text-center text-xl font-bold leading-tight sm:text-2xl">
+            <div className="subcategory-screen grid md:min-h-[calc(100dvh-12rem)]  w-full self-start place-items-start overflow-y-auto rounded-2xl bg-white/70 p-3 text-emerald-950 max-h-[calc(100dvh-12rem)] sm:p-6 lg:p-8">
+                <section className="subcategory-wrap mx-auto w-full max-w-7xl px-1 py-3 sm:px-4 md:px-6">
+                    <h1 className="text-center text-xl font-bold leading-tight sm:text-2xl ">
                         {category.title}
                     </h1>
 
-                    <p className="mx-auto mt-2 max-w-3xl text-center text-xs leading-5 text-gray-600 sm:text-sm">
-                        {category.description}
-                    </p>
-
                     <div className="mt-6 flex justify-center">
-                        <div className="flex w-full max-w-5xl items-center gap-3 rounded-2xl border border-white/80 bg-white/50 p-2 shadow-[0_18px_36px_rgba(15,83,72,0.14)] backdrop-blur portrait:flex-col portrait:items-stretch landscape:flex-row">
+                        <div className="flex w-full max-w-7xl  items-center gap-3 rounded-2xl border border-white/80 bg-white/50 p-2 shadow-[0_18px_36px_rgba(15,83,72,0.14)] backdrop-blur portrait:flex-col portrait:items-stretch landscape:flex-row">
                             <div
                                 role="tablist"
                                 aria-label="Category sections"
@@ -180,7 +176,7 @@ const SubCategories = ({ category, subCategories }) => {
                                             setSelectedSubCategory(subCategory)
                                         }
                                         aria-haspopup="dialog"
-                                        className="subcategory-card group flex h-full flex-col rounded-lg border border-gray-200 bg-white p-4 text-left shadow transition duration-300 ease-out hover:-translate-y-1 hover:shadow-lg focus:outline-none focus:ring-4 focus:ring-yellow-300"
+                                        className="subcategory-card group overflow-hidden py-5 flex h-full md:max-h-80 flex-col rounded-lg border border-gray-200 bg-white p-4 text-left shadow transition duration-300 ease-out hover:-translate-y-1 hover:shadow-lg focus:outline-none focus:ring-4 focus:ring-yellow-300"
                                     >
                                         {subCategory.image && (
                                             <img
@@ -192,7 +188,7 @@ const SubCategories = ({ category, subCategories }) => {
                                         <h2 className="text-lg font-semibold">
                                             {subCategory.title}
                                         </h2>
-                                        <p className="text-sm leading-6 text-gray-600">
+                                        <p className="text-sm leading-6 text-gray-600 md:max-h-40">
                                             {subCategory.description}
                                         </p>
                                         <span className="mt-auto inline-flex w-fit rounded-full bg-emerald-50 px-3 py-1 text-xs font-bold uppercase tracking-wide text-emerald-700">
@@ -226,7 +222,7 @@ const SubCategories = ({ category, subCategories }) => {
                             &times;
                         </button>
 
-                        <div className="bg-emerald-900">
+                        <div className="bg-emerald-900 ">
                             {selectedSubCategory.image ? (
                                 <img
                                     src={`/storage/images/thumbnails/${selectedSubCategory.image}`}
@@ -240,7 +236,7 @@ const SubCategories = ({ category, subCategories }) => {
                             )}
                         </div>
 
-                        <div className="flex max-h-[calc(92dvh-11rem)] flex-col overflow-y-auto p-5 sm:max-h-[calc(92dvh-16rem)] sm:p-8 md:max-h-[90vh]">
+                        <div className="flex max-h-60 flex-col overflow-y-auto p-5 sm:max-h-[calc(92dvh-16rem)] sm:p-8 md:max-h-90">
                             <span className="w-fit rounded-full bg-emerald-100 px-3 py-1 text-xs font-bold uppercase tracking-wide text-emerald-800">
                                 {category.title}
                             </span>
@@ -254,6 +250,16 @@ const SubCategories = ({ category, subCategories }) => {
                                 {selectedSubCategory.description ||
                                     "No description available."}
                             </p>
+                            {selectedSubCategory.pdf ? (
+                                <a
+                                    href={`/storage/documents/pdfs/${selectedSubCategory.pdf}`}
+                                    target="_blank"
+                                    rel="noreferrer"
+                                    className="mt-6 inline-flex w-full items-center justify-center rounded-full bg-amber-400 px-6 py-3 text-sm font-bold uppercase tracking-wide text-emerald-950 shadow-[0_12px_24px_rgba(245,158,11,0.28)] transition hover:-translate-y-0.5 hover:bg-amber-300 focus:outline-none focus:ring-4 focus:ring-yellow-300 sm:w-auto"
+                                >
+                                    Open PDF
+                                </a>
+                            ) : null}
                             <div className="mt-6 flex justify-end sm:mt-8">
                                 <button
                                     type="button"

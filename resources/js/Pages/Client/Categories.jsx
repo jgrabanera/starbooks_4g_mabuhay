@@ -1,5 +1,5 @@
 import { Head, Link } from "@inertiajs/react";
-import ClientLayout from "@/Layouts/ClientLayout";
+import HomeLayout from "@/Layouts/HomeLayout";
 import { useEffect, useState } from "react";
 import axios from "axios";
 
@@ -140,4 +140,4 @@ export default function Categories() {
     );
 }
 
-Categories.layout = (page) => <ClientLayout>{page}</ClientLayout>;
+Categories.layout = (page) => <HomeLayout>{page}</HomeLayout>;

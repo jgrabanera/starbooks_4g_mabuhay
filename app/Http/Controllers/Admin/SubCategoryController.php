@@ -30,9 +30,16 @@ class SubCategoryController extends Controller
         $slug = Str::slug($validated['title']);
         $imageName = $request->file('image')->storeAs(
             'images/thumbnails',
-            $this->buildImageName($slug, $request->file('image')->extension()),
+            $this->buildStoredFileName($slug, $request->file('image')->extension()),
             'public',
         );
+        $pdfName = $request->hasFile('pdf')
+            ? $request->file('pdf')->storeAs(
+                'documents/pdfs',
+                $this->buildStoredFileName($slug, $request->file('pdf')->extension()),
+                'public',
+            )
+            : null;
 
         SubCategory::create([
             'category_id' => (int) $validated['category_id'],
@@ -41,6 +48,7 @@ class SubCategoryController extends Controller
             'slug' => $slug,
             'description' => $validated['description'] ?? null,
             'image' => basename($imageName),
+            'pdf' => $pdfName ? basename($pdfName) : null,
             'is_active' => (bool) ($validated['is_active'] ?? false),
         ]);
 
@@ -63,7 +71,7 @@ class SubCategoryController extends Controller
         if ($request->hasFile('image')) {
             $imageName = $request->file('image')->storeAs(
                 'images/thumbnails',
-                $this->buildImageName($slug, $request->file('image')->extension()),
+                $this->buildStoredFileName($slug, $request->file('image')->extension()),
                 'public',
             );
 
@@ -72,6 +80,20 @@ class SubCategoryController extends Controller
             }
 
             $payload['image'] = basename($imageName);
+        }
+
+        if ($request->hasFile('pdf')) {
+            $pdfName = $request->file('pdf')->storeAs(
+                'documents/pdfs',
+                $this->buildStoredFileName($slug, $request->file('pdf')->extension()),
+                'public',
+            );
+
+            if (!empty($content->pdf)) {
+                Storage::disk('public')->delete('documents/pdfs/' . $content->pdf);
+            }
+
+            $payload['pdf'] = basename($pdfName);
         }
 
         $content->update($payload);
@@ -85,12 +107,16 @@ class SubCategoryController extends Controller
             Storage::disk('public')->delete('images/thumbnails/' . $content->image);
         }
 
+        if (!empty($content->pdf)) {
+            Storage::disk('public')->delete('documents/pdfs/' . $content->pdf);
+        }
+
         $content->delete();
 
         return to_route('admin.contents.index');
     }
 
-    private function buildImageName(string $slug, string $extension): string
+    private function buildStoredFileName(string $slug, string $extension): string
     {
         return now()->timestamp . '_' . $slug . '.' . $extension;
     }

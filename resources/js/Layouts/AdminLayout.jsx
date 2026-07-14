@@ -55,7 +55,7 @@ export default function AdminLayout({
                                             Admin Workspace
                                         </p>
                                         <h2 className="mt-2 text-2xl font-semibold tracking-tight text-slate-950">
-                                            {title}
+                                            Dashboard
                                         </h2>
                                         {description ? (
                                             <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-500">
@@ -93,11 +93,11 @@ export default function AdminLayout({
                         </button>
                         <div className="w-full max-w-xs">
                             <div className="flex h-full flex-col">
-                                <div className="flex justify-end bg-slate-950 px-4 pt-4">
+                                <div className="flex justify-end bg-gradient-to-b from-sky-950 via-blue-900 to-indigo-950 px-4 pt-4">
                                     <button
                                         type="button"
                                         onClick={() => setShowingSidebar(false)}
-                                        className="inline-flex h-10 w-10 items-center justify-center rounded-2xl border border-white/10 text-slate-300 transition hover:bg-white/5 hover:text-white"
+                                        className="inline-flex h-10 w-10 items-center justify-center rounded-2xl border border-white/10 text-blue-100 transition hover:bg-white/10 hover:text-white"
                                     >
                                         <span className="sr-only">
                                             Close navigation

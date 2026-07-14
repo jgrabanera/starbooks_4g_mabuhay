@@ -37,6 +37,7 @@ class AdminContentTabAssignmentTest extends TestCase
             'description' => 'Ordinance content',
             'is_active' => true,
             'image' => UploadedFile::fake()->image('ordinance.png'),
+            'pdf' => UploadedFile::fake()->create('ordinance.pdf', 120, 'application/pdf'),
         ]);
 
         $response->assertRedirect(route('admin.contents.index'));
@@ -46,5 +47,7 @@ class AdminContentTabAssignmentTest extends TestCase
         $this->assertSame($category->id, $content->category_id);
         $this->assertSame('ordinance-2', $content->tab_id);
         $this->assertSame('local-tourism-ordinance', $content->slug);
+        $this->assertNotEmpty($content->pdf);
+        Storage::disk('public')->assertExists('documents/pdfs/' . $content->pdf);
     }
 }

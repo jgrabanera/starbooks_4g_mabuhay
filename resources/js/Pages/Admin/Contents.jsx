@@ -14,6 +14,7 @@ const emptyContent = {
     tab_id: "",
     title: "",
     image: null,
+    pdf: null,
     description: "",
     is_active: true,
 };
@@ -119,6 +120,7 @@ export default function Contents({ categories, contents: contentItems = [] }) {
             tab_id: content.tab_id ?? "",
             title: content.title ?? "",
             image: null,
+            pdf: null,
             description: content.description ?? "",
             is_active: Boolean(content.is_active),
         });
@@ -240,6 +242,9 @@ export default function Contents({ categories, contents: contentItems = [] }) {
                                         Image
                                     </th>
                                     <th className="px-6 py-3 text-left text-xs font-bold uppercase tracking-wider text-gray-500">
+                                        PDF
+                                    </th>
+                                    <th className="px-6 py-3 text-left text-xs font-bold uppercase tracking-wider text-gray-500">
                                         Status
                                     </th>
                                     <th className="px-6 py-3 text-right text-xs font-bold uppercase tracking-wider text-gray-500">
@@ -267,6 +272,9 @@ export default function Contents({ categories, contents: contentItems = [] }) {
                                             </td>
                                             <td className="max-w-[12rem] truncate px-6 py-4 text-sm text-gray-600">
                                                 {content.image || "No image"}
+                                            </td>
+                                            <td className="max-w-[12rem] truncate px-6 py-4 text-sm text-gray-600">
+                                                {content.pdf || "No PDF"}
                                             </td>
                                             <td className="whitespace-nowrap px-6 py-4 text-sm">
                                                 <span
@@ -312,7 +320,7 @@ export default function Contents({ categories, contents: contentItems = [] }) {
                                 ) : (
                                     <tr>
                                         <td
-                                            colSpan="6"
+                                            colSpan="7"
                                             className="px-6 py-8 text-center text-sm text-gray-500"
                                         >
                                             No contents found.
@@ -345,6 +353,9 @@ export default function Contents({ categories, contents: contentItems = [] }) {
                                                         tab.id ===
                                                         content.tab_id,
                                                 )?.label ?? content.tab_id}
+                                            </p>
+                                            <p className="mt-1 text-xs text-gray-500">
+                                                PDF: {content.pdf || "No PDF"}
                                             </p>
                                         </div>
                                         <span className="rounded-full bg-gray-100 px-3 py-1 text-xs font-semibold text-gray-700">
@@ -516,6 +527,37 @@ export default function Contents({ categories, contents: contentItems = [] }) {
                             ) : null}
                             <InputError
                                 message={errors.image}
+                                className="mt-2"
+                            />
+                        </div>
+
+                        <div>
+                            <InputLabel htmlFor="pdf" value="PDF File" />
+                            <input
+                                id="pdf"
+                                type="file"
+                                accept=".pdf,application/pdf"
+                                onChange={(event) =>
+                                    setData(
+                                        "pdf",
+                                        event.target.files?.[0] ?? null,
+                                    )
+                                }
+                                className="mt-1 block w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm file:mr-4 file:rounded-md file:border-0 file:bg-emerald-50 file:px-3 file:py-2 file:font-semibold file:text-emerald-700 hover:file:bg-emerald-100"
+                                disabled={processing}
+                            />
+                            {editingContent?.pdf ? (
+                                <p className="mt-2 text-xs text-gray-500">
+                                    Current PDF: {editingContent.pdf}
+                                </p>
+                            ) : (
+                                <p className="mt-2 text-xs text-gray-500">
+                                    Optional. Upload a PDF attachment for this
+                                    content.
+                                </p>
+                            )}
+                            <InputError
+                                message={errors.pdf}
                                 className="mt-2"
                             />
                         </div>

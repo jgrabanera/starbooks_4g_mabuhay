@@ -14,6 +14,7 @@ class SubCategoryRequest extends FormRequest
     public function rules(): array
     {
         $imageRules = ['nullable', 'image', 'max:5048', 'mimes:png,jpg,jpeg,webp'];
+        $pdfRules = ['nullable', 'file', 'mimes:pdf', 'max:10240'];
 
         if ($this->routeIs('admin.contents.store')) {
             $imageRules[0] = 'required';
@@ -25,6 +26,7 @@ class SubCategoryRequest extends FormRequest
             'title' => ['required', 'string', 'max:255'],
             'description' => ['nullable', 'string'],
             'image' => $imageRules,
+            'pdf' => $pdfRules,
             'is_active' => ['boolean'],
         ];
     }
@@ -40,6 +42,8 @@ class SubCategoryRequest extends FormRequest
             'image.image' => 'The uploaded file must be an image.',
             'image.max' => 'The image size must be less than 5MB.',
             'image.mimes' => 'The image must be a JPG, JPEG, PNG, or WEBP file.',
+            'pdf.mimes' => 'The uploaded file must be a PDF.',
+            'pdf.max' => 'The PDF size must be less than 10MB.',
         ];
     }
 }

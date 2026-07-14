@@ -17,6 +17,7 @@ class SubCategory extends Model
         'slug',
         'description',
         'image',
+        'pdf',
         'is_active',
         'category_id',
         'tab_id',
