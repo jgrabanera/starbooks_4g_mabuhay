@@ -30,35 +30,11 @@ const navigationItems = [
 ];
 
 export default function SidebarNavigation({ user, onNavigate = null }) {
-    const userInitials = (user?.name ?? "A")
-        .split(" ")
-        .filter(Boolean)
-        .slice(0, 2)
-        .map((part) => part[0]?.toUpperCase())
-        .join("");
-
     return (
         <div className="flex h-full flex-col border-r border-slate-200 bg-white text-slate-900">
-            <div className="md:flex items-center justify-between gap-4 hidden p-5">
-                <div className="flex items-center gap-3 ">
-                    <div className="flex h-14 w-14 items-center justify-center rounded-full bg-gradient-to-br from-amber-100 via-orange-100 to-rose-100 text-sm font-bold text-slate-700">
-                        {userInitials}
-                    </div>
-                    <div>
-                        <p className="text-sm text-slate-500">Welcome back,</p>
-                        <p className="text-md font-google-sans-semibold leading-tight text-slate-900">
-                            {user.name}
-                        </p>
-                    </div>
-                </div>
-                <Link
-                    href={route("profile.edit")}
-                    className="inline-flex h-11 w-11 items-center justify-center rounded-2xl border border-slate-200 bg-white text-slate-500 transition hover:border-slate-300 hover:text-slate-900"
-                >
-                    <HiOutlineCog6Tooth className="h-5 w-5" />
-                </Link>
+            <div className="flex items-center justify-center gap-3 border-b border-slate-200 px-4 py-4">
+                <ApplicationLogo className="h-14 md:flex hidden" />
             </div>
-            <hr className="border-slate-200 hidden md:block" />
 
             <div className="flex-1 px-4 pb-6">
                 <nav className="mt-4 flex flex-col gap-2">

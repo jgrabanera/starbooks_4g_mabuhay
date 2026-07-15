@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { Head } from "@inertiajs/react";
+import { Head, Link } from "@inertiajs/react";
 import SidebarNavigation from "@/Components/SidebarNavigation";
-import ApplicationLogo from "@/Components/ApplicationLogo";
+import { HiOutlineCog6Tooth } from "react-icons/hi2";
 
 export default function AdminLayout({
     user,
@@ -21,6 +21,13 @@ export default function AdminLayout({
         title ??
         "Dashboard";
 
+    const userInitials = (user?.name ?? "A")
+        .split(" ")
+        .filter(Boolean)
+        .slice(0, 2)
+        .map((part) => part[0]?.toUpperCase())
+        .join("");
+
     return (
         <>
             {pageTitle ? <Head title={pageTitle} /> : null}
@@ -37,7 +44,7 @@ export default function AdminLayout({
                         <header className="border-b border-slate-200 bg-white/90 px-4 py-4 backdrop-blur sm:px-6 lg:px-8">
                             <div className="flex items-center justify-between gap-4">
                                 <div className="flex flex-row items-center justify-between gap-3 w-full">
-                                    <div className="flex flex-col items-start justify-center py-1">
+                                    <div className="flex flex-col items-start justify-center">
                                         <nav
                                             aria-label="Breadcrumb"
                                             className="flex flex-wrap items-center gap-2 text-xs font-google-sans-semibold uppercase tracking-[0.22em] text-slate-500"
@@ -74,7 +81,27 @@ export default function AdminLayout({
                                     </div>
 
                                     <div>
-                                        <ApplicationLogo className="h-12 md:block hidden" />
+                                        <div className="md:flex items-center justify-between gap-4 hidden">
+                                            <div className="flex items-center gap-3 ">
+                                                <div className="flex h-14 w-14 items-center justify-center rounded-full bg-gradient-to-br from-amber-100 via-orange-100 to-rose-100 text-sm font-bold text-slate-700">
+                                                    {userInitials}
+                                                </div>
+                                                <div>
+                                                    <p className="text-sm text-slate-500">
+                                                        Welcome back,
+                                                    </p>
+                                                    <p className="text-md font-google-sans-semibold leading-tight text-slate-900">
+                                                        {user.name}
+                                                    </p>
+                                                </div>
+                                            </div>
+                                            <Link
+                                                href={route("profile.edit")}
+                                                className="inline-flex h-11 w-11 items-center justify-center rounded-2xl border border-slate-200 bg-white text-slate-500 transition hover:border-slate-300 hover:text-slate-900"
+                                            >
+                                                <HiOutlineCog6Tooth className="h-5 w-5" />
+                                            </Link>
+                                        </div>
                                         <button
                                             type="button"
                                             onClick={() =>
