@@ -6,7 +6,7 @@ import { HiOutlineCog6Tooth } from "react-icons/hi2";
 export default function AdminLayout({
     user,
     title,
-    description,
+
     children,
     pageTitle,
     breadcrumbs = [],
@@ -16,10 +16,6 @@ export default function AdminLayout({
         breadcrumbs.length > 0
             ? breadcrumbs
             : [{ label: "Admin Workspace" }, { label: title ?? "Dashboard" }];
-    const currentPageTitle =
-        breadcrumbItems[breadcrumbItems.length - 1]?.label ??
-        title ??
-        "Dashboard";
 
     const userInitials = (user?.name ?? "A")
         .split(" ")
@@ -47,7 +43,7 @@ export default function AdminLayout({
                                     <div className="flex flex-col items-start justify-center">
                                         <nav
                                             aria-label="Breadcrumb"
-                                            className="flex flex-wrap items-center gap-2 text-xs font-google-sans-semibold uppercase tracking-[0.22em] text-slate-500"
+                                            className="flex flex-wrap items-center gap-2 text-sm font-google-sans-semibold uppercase tracking-[0.22em] text-slate-500"
                                         >
                                             {breadcrumbItems.map(
                                                 (breadcrumb, index) => (
@@ -75,22 +71,19 @@ export default function AdminLayout({
                                                 ),
                                             )}
                                         </nav>
-                                        <h2 className="mt-2 text-2xl font-google-sans-semibold tracking-normal text-slate-950">
-                                            {currentPageTitle}
-                                        </h2>
                                     </div>
 
                                     <div>
                                         <div className="md:flex items-center justify-between gap-4 hidden">
                                             <div className="flex items-center gap-3 ">
-                                                <div className="flex h-14 w-14 items-center justify-center rounded-full bg-gradient-to-br from-amber-100 via-orange-100 to-rose-100 text-sm font-bold text-slate-700">
+                                                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-amber-100 via-orange-100 to-rose-100 text-sm font-bold text-slate-700">
                                                     {userInitials}
                                                 </div>
                                                 <div>
                                                     <p className="text-sm text-slate-500">
                                                         Welcome back,
                                                     </p>
-                                                    <p className="text-md font-google-sans-semibold leading-tight text-slate-900">
+                                                    <p className="text-sm font-google-sans-semibold leading-tight text-slate-900">
                                                         {user.name}
                                                     </p>
                                                 </div>

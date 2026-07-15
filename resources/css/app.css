@@ -3,45 +3,104 @@
 @tailwind utilities;
 
 @font-face {
-    font-family: "Google Sans";
+    font-family: "Oswald";
+    src: url("/assets/fonts/Oswald/Oswald-Regular.ttf") format("truetype");
     font-style: normal;
-    font-weight: 400 700;
+    font-weight: 400;
     font-display: swap;
-    src: url("/assets/fonts/Google_Sans/GoogleSans-VariableFont_GRAD,opsz,wght.ttf")
-        format("truetype");
 }
 
 @font-face {
-    font-family: "Google Sans";
-    font-style: italic;
-    font-weight: 400 700;
+    font-family: "Oswald";
+    src: url("/assets/fonts/Oswald/Oswald-Medium.ttf") format("truetype");
+    font-style: normal;
+    font-weight: 500;
     font-display: swap;
-    src: url("/assets/fonts/Google_Sans/GoogleSans-Italic-VariableFont_GRAD,opsz,wght.ttf")
-        format("truetype");
 }
 
-body {
-    font-family: "Google Sans", sans-serif;
-    font-weight: 400;
-}
-
-.font-google-sans {
-    font-family: "Google Sans", sans-serif;
-}
-
-.font-google-sans-regular {
-    font-family: "Google Sans", sans-serif;
-    font-weight: 400;
-}
-
-.font-google-sans-semibold {
-    font-family: "Google Sans", sans-serif;
+@font-face {
+    font-family: "Oswald";
+    src: url("/assets/fonts/Oswald/Oswald-SemiBold.ttf") format("truetype");
+    font-style: normal;
     font-weight: 600;
+    font-display: swap;
 }
 
-.font-google-sans-bold {
-    font-family: "Google Sans", sans-serif;
+@font-face {
+    font-family: "Oswald";
+    src: url("/assets/fonts/Oswald/Oswald-Bold.ttf") format("truetype");
+    font-style: normal;
     font-weight: 700;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: "Poppins";
+    src: url("/assets/fonts/Poppins/Poppins-Regular.ttf") format("truetype");
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: "Poppins";
+    src: url("/assets/fonts/Poppins/Poppins-Medium.ttf") format("truetype");
+    font-style: normal;
+    font-weight: 500;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: "Poppins";
+    src: url("/assets/fonts/Poppins/Poppins-SemiBold.ttf") format("truetype");
+    font-style: normal;
+    font-weight: 600;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: "Poppins";
+    src: url("/assets/fonts/Poppins/Poppins-Bold.ttf") format("truetype");
+    font-style: normal;
+    font-weight: 700;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: "Poppins";
+    src: url("/assets/fonts/Poppins/Poppins-ExtraBold.ttf") format("truetype");
+    font-style: normal;
+    font-weight: 800;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: "Poppins";
+    src: url("/assets/fonts/Poppins/Poppins-Black.ttf") format("truetype");
+    font-style: normal;
+    font-weight: 900;
+    font-display: swap;
+}
+
+@layer base {
+    body {
+        font-family: "Poppins", sans-serif;
+    }
+}
+
+@layer utilities {
+    .font-oswald-semibold {
+        font-family: "Oswald", sans-serif;
+        font-weight: 600;
+    }
+
+    .font-poppins {
+        font-family: "Poppins", sans-serif;
+    }
+
+    .font-oswald {
+        font-family: "Oswald", sans-serif;
+    }
 }
 
 .client-main {
