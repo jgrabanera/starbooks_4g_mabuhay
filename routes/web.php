@@ -21,6 +21,7 @@ Route::get('/', function () {
 
 Route::get('/categories', [App\Http\Controllers\Client\CategoryController::class, 'index'])->name('client.categories');  // Page
 Route::get('/get-categories', [App\Http\Controllers\Client\CategoryController::class, 'getData'])->name('client.get-categories'); // API Data
+Route::get('/categories/sub/{slug}', [App\Http\Controllers\Client\CategoryController::class, 'show'])->name('client.category.show');
 
 Route::get('/categories/sub-categories/{slug}', [App\Http\Controllers\Client\SubCategoryController::class, 'index'])->name('client.sub-categories');
 

@@ -61,7 +61,7 @@ export default function AdminLayout({
                                                                 index ===
                                                                 breadcrumbItems.length -
                                                                     1
-                                                                    ? "text-blue-600"
+                                                                    ? "text-blue-600 font-bold"
                                                                     : ""
                                                             }
                                                         >
@@ -80,9 +80,6 @@ export default function AdminLayout({
                                                     {userInitials}
                                                 </div>
                                                 <div>
-                                                    <p className="text-sm text-slate-500">
-                                                        Welcome back,
-                                                    </p>
                                                     <p className="text-sm font-google-sans-semibold leading-tight text-slate-900">
                                                         {user.name}
                                                     </p>

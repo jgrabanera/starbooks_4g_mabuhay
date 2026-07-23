@@ -71,7 +71,9 @@ export default function Categories() {
                             return (
                                 <Link
                                     key={category.id}
-                                    href={`/categories/sub-categories/${category.slug}`}
+                                    href={route("client.category.show", {
+                                        slug: category.slug,
+                                    })}
                                 >
                                     <div
                                         key={

@@ -32,6 +32,7 @@ class CategoryRequest extends FormRequest
                 Rule::unique('categories', 'title')->ignore($categoryId),
             ],
             'image' => $imageRules,
+            'display_order' => ['nullable', 'integer', 'min:1'],
             'description' => ['nullable', 'string'],
             'is_active' => ['boolean'],
         ];
@@ -50,6 +51,8 @@ class CategoryRequest extends FormRequest
             'image.image' => 'The uploaded file must be an image.',
             'image.max' => 'The image size must be less than 5MB.',
             'image.mimes' => 'The image must be a JPG, JPEG, PNG, or WEBP file.',
+            'display_order.integer' => 'The display order must be a whole number.',
+            'display_order.min' => 'The display order must be at least 1.',
         ];
     }
 }

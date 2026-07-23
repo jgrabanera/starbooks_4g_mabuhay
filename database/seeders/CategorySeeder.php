@@ -20,6 +20,7 @@ class CategorySeeder extends Seeder
                 'slug' => 'festives-tourism',
                 'description' => 'Festives & Tourism description',
                 'image' => '1783931169_tourism.jpg',
+                'display_order' => 1,
                 'tabs' => json_encode([
                     ['id' => 'events-1', 'label' => 'Events'],
                     ['id' => 'festivities-2', 'label' => 'Festivities'],
@@ -32,6 +33,7 @@ class CategorySeeder extends Seeder
                 'slug' => 'resources',
                 'description' => 'Resources description',
                 'image' => '1783931258_local-governance.png',
+                'display_order' => 2,
                 'tabs' => json_encode([
                     ['id' => 'memorandum-1', 'label' => 'Memorandum'],
                     ['id' => 'ordinance-2', 'label' => 'Ordinance'],
@@ -45,6 +47,7 @@ class CategorySeeder extends Seeder
                 'slug' => 'about',
                 'description' => 'About description',
                 'image' => '1783932516_about.png',
+                'display_order' => 3,
                 'tabs' => json_encode([
                     ['id' => 'about-lgu-mabuhay-1', 'label' => 'About LGU Mabuhay'],
                     ['id' => 'organizational-structure-2', 'label' => 'Organizational Structure'],
@@ -57,6 +60,7 @@ class CategorySeeder extends Seeder
                 'slug' => 'dost-services',
                 'description' => null,
                 'image' => '1783933801_dost-services.jpg',
+                'display_order' => 4,
                 'tabs' => json_encode([
                     ['id' => 'dost-ix-1', 'label' => 'DOST IX'],
                     ['id' => 'programs-services-2', 'label' => 'Programs & Services'],
@@ -69,6 +73,7 @@ class CategorySeeder extends Seeder
                 'slug' => 'projects',
                 'description' => null,
                 'image' => '1783933858_projects.jpg',
+                'display_order' => 5,
                 'tabs' => json_encode([
                     ['id' => 'completed-1', 'label' => 'Completed'],
                     ['id' => 'on-going-2', 'label' => 'On-Going'],

@@ -36,6 +36,7 @@ class CategoryController extends Controller
             'slug' => $slug,
             'description' => $validated['description'] ?? null,
             'image' => basename($imageName),
+            'display_order' => $validated['display_order'] ?? $this->nextDisplayOrder(),
             'tabs' => $this->defaultTabs(),
             'is_active' => (bool) ($validated['is_active'] ?? false),
         ]);
@@ -51,6 +52,7 @@ class CategoryController extends Controller
             'title' => trim($validated['title']),
             'slug' => $slug,
             'description' => $validated['description'] ?? null,
+            'display_order' => $validated['display_order'] ?? $category->display_order,
             'is_active' => (bool) ($validated['is_active'] ?? false),
         ];
 
@@ -106,8 +108,14 @@ class CategoryController extends Controller
     private function categories()
     {
         return Category::query()
+            ->orderBy('display_order')
             ->orderByDesc('id')
-            ->get(['id', 'title', 'slug', 'description', 'image', 'tabs', 'is_active']);
+            ->get(['id', 'title', 'slug', 'description', 'image', 'display_order', 'tabs', 'is_active']);
+    }
+
+    private function nextDisplayOrder(): int
+    {
+        return (int) Category::query()->max('display_order') + 1;
     }
 
     /**
