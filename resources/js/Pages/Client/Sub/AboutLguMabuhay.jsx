@@ -14,7 +14,7 @@ const AboutLguMabuhay = () => {
         <>
             <Head title="About LGU Mabuhay" />
             <div className="w-full text-emerald-950">
-                <section className="mx-auto flex w-full max-w-6xl flex-col gap-6 px-2 py-2 pb-28 sm:px-4 sm:pb-32">
+                <section className="mx-auto flex w-full max-w-6xl flex-col gap-6 px-2 py-2 pb-36 sm:px-4 sm:pb-40 [@media(orientation:landscape)]:pl-28 [@media(orientation:landscape)]:pb-8">
                     {activeTab === "about" ? (
                         <>
                             <div className="rounded-[1.75rem] border border-white/75 bg-white/60 p-6 shadow-[0_20px_50px_rgba(15,23,42,0.12)] backdrop-blur-md sm:p-8">
@@ -221,11 +221,11 @@ const AboutLguMabuhay = () => {
                         </div>
                     ) : null}
 
-                    <div className="sticky bottom-4 z-20 rounded-[1.75rem] border border-white/75 bg-white/55 p-3 shadow-[0_20px_50px_rgba(15,23,42,0.1)] backdrop-blur-md sm:bottom-6 sm:p-4">
+                    <div className="fixed bottom-4 left-1/2 z-30 w-[calc(100%-1rem)] max-w-6xl -translate-x-1/2 rounded-[1.75rem] border border-white/75 bg-white/70 p-3 shadow-[0_20px_50px_rgba(15,23,42,0.16)] backdrop-blur-md sm:bottom-6 sm:w-[calc(100%-2rem)] sm:p-4 [@media(orientation:landscape)]:left-4 [@media(orientation:landscape)]:top-1/2 [@media(orientation:landscape)]:bottom-auto [@media(orientation:landscape)]:w-64 [@media(orientation:landscape)]:max-w-none [@media(orientation:landscape)]:translate-x-0 [@media(orientation:landscape)]:-translate-y-1/2">
                         <div
                             role="tablist"
                             aria-label="About LGU Mabuhay sections"
-                            className="grid gap-3 md:grid-cols-3"
+                            className="grid gap-3 md:grid-cols-3 [@media(orientation:landscape)]:grid-cols-1"
                         >
                             {tabs.map((tab) => {
                                 const isActive = activeTab === tab.id;
@@ -237,7 +237,7 @@ const AboutLguMabuhay = () => {
                                         role="tab"
                                         aria-selected={isActive}
                                         onClick={() => setActiveTab(tab.id)}
-                                        className={`flex items-center gap-3 rounded-2xl px-4 py-3 text-left transition focus:outline-none focus:ring-4 focus:ring-yellow-200 ${
+                                        className={`flex items-center gap-3 rounded-2xl px-4 py-3 text-left transition focus:outline-none focus:ring-4 focus:ring-yellow-200 [@media(orientation:landscape)]:justify-start ${
                                             isActive
                                                 ? "bg-emerald-700 text-white shadow-[0_16px_32px_rgba(6,78,59,0.24)]"
                                                 : "border border-emerald-100 bg-white text-emerald-900 hover:-translate-y-0.5 hover:bg-emerald-50"
