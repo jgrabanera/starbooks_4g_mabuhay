@@ -1,5 +1,6 @@
 import { Head } from "@inertiajs/react";
 import HomeLayout from "@/Layouts/HomeLayout";
+import ClientLayout from "@/Layouts/ClientLayout";
 
 const DostServices = () => {
     return (
@@ -12,4 +13,4 @@ const DostServices = () => {
 
 export default DostServices;
 
-DostServices.layout = (page) => <HomeLayout>{page}</HomeLayout>;
+DostServices.layout = (page) => <ClientLayout>{page}</ClientLayout>;

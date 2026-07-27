@@ -1,5 +1,6 @@
 import { Head } from "@inertiajs/react";
 import HomeLayout from "@/Layouts/HomeLayout";
+import ClientLayout from "@/Layouts/ClientLayout";
 
 const SocialServices = () => {
     return (
@@ -12,4 +13,4 @@ const SocialServices = () => {
 
 export default SocialServices;
 
-SocialServices.layout = (page) => <HomeLayout>{page}</HomeLayout>;
+SocialServices.layout = (page) => <ClientLayout>{page}</ClientLayout>;

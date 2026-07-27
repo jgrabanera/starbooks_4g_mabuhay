@@ -1,5 +1,6 @@
 import { Head } from "@inertiajs/react";
 import HomeLayout from "@/Layouts/HomeLayout";
+import ClientLayout from "@/Layouts/ClientLayout";
 
 const Tourism = () => {
     return (
@@ -12,4 +13,4 @@ const Tourism = () => {
 
 export default Tourism;
 
-Tourism.layout = (page) => <HomeLayout>{page}</HomeLayout>;
+Tourism.layout = (page) => <ClientLayout>{page}</ClientLayout>;

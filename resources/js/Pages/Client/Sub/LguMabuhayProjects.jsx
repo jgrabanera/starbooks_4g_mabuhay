@@ -1,5 +1,6 @@
 import { Head } from "@inertiajs/react";
 import HomeLayout from "@/Layouts/HomeLayout";
+import ClientLayout from "@/Layouts/ClientLayout";
 
 const LguMabuhayProjects = () => {
     return (
@@ -12,4 +13,4 @@ const LguMabuhayProjects = () => {
 
 export default LguMabuhayProjects;
 
-LguMabuhayProjects.layout = (page) => <HomeLayout>{page}</HomeLayout>;
+LguMabuhayProjects.layout = (page) => <ClientLayout>{page}</ClientLayout>;
