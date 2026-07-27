@@ -32,7 +32,7 @@ const AboutLguMabuhay = () => {
         <>
             <Head title="About LGU Mabuhay" />
             <div className="w-full text-emerald-950">
-                <section className="mx-auto flex w-full max-w-6xl flex-col gap-6 px-2 py-2 pb-36 sm:px-4 sm:pb-40 [@media(orientation:landscape)]:pl-28 [@media(orientation:landscape)]:pb-8">
+                <section className="mx-auto  flex w-full max-w-6xl flex-col gap-6 px-2 py-2 pb-36 sm:px-4 sm:pb-40 [@media(orientation:landscape)]:pl-28 [@media(orientation:landscape)]:pb-8">
                     {activeTab === "about" ? <About /> : null}
 
                     {activeTab === "organization" ? <Organization /> : null}

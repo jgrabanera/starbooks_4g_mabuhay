@@ -78,7 +78,10 @@ export default function ClientLayout({ children }) {
                 </div>
 
                 <div className="relative flex h-full w-full min-h-[92dvh] overflow-hidden [@media(orientation:landscape)]:min-h-[78dvh]">
-                    <main className="client-main relative z-10 w-full  ">
+                    <main
+                        style={{ scrollbarWidth: "none" }}
+                        className="client-main relative z-10 w-full  [@media(orientation:landscape)]: overflow-y-auto"
+                    >
                         {children}
                     </main>
                 </div>
