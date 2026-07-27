@@ -40,10 +40,24 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/dashboard', fn() => redirect('/admin'))->name('dashboard');
 
-    Route::get('/admin/categories', [App\Http\Controllers\Admin\CategoryController::class, 'index'])
+
+    Route::get('/cms/categories', [App\Http\Controllers\Admin\CategoryController::class, 'index'])
         ->name('admin.categories.index');
-    Route::get('/admin/contents', [App\Http\Controllers\Admin\SubCategoryController::class, 'index'])
-        ->name('admin.contents.index');
+
+    Route::get('/cms/about', [App\Http\Controllers\Admin\AboutAdminController::class, 'index'])
+        ->name('admin.about.index');
+    Route::get('/cms/dost-services', [App\Http\Controllers\Admin\DostServicesAdminController::class, 'index'])
+        ->name('admin.dost-services.index');
+    Route::get('/cms/projects', [App\Http\Controllers\Admin\ProjectsAdminController::class, 'index'])
+        ->name('admin.projects.index');
+    Route::get('/cms/social-services', [App\Http\Controllers\Admin\SocialServicesAdminController::class, 'index'])
+        ->name('admin.social-services.index');
+    Route::get('/cms/tourism', [App\Http\Controllers\Admin\TourismAdminController::class, 'index'])
+        ->name('admin.tourism.index');
+    Route::get('/cms/resources', [App\Http\Controllers\Admin\ResourcesAdminController::class, 'index'])
+        ->name('admin.resources.index');
+
+
 
     Route::post('/admin/categories', [App\Http\Controllers\Admin\CategoryController::class, 'store'])
         ->name('admin.categories.store');
@@ -53,6 +67,9 @@ Route::middleware(['auth'])->group(function () {
         ->name('admin.categories.tabs.update');
     Route::delete('/admin/categories/{category}', [App\Http\Controllers\Admin\CategoryController::class, 'destroy'])
         ->name('admin.categories.destroy');
+
+    Route::get('/admin/about/create', [App\Http\Controllers\Admin\SubCategoryController::class, 'create'])
+        ->name('admin.about.create');
 
     Route::post('/admin/contents', [App\Http\Controllers\Admin\SubCategoryController::class, 'store'])
         ->name('admin.contents.store');

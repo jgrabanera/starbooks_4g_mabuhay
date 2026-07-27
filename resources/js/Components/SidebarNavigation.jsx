@@ -6,6 +6,11 @@ import {
     HiOutlineRectangleStack,
     HiOutlineSquares2X2,
     HiOutlineCog6Tooth,
+    HiOutlineBeaker,
+    HiOutlineFolderOpen,
+    HiOutlineGlobeAsiaAustralia,
+    HiOutlineInformationCircle,
+    HiOutlineUsers,
 } from "react-icons/hi2";
 
 const navigationItems = [
@@ -22,11 +27,48 @@ const navigationItems = [
         icon: HiOutlineRectangleStack,
     },
     {
-        label: "Contents",
-        href: "admin.contents.index",
-        isActive: () => route().current("admin.contents.*"),
+        label: "About",
+        href: "admin.about.index",
+        isActive: () => route().current("admin.about.*"),
+        icon: HiOutlineInformationCircle,
+    },
+    {
+        label: "DOST Services",
+        href: "admin.dost-services.index",
+        isActive: () => route().current("admin.dost-services.*"),
+        icon: HiOutlineBeaker,
+    },
+    {
+        label: "Projects",
+        href: "admin.projects.index",
+        isActive: () => route().current("admin.projects.*"),
+        icon: HiOutlineFolderOpen,
+    },
+    {
+        label: "Social Services",
+        href: "admin.social-services.index",
+        isActive: () => route().current("admin.social-services.*"),
+        icon: HiOutlineUsers,
+    },
+    {
+        label: "Tourism",
+        href: "admin.tourism.index",
+        isActive: () => route().current("admin.tourism.*"),
+        icon: HiOutlineGlobeAsiaAustralia,
+    },
+    {
+        label: "Resources",
+        href: "admin.resources.index",
+        isActive: () => route().current("admin.resources.*"),
         icon: HiOutlineDocumentText,
     },
+
+    // {
+    //     label: "Contents",
+    //     href: "admin.contents.index",
+    //     isActive: () => route().current("admin.contents.*"),
+    //     icon: HiOutlineDocumentText,
+    // },
 ];
 
 export default function SidebarNavigation({ user, onNavigate = null }) {

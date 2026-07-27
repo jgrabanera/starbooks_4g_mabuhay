@@ -1,5 +1,5 @@
 import ApplicationLogo from "@/Components/ApplicationLogo";
-import backgroundImage from "../../../public/assets/images/lgu_mabuhay.png";
+import backgroundImage from "../../../public/assets/images/lgu_mabuhay.jpg";
 
 export default function ClientLayout({ children }) {
     return (

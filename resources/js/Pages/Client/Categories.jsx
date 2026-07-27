@@ -86,7 +86,7 @@ export default function Categories() {
                                             "--category-delay": `${index * 60}ms`,
                                         }}
                                     >
-                                        <div className="category-card-panel absolute inset-x-0 bottom-0 overflow-hidden rounded-2xl border-2 border-white/85 bg-gradient-to-br from-yellow-700/55 via-lime-700/50 to-yellow-600/60 shadow-[0_18px_38px_rgba(75,58,8,0.3)] backdrop-blur-[2px] transition duration-300 group-hover:shadow-[0_24px_48px_rgba(75,58,8,0.38)]">
+                                        <div className="category-card-panel absolute inset-x-0 bottom-0 overflow-hidden rounded-2xl border-2 border-white/85 bg-gradient-to-br from-yellow-700/55 via-lime-700/50 to-yellow-600/60 shadow-[0_3px_3px_rgba(75,58,8,0.4)] backdrop-blur-[2px] transition duration-300 group-hover:shadow-[0_4px_4px_rgba(75,58,8,0.5)]">
                                             {imageUrl && (
                                                 <img
                                                     src={imageUrl}
