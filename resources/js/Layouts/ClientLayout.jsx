@@ -29,7 +29,7 @@ export default function ClientLayout({ children }) {
             style={{ backgroundImage: `url(${backgroundImage})` }}
             className="client-page min-h-screen overflow-x-hidden bg-cover bg-center bg-no-repeat"
         >
-            <div className="client-shell flex min-h-screen flex-col items-center justify-between bg-gradient-to-br from-emerald-300/80 via-yellow-200/80 to-orange-400/80 px-4 py-4 sm:px-6 sm:py-5 lg:px-8">
+            <div className="client-shell flex min-h-screen flex-col items-center justify-between bg-gradient-to-br from-emerald-300/80 via-yellow-200/80 to-orange-400/80 px-4 py-4 sm:px-6 sm:py-5 ">
                 {/* Header */}
                 <div className="flex w-full items-center gap-3">
                     <div className="flex min-w-0 flex-1 justify-start">
@@ -78,7 +78,7 @@ export default function ClientLayout({ children }) {
                 </div>
 
                 <div className="relative flex h-full w-full min-h-[92dvh] overflow-hidden [@media(orientation:landscape)]:min-h-[78dvh]">
-                    <main className="client-main relative z-10 w-full px-3  ">
+                    <main className="client-main relative z-10 w-full  ">
                         {children}
                     </main>
                 </div>
