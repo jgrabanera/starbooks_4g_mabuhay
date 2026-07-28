@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { IoSearchOutline } from "react-icons/io5";
+import { IoCalendarOutline, IoSearchOutline } from "react-icons/io5";
 
 const dostServices = [
     {
@@ -115,7 +115,7 @@ const dostServices = [
 const DostIX = () => {
     const [searchTerm, setSearchTerm] = useState("");
     const [currentPage, setCurrentPage] = useState(1);
-    const itemsPerPage = 12;
+    const itemsPerPage = 10;
 
     const filteredServices = dostServices.filter((service) => {
         const searchableContent =
@@ -143,7 +143,7 @@ const DostIX = () => {
     }, [currentPage, totalPages]);
 
     return (
-        <div className="[@media(orientation:portrait)]:min-h-[82vh] rounded-[1.75rem] border border-white/80 bg-white/55 p-4 shadow-lg backdrop-blur-md md:p-6">
+        <div className="md:[@media(orientation:portrait)]:max-h-[82vh] md:[@media(orientation:portrait)]:min-h-[82vh] rounded-[1.75rem] border border-white/80 bg-white/55 p-4 shadow-lg backdrop-blur-md md:p-6">
             <div className="mx-auto flex min-h-[78vh] max-w-5xl flex-col">
                 {/* HEADER */}
                 <div className="text-center">
@@ -183,37 +183,56 @@ const DostIX = () => {
                 </div>
 
                 <div className="mt-6 grid gap-4 md:grid-cols-2">
-                    {paginatedServices.map((service) => (
-                        <article
-                            key={service.id}
-                            className="group overflow-hidden rounded-[1.2rem] border border-emerald-100 bg-gradient-to-r from-white via-emerald-50/70 to-yellow-50 shadow-lg"
-                        >
-                            <div className="relative min-h-[8.75rem] p-4">
-                                <div
-                                    aria-hidden="true"
-                                    className="absolute inset-y-0 right-0 w-24 bg-cover bg-center opacity-50"
-                                    style={{
-                                        backgroundImage:
-                                            "url('/assets/images/lgu_mabuhay.jpg')",
-                                    }}
-                                />
-                                <div className="relative z-10 flex h-full flex-col justify-between gap-4">
-                                    <p className="max-w-[17rem] text-xs font-semibold leading-5 text-slate-800 md:max-w-[20rem] md:text-sm [@media(orientation:landscape)]:max-w-none">
-                                        {service.title}
-                                    </p>
-                                    <div className="space-y-1">
-                                        <p className="text-[0.65rem] font-bold uppercase tracking-[0.18em] text-emerald-800">
-                                            {service.reference}
-                                        </p>
-                                        <p className="text-[0.7rem] font-medium text-slate-500">
-                                            {service.date}
-                                        </p>
+                    {paginatedServices.map((service, index) => {
+                        const itemNumber =
+                            (currentPage - 1) * itemsPerPage + index + 1;
+
+                        return (
+                            <article
+                                key={service.id}
+                                className="group relative overflow-hidden rounded-[1.2rem] border border-emerald-100/80 bg-white/85 shadow-md transition duration-200 hover:-translate-y-0.5"
+                            >
+                                <div className="absolute inset-0 bg-[linear-gradient(135deg,rgba(255,255,255,0.98),rgba(236,253,245,0.88),rgba(254,252,232,0.72))]" />
+                                <div className="relative z-10 grid min-h-[10.25rem] gap-3 p-4 md:grid-cols-[minmax(0,1fr)_6rem]">
+                                    <div className="flex min-w-0 flex-col">
+                                        <div className="flex items-start justify-between gap-3">
+                                            <span className="inline-flex items-center gap-2 text-[0.65rem] font-bold uppercase tracking-[0.18em] text-emerald-800">
+                                                <span className="flex h-6 min-w-6 items-center justify-center rounded-full bg-emerald-100 px-1 text-[0.62rem] text-emerald-700">
+                                                    {itemNumber}
+                                                </span>
+                                                DOST Service
+                                            </span>
+                                        </div>
+
+                                        <h2 className="mt-3 text-sm font-semibold text-slate-900 md:text-base">
+                                            {service.title}
+                                        </h2>
+
+                                        <div className="mt-auto flex flex-wrap items-center justify-between gap-3 pt-4">
+                                            <p className="text-[0.68rem] font-bold uppercase tracking-[0.18em] text-emerald-800">
+                                                {service.reference}
+                                            </p>
+                                            <div className="inline-flex items-center gap-1.5 text-[0.72rem] font-medium text-slate-500">
+                                                <IoCalendarOutline className="h-3.5 w-3.5 text-emerald-700" />
+                                                <span>{service.date}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div className="mt-auto hidden overflow-hidden rounded-xl border border-white/80 shadow-sm md:block">
+                                        <img
+                                            src="/assets/images/lgu_mabuhay.jpg"
+                                            alt=""
+                                            aria-hidden="true"
+                                            className="h-24 w-full object-cover"
+                                        />
                                     </div>
                                 </div>
-                            </div>
-                            <div className="h-1 w-full bg-emerald-700 transition duration-200 group-hover:bg-yellow-500" />
-                        </article>
-                    ))}
+
+                                <div className="h-1 w-full bg-gradient-to-r from-emerald-700 to-yellow-400" />
+                            </article>
+                        );
+                    })}
                 </div>
 
                 {filteredServices.length > 0 && totalPages > 1 ? (
