@@ -6,9 +6,9 @@ import {
     IoMailOutline,
 } from "react-icons/io5";
 import ClientLayout from "@/Layouts/ClientLayout";
-import About from "./AboutComponents/about";
-import Organization from "./AboutComponents/organization";
-import Contacts from "./AboutComponents/contacts";
+import About from "./AboutComponents/About";
+import Organization from "./AboutComponents/Organization";
+import Contacts from "./AboutComponents/Contact";
 
 const AboutLguMabuhay = () => {
     const tabs = [
@@ -37,7 +37,11 @@ const AboutLguMabuhay = () => {
         const iconClassName = isActive ? "text-white" : "text-emerald-800";
 
         if (icon === "about") {
-            return <IoInformationCircleOutline className={`h-4 w-4 ${iconClassName}`} />;
+            return (
+                <IoInformationCircleOutline
+                    className={`h-4 w-4 ${iconClassName}`}
+                />
+            );
         }
 
         if (icon === "organization") {
