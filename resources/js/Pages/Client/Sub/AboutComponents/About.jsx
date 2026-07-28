@@ -1,39 +1,14 @@
 import { IoPlay } from "react-icons/io5";
 
-const quickFacts = [
-    {
-        title: "Location",
-        value: "Zamboanga Sibugay, Philippines",
-    },
-    {
-        title: "Classification",
-        value: "4th Class Municipality",
-    },
-    {
-        title: "Economy",
-        value: "Agriculture, fishing, and community trade",
-    },
-    {
-        title: "Vision",
-        value: "Transparent, efficient, and citizen-centered governance",
-    },
-];
-
 const serviceHighlights = [
     "Digital service access and public information support",
     "Community-based programs for agriculture and livelihoods",
     "Health, education, and inclusive municipal coordination",
 ];
 
-const galleryImages = [
-    "/assets/images/lgu_mabuhay.jpg",
-    "/assets/images/lgu_mabuhay2.png",
-    "/assets/images/logos/lgu-mabuhay.png",
-];
-
 const About = () => {
     return (
-        <div className="space-y-6">
+        <div className="[@media(orientation:portrait)]:min-h-[82vh] space-y-6">
             <section className="overflow-hidden rounded-[2rem] border border-white/75 bg-white/60 shadow-lg backdrop-blur-md">
                 <div className="bg-emerald-800 px-6 py-12 text-center text-white md:px-10 md:py-16">
                     <img
@@ -179,56 +154,6 @@ const About = () => {
                     </div>
                 </aside>
             </section>
-            {/* 
-            <section className="rounded-[1.75rem] border border-white/75 bg-white/60 p-6 shadow-lg backdrop-blur-md md:p-8">
-                <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
-                    <div>
-                        <span className="inline-flex rounded-full bg-sky-100 px-3 py-1 text-xs font-bold uppercase tracking-[0.18em] text-sky-700">
-                            Image Gallery
-                        </span>
-                        <h2 className="mt-3 text-2xl font-black text-slate-950 md:text-3xl">
-                            Municipality Snapshot
-                        </h2>
-                    </div>
-                    <p className="max-w-xl text-sm leading-6 text-slate-600">
-                        A visual section for municipal facilities, civic spaces,
-                        and public-facing identity materials.
-                    </p>
-                </div>
-
-                <div className="mt-6 grid gap-4 md:grid-cols-[1.2fr_0.8fr_0.8fr]">
-                    {galleryImages.map((image, index) => (
-                        <figure
-                            key={image}
-                            className="group overflow-hidden rounded-[1.5rem] border border-white/80 bg-white shadow-lg"
-                        >
-                            <div className="overflow-hidden">
-                                <img
-                                    src={image}
-                                    alt={`Mabuhay gallery ${index + 1}`}
-                                    className="h-56 w-full object-cover transition duration-500 group-hover:scale-[1.04]"
-                                />
-                            </div>
-                            <figcaption className="space-y-2 p-4">
-                                <p className="text-xs font-bold uppercase tracking-[0.18em] text-emerald-700">
-                                    {index === 0
-                                        ? "Municipal Hall"
-                                        : index === 1
-                                          ? "Community View"
-                                          : "Municipal Identity"}
-                                </p>
-                                <p className="text-sm leading-6 text-slate-600">
-                                    {index === 0
-                                        ? "Primary administrative center and public service hub of the municipality."
-                                        : index === 1
-                                          ? "A visual placeholder for local sites, community programs, or public spaces."
-                                          : "Official LGU branding that can be paired with announcements and information campaigns."}
-                                </p>
-                            </figcaption>
-                        </figure>
-                    ))}
-                </div>
-            </section> */}
         </div>
     );
 };

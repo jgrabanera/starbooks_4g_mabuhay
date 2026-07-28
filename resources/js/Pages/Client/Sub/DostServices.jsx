@@ -31,7 +31,7 @@ const DostServices = () => {
             icon: "FacebookPosts",
         },
     ];
-    const [activeTab, setActiveTab] = useState("about");
+    const [activeTab, setActiveTab] = useState("Dost-ix");
 
     const renderTabIcon = (icon, isActive) => {
         const iconClassName = isActive ? "text-white" : "text-emerald-800";
