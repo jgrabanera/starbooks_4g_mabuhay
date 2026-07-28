@@ -1,3 +1,5 @@
+import { IoPlay } from "react-icons/io5";
+
 const quickFacts = [
     {
         title: "Location",
@@ -32,34 +34,34 @@ const galleryImages = [
 const About = () => {
     return (
         <div className="space-y-6">
-            <section className="overflow-hidden rounded-[2rem] border border-white/75 bg-white/60 shadow-[0_20px_50px_rgba(15,23,42,0.12)] backdrop-blur-md">
-                <div className="bg-emerald-800 px-6 py-12 text-center text-white sm:px-10 sm:py-16">
+            <section className="overflow-hidden rounded-[2rem] border border-white/75 bg-white/60 shadow-lg backdrop-blur-md">
+                <div className="bg-emerald-800 px-6 py-12 text-center text-white md:px-10 md:py-16">
                     <img
                         src="/assets/images/logos/lgu-mabuhay.png"
                         alt="LGU Mabuhay"
-                        className="mx-auto mb-6 h-20 w-auto object-contain sm:h-24"
+                        className="mx-auto mb-6 h-20 w-auto object-contain md:h-24"
                     />
-                    <h1 className="text-3xl font-black leading-tight sm:text-5xl">
+                    <h1 className="text-3xl font-black leading-tight md:text-5xl">
                         Municipality of Mabuhay
                     </h1>
-                    <p className="mx-auto mt-4 max-w-3xl text-sm leading-7 text-emerald-50 sm:text-xl sm:leading-9">
+                    <p className="mx-auto mt-4 max-w-3xl text-sm leading-7 text-emerald-50 md:text-xl md:leading-9">
                         A progressive local government unit committed to
                         transparent, efficient, and citizen-centered governance.
                     </p>
                 </div>
 
-                <div className="grid gap-8 px-6 py-8 sm:px-10 sm:py-10 ">
+                <div className="grid gap-8 px-6 py-8 md:px-10 md:py-10">
                     <article className="space-y-6">
                         <div>
                             <span className="inline-flex rounded-full bg-emerald-100 px-3 py-1 text-xs font-bold uppercase tracking-[0.22em] text-emerald-800">
                                 Municipality Overview
                             </span>
-                            <h2 className="mt-4 text-2xl font-black text-slate-950 sm:text-4xl">
+                            <h2 className="mt-4 text-2xl font-black text-slate-950 md:text-4xl">
                                 About Mabuhay
                             </h2>
                         </div>
 
-                        <div className="space-y-5 text-sm leading-8 text-slate-700 sm:text-lg">
+                        <div className="space-y-5 text-sm leading-8 text-slate-700 md:text-lg">
                             <p>
                                 The Municipality of Mabuhay is a 4th class
                                 municipality in the province of Zamboanga
@@ -84,7 +86,7 @@ const About = () => {
                             </p>
                         </div>
 
-                        <div className="grid gap-3 sm:grid-cols-3">
+                        <div className="grid gap-3 md:grid-cols-3">
                             {serviceHighlights.map((highlight) => (
                                 <div
                                     key={highlight}
@@ -98,20 +100,20 @@ const About = () => {
                 </div>
             </section>
 
-            <section className="grid gap-6 lg:grid-cols-[1.15fr_0.85fr]">
-                <article className="rounded-[1.75rem] border border-white/75 bg-white/60 p-6 shadow-[0_20px_50px_rgba(15,23,42,0.12)] backdrop-blur-md sm:p-8">
-                    <div className="flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
+            <section className="grid gap-6 md:grid-cols-[1.15fr_0.85fr]">
+                <article className="rounded-[1.75rem] border border-white/75 bg-white/60 p-6 shadow-lg backdrop-blur-md md:p-8">
+                    <div className="flex flex-col gap-5 md:flex-row md:items-end md:justify-between">
                         <div>
                             <span className="inline-flex rounded-full bg-amber-100 px-3 py-1 text-xs font-bold uppercase tracking-[0.18em] text-amber-700">
                                 Media Feature
                             </span>
-                            <h2 className="mt-3 text-2xl font-black text-slate-950 sm:text-3xl">
+                            <h2 className="mt-3 text-2xl font-black text-slate-950 md:text-3xl">
                                 Municipal Video Showcase
                             </h2>
                         </div>
                     </div>
 
-                    <div className="mt-6 overflow-hidden rounded-[1.5rem] border border-slate-200 bg-slate-950 shadow-[0_18px_38px_rgba(15,23,42,0.2)]">
+                    <div className="mt-6 overflow-hidden rounded-[1.5rem] border border-slate-200 bg-slate-950 shadow-lg">
                         <div
                             className="relative aspect-video bg-cover bg-center"
                             style={{
@@ -122,18 +124,12 @@ const About = () => {
                             <div className="absolute inset-0 bg-slate-950/45" />
                             <div className="absolute inset-0 flex flex-col items-center justify-center px-6 text-center text-white">
                                 <div className="flex h-20 w-20 items-center justify-center rounded-full border border-white/20 bg-white/15 backdrop-blur">
-                                    <svg
-                                        className="ml-1 h-8 w-8"
-                                        viewBox="0 0 24 24"
-                                        fill="currentColor"
-                                    >
-                                        <path d="M8 6.5v11l9-5.5-9-5.5Z" />
-                                    </svg>
+                                    <IoPlay className="ml-1 h-8 w-8" />
                                 </div>
-                                <h3 className="mt-5 text-xl font-black sm:text-2xl">
+                                <h3 className="mt-5 text-xl font-black md:text-2xl">
                                     Mabuhay Overview Video
                                 </h3>
-                                <p className="mt-2 max-w-xl text-sm leading-6 text-slate-100 sm:text-base">
+                                <p className="mt-2 max-w-xl text-sm leading-6 text-slate-100 md:text-base">
                                     Replace this showcase with the official LGU
                                     Mabuhay video presentation, tourism reel, or
                                     public service introduction when media is
@@ -141,14 +137,14 @@ const About = () => {
                                 </p>
                             </div>
                         </div>
-                        <div className="flex items-center justify-between border-t border-white/10 bg-slate-950/95 px-4 py-3 text-xs uppercase tracking-[0.16em] text-slate-300 sm:px-5">
+                        <div className="flex items-center justify-between border-t border-white/10 bg-slate-950/95 px-4 py-3 text-xs uppercase tracking-[0.16em] text-slate-300 md:px-5">
                             <span>Video Player Placeholder</span>
                             <span>16:9 Presentation Area</span>
                         </div>
                     </div>
                 </article>
 
-                <aside className="rounded-[1.75rem] border border-white/75 bg-emerald-700 p-6 text-white shadow-[0_20px_50px_rgba(6,78,59,0.22)] sm:p-8">
+                <aside className="rounded-[1.75rem] border border-white/75 bg-emerald-700 p-6 text-white shadow-lg md:p-8">
                     <h2 className="text-xl font-black uppercase tracking-[0.12em] text-emerald-50">
                         Governance Priorities
                     </h2>
@@ -184,13 +180,13 @@ const About = () => {
                 </aside>
             </section>
             {/* 
-            <section className="rounded-[1.75rem] border border-white/75 bg-white/60 p-6 shadow-[0_20px_50px_rgba(15,23,42,0.12)] backdrop-blur-md sm:p-8">
-                <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+            <section className="rounded-[1.75rem] border border-white/75 bg-white/60 p-6 shadow-lg backdrop-blur-md md:p-8">
+                <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
                     <div>
                         <span className="inline-flex rounded-full bg-sky-100 px-3 py-1 text-xs font-bold uppercase tracking-[0.18em] text-sky-700">
                             Image Gallery
                         </span>
-                        <h2 className="mt-3 text-2xl font-black text-slate-950 sm:text-3xl">
+                        <h2 className="mt-3 text-2xl font-black text-slate-950 md:text-3xl">
                             Municipality Snapshot
                         </h2>
                     </div>
@@ -204,7 +200,7 @@ const About = () => {
                     {galleryImages.map((image, index) => (
                         <figure
                             key={image}
-                            className="group overflow-hidden rounded-[1.5rem] border border-white/80 bg-white shadow-[0_14px_30px_rgba(15,23,42,0.08)]"
+                            className="group overflow-hidden rounded-[1.5rem] border border-white/80 bg-white shadow-lg"
                         >
                             <div className="overflow-hidden">
                                 <img

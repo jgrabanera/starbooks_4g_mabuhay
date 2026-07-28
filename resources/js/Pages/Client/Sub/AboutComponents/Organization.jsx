@@ -1,3 +1,5 @@
+import { IoGridOutline } from "react-icons/io5";
+
 const officeCards = [
     {
         title: "Executive Leadership",
@@ -103,19 +105,7 @@ const Organization = () => {
 
                             <div className="mt-6 rounded-2xl border border-dashed border-emerald-300 bg-white/80 px-5 py-10 text-center">
                                 <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-emerald-100 text-emerald-700">
-                                    <svg
-                                        className="h-8 w-8"
-                                        viewBox="0 0 24 24"
-                                        fill="none"
-                                        stroke="currentColor"
-                                        strokeWidth="2"
-                                    >
-                                        <path
-                                            strokeLinecap="round"
-                                            strokeLinejoin="round"
-                                            d="M12 5v14M7 9h10M7 15h10"
-                                        />
-                                    </svg>
+                                    <IoGridOutline className="h-8 w-8" />
                                 </div>
                                 <p className="mt-4 text-lg font-black uppercase tracking-[0.08em] text-emerald-900">
                                     Official Organization Chart Placeholder
