@@ -6,9 +6,9 @@ import {
     IoMailOutline,
 } from "react-icons/io5";
 import ClientLayout from "@/Layouts/ClientLayout";
-import About from "./AboutComponents/About";
 import Organization from "./AboutComponents/Organization";
-import Contacts from "./AboutComponents/Contact";
+import LGU from "./AboutComponents/LGU";
+import About from "./AboutComponents/About";
 
 const AboutLguMabuhay = () => {
     const tabs = [
@@ -25,10 +25,10 @@ const AboutLguMabuhay = () => {
             icon: "organization",
         },
         {
-            id: "contacts",
-            label: "Contacts",
-            mobileLabel: "Contacts",
-            icon: "contacts",
+            id: "lgu",
+            label: "Municipality of Mabuhay",
+            mobileLabel: "lgu",
+            icon: "lgu",
         },
     ];
     const [activeTab, setActiveTab] = useState("about");
@@ -60,7 +60,7 @@ const AboutLguMabuhay = () => {
 
                     {activeTab === "organization" ? <Organization /> : null}
 
-                    {activeTab === "contacts" ? <Contacts /> : null}
+                    {activeTab === "lgu" ? <LGU /> : null}
 
                     <div className="fixed inset-x-0 bottom-3 z-30 px-4 md:bottom-6 md:px-6 [@media(orientation:landscape)]:left-4 [@media(orientation:landscape)]:right-auto [@media(orientation:landscape)]:top-1/2 [@media(orientation:landscape)]:bottom-auto [@media(orientation:landscape)]:w-64 [@media(orientation:landscape)]:px-0 [@media(orientation:landscape)]:-translate-y-1/2">
                         <div className="mx-auto max-w-6xl rounded-md border border-white/70 bg-white/60 p-2 shadow-lg backdrop-blur-xl md:rounded-[1.75rem] md:p-4 [@media(orientation:landscape)]:mx-0 [@media(orientation:landscape)]:max-w-none">
