@@ -28,6 +28,17 @@ class ClientCategoryPageRoutingTest extends TestCase
             ->assertInertia(fn ($page) => $page->component('Client/Sub/DostServices'));
     }
 
+    public function test_lgu_mabuhay_projects_slug_renders_its_dedicated_page(): void
+    {
+        $response = $this->get(route('client.category.show', [
+            'slug' => 'lgu-mabuhay-projects',
+        ]));
+
+        $response
+            ->assertOk()
+            ->assertInertia(fn ($page) => $page->component('Client/Sub/LguMabuhayProjects'));
+    }
+
     public function test_known_category_slug_renders_its_dedicated_page(): void
     {
         $response = $this->get(route('client.category.show', [
