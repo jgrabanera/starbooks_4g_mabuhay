@@ -100,7 +100,10 @@ const FacebookPost = () => {
         return searchableContent.includes(searchTerm.trim().toLowerCase());
     });
 
-    const totalPages = Math.max(1, Math.ceil(filteredPosts.length / itemsPerPage));
+    const totalPages = Math.max(
+        1,
+        Math.ceil(filteredPosts.length / itemsPerPage),
+    );
     const paginatedPosts = filteredPosts.slice(
         (currentPage - 1) * itemsPerPage,
         currentPage * itemsPerPage,
@@ -132,15 +135,19 @@ const FacebookPost = () => {
                         Dummy Content For Layout Preview
                     </p>
                     <h1 className="mt-3 text-3xl font-black uppercase tracking-[0.06em] text-emerald-950 md:text-4xl">
-                        Facebook Posts
+                        DOST IX Facebook Posts
                     </h1>
                 </div>
 
                 <div className="mt-6 mx-auto w-full md:max-w-xl">
-                    <label htmlFor="facebook-post-search" className="sr-only">
-                        Search Facebook posts
+                    <label
+                        htmlFor="program-services-search"
+                        className="sr-only"
+                    >
+                        Search program services
                     </label>
-                    <div className="flex w-full items-center gap-2 rounded-full border border-emerald-200 bg-white/90 px-4 py-2 text-emerald-800 shadow-md">
+
+                    <div className="flex w-full items-center gap-2 rounded-full border border-emerald-200 bg-white/90 px-4 py-2 text-emerald-800 shadow-md ">
                         <IoSearchOutline className="h-4 w-4 shrink-0" />
                         <input
                             id="facebook-post-search"
@@ -149,8 +156,8 @@ const FacebookPost = () => {
                             onChange={(event) =>
                                 setSearchTerm(event.target.value)
                             }
-                            placeholder="Search Facebook posts"
-                            className="w-full bg-transparent text-sm font-medium placeholder:text-emerald-700/70 focus:border-none focus:outline-none focus:ring-0"
+                            placeholder="Search services"
+                            className="w-full max-w-6xl bg-transparent text-sm font-medium placeholder:text-emerald-700/70 focus:outline-none border-none border-focus:ring-0 focus:ring-0"
                         />
                     </div>
                 </div>

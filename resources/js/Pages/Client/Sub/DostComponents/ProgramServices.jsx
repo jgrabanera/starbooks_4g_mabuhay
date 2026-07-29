@@ -135,7 +135,7 @@ const ProgramServices = () => {
                         Dummy Content For Layout Preview
                     </p>
                     <h1 className="mt-3 text-3xl font-black uppercase tracking-[0.06em] text-emerald-950 md:text-4xl">
-                        Program Services
+                        DOST Services
                     </h1>
                 </div>
 
