@@ -39,6 +39,39 @@ class ClientCategoryPageRoutingTest extends TestCase
             ->assertInertia(fn ($page) => $page->component('Client/Sub/LguMabuhayProjects'));
     }
 
+    public function test_resources_slug_renders_its_dedicated_page(): void
+    {
+        $response = $this->get(route('client.category.show', [
+            'slug' => 'resources',
+        ]));
+
+        $response
+            ->assertOk()
+            ->assertInertia(fn ($page) => $page->component('Client/Sub/Resources'));
+    }
+
+    public function test_social_services_slug_renders_its_dedicated_page(): void
+    {
+        $response = $this->get(route('client.category.show', [
+            'slug' => 'social-services',
+        ]));
+
+        $response
+            ->assertOk()
+            ->assertInertia(fn ($page) => $page->component('Client/Sub/SocialServices'));
+    }
+
+    public function test_tourism_slug_renders_its_dedicated_page(): void
+    {
+        $response = $this->get(route('client.category.show', [
+            'slug' => 'tourism',
+        ]));
+
+        $response
+            ->assertOk()
+            ->assertInertia(fn ($page) => $page->component('Client/Sub/Tourism'));
+    }
+
     public function test_known_category_slug_renders_its_dedicated_page(): void
     {
         $response = $this->get(route('client.category.show', [
