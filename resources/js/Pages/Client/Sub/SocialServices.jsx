@@ -16,7 +16,9 @@ const SocialServices = () => {
         { id: "ordinance", label: "Ordinance", icon: "ordinance" },
     ];
     const [activeTab, setActiveTab] = useState("award");
-    const { contents, loading, error } = useSectionContents("social-services");
+    const { contents, loading, error } = useSectionContents(
+        route("api.social-services.contents"),
+    );
 
     const renderIcon = (icon, isActive) => {
         const iconClassName = isActive ? "text-white" : "text-emerald-800";

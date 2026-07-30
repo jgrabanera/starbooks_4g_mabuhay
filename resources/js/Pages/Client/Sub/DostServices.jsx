@@ -33,7 +33,9 @@ const DostServices = () => {
         },
     ];
     const [activeTab, setActiveTab] = useState("Dost-ix");
-    const { contents, loading, error } = useSectionContents("dost-services");
+    const { contents, loading, error } = useSectionContents(
+        route("api.dost-services.contents"),
+    );
 
     const renderTabIcon = (icon, isActive) => {
         const iconClassName = isActive ? "text-white" : "text-emerald-800";

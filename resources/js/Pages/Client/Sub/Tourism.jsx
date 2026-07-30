@@ -14,7 +14,9 @@ const Tourism = () => {
         { id: "sites", label: "Tourism Sites", icon: "sites" },
     ];
     const [activeTab, setActiveTab] = useState("events");
-    const { contents, loading, error } = useSectionContents("tourism");
+    const { contents, loading, error } = useSectionContents(
+        route("api.tourism.contents"),
+    );
 
     const renderIcon = (icon, isActive) => {
         const iconClassName = isActive ? "text-white" : "text-emerald-800";

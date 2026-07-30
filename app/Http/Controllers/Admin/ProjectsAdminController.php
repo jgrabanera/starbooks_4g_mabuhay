@@ -3,7 +3,8 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Support\FixedCmsSection;
+use App\Models\Category;
+use App\Models\SubCategory;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -11,9 +12,28 @@ class ProjectsAdminController extends Controller
 {
     public function index(): Response
     {
-        return Inertia::render(
-            'Admin/Projects',
-            FixedCmsSection::payload('lgu-mabuhay-projects'),
-        );
+        $sectionCategory = Category::query()
+            ->where('slug', 'lgu-mabuhay-projects')
+            ->first(['id', 'title', 'slug']);
+
+        return Inertia::render('Admin/Projects', [
+            'sectionCategory' => $sectionCategory,
+            'contents' => $sectionCategory
+                ? SubCategory::query()
+                    ->where('category_id', $sectionCategory->id)
+                    ->orderByDesc('id')
+                    ->get([
+                        'id',
+                        'category_id',
+                        'tab_id',
+                        'title',
+                        'slug',
+                        'description',
+                        'image',
+                        'pdf',
+                        'is_active',
+                    ])
+                : [],
+        ]);
     }
 }

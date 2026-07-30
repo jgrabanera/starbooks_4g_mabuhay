@@ -47,9 +47,7 @@ class ClientSectionContentApiTest extends TestCase
             'is_active' => false,
         ]);
 
-        $response = $this->getJson(route('api.sections.contents', [
-            'slug' => 'tourism',
-        ]));
+        $response = $this->getJson(route('api.tourism.contents'));
 
         $response
             ->assertOk()

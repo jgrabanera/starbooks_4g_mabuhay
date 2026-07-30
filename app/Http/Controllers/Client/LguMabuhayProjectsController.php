@@ -4,15 +4,14 @@ namespace App\Http\Controllers\Client;
 
 use App\Http\Controllers\Controller;
 use App\Models\Category;
-use App\Support\PublicSectionTabs;
 use Illuminate\Http\JsonResponse;
 
-class SectionContentController extends Controller
+class LguMabuhayProjectsController extends Controller
 {
-    public function index(string $slug): JsonResponse
+    public function content(): JsonResponse
     {
         $category = Category::query()
-            ->where('slug', $slug)
+            ->where('slug', 'lgu-mabuhay-projects')
             ->where('is_active', true)
             ->firstOrFail(['id', 'title', 'slug']);
 
@@ -20,16 +19,14 @@ class SectionContentController extends Controller
             ->where('is_active', true)
             ->orderByDesc('id')
             ->get()
-            ->map(function ($content) use ($slug) {
-                $normalizedTabId = PublicSectionTabs::normalize($slug, $content->tab_id);
-
+            ->map(function ($content) {
                 return [
                     'id' => $content->id,
                     'title' => $content->title,
                     'slug' => $content->slug,
                     'description' => $content->description,
                     'tab_id' => $content->tab_id,
-                    'normalized_tab_id' => $normalizedTabId,
+                    'normalized_tab_id' => $this->normalizeTabId($content->tab_id),
                     'image_url' => $content->image ? asset('storage/images/thumbnails/' . $content->image) : null,
                     'pdf_url' => $content->pdf ? asset('storage/documents/pdfs/' . $content->pdf) : null,
                     'published_at' => optional($content->created_at)?->toDateString(),
@@ -42,5 +39,14 @@ class SectionContentController extends Controller
             'category' => $category,
             'contents' => $contents,
         ]);
+    }
+
+    private function normalizeTabId(?string $tabId): ?string
+    {
+        return match ($tabId) {
+            'completed', 'completed-1' => 'completed',
+            'ongoing', 'on-going-2' => 'ongoing',
+            default => $tabId,
+        };
     }
 }

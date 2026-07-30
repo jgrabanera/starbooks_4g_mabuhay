@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\SubCategoryRequest;
 use App\Models\Category;
 use App\Models\SubCategory;
-use App\Support\FixedCmsSection;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -128,7 +127,15 @@ class SubCategoryController extends Controller
 
     private function resolveAdminIndexRoute(?string $categorySlug): string
     {
-        return FixedCmsSection::resolveAdminIndexRoute($categorySlug);
+        return match ($categorySlug) {
+            'about-lgu-mabuhay' => 'admin.about.index',
+            'dost-services' => 'admin.dost-services.index',
+            'lgu-mabuhay-projects' => 'admin.projects.index',
+            'social-services' => 'admin.social-services.index',
+            'tourism' => 'admin.tourism.index',
+            'resources' => 'admin.resources.index',
+            default => 'admin.categories.index',
+        };
     }
 
     /**

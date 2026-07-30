@@ -27,7 +27,7 @@ const LguMabuhayProjects = () => {
 
     const [activeTab, setActiveTab] = useState("completed");
     const { contents, loading, error } = useSectionContents(
-        "lgu-mabuhay-projects",
+        route("api.projects.contents"),
     );
 
     const completedItems = contents.filter(

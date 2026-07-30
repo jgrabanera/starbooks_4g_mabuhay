@@ -8,7 +8,9 @@ import LGUResources from "./Resources/LGUResources";
 const Resources = () => {
     const [activeTab, setActiveTab] = useState("resources");
     const isActive = activeTab === "resources";
-    const { contents, loading, error } = useSectionContents("resources");
+    const { contents, loading, error } = useSectionContents(
+        route("api.resources.contents"),
+    );
 
     return (
         <>

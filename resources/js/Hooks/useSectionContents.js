@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 
-export default function useSectionContents(slug) {
+export default function useSectionContents(endpoint) {
     const [contents, setContents] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
@@ -13,7 +13,7 @@ export default function useSectionContents(slug) {
         setError("");
 
         axios
-            .get(route("api.sections.contents", { slug }))
+            .get(endpoint)
             .then((response) => {
                 if (!isMounted) {
                     return;
@@ -38,7 +38,7 @@ export default function useSectionContents(slug) {
         return () => {
             isMounted = false;
         };
-    }, [slug]);
+    }, [endpoint]);
 
     return {
         contents,
