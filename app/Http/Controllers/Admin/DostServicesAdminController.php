@@ -2,16 +2,18 @@
 
 namespace App\Http\Controllers\Admin;
 
-use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use App\Support\FixedCmsSection;
 use Inertia\Inertia;
 use Inertia\Response;
-use App\Http\Controllers\Controller;
 
 class DostServicesAdminController extends Controller
 {
-    //
-    public function index()
+    public function index(): Response
     {
-        return Inertia::render('Admin/DostServices');
+        return Inertia::render(
+            'Admin/DostServices',
+            FixedCmsSection::payload('dost-services'),
+        );
     }
 }

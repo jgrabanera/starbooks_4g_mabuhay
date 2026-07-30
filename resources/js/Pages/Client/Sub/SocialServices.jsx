@@ -2,6 +2,7 @@ import { Head } from "@inertiajs/react";
 import { useState } from "react";
 import { IoCashOutline, IoDocumentTextOutline, IoReaderOutline, IoRibbonOutline } from "react-icons/io5";
 import ClientLayout from "@/Layouts/ClientLayout";
+import useSectionContents from "@/Hooks/useSectionContents";
 import AwardPosting from "./SocialServices/AwardPosting";
 import Budget from "./SocialServices/Budget";
 import Memorandum from "./SocialServices/Memorandum";
@@ -15,6 +16,7 @@ const SocialServices = () => {
         { id: "ordinance", label: "Ordinance", icon: "ordinance" },
     ];
     const [activeTab, setActiveTab] = useState("award");
+    const { contents, loading, error } = useSectionContents("social-services");
 
     const renderIcon = (icon, isActive) => {
         const iconClassName = isActive ? "text-white" : "text-emerald-800";
@@ -35,10 +37,44 @@ const SocialServices = () => {
             <Head title="Social Services" />
             <div className="w-full text-emerald-950">
                 <section className="mx-auto flex w-full max-w-7xl flex-col gap-6 px-4 py-2 pb-36 md:px-6 md:pb-40 [@media(orientation:landscape)]:pl-28 [@media(orientation:landscape)]:pb-8">
-                    {activeTab === "award" ? <AwardPosting /> : null}
-                    {activeTab === "budget" ? <Budget /> : null}
-                    {activeTab === "memorandum" ? <Memorandum /> : null}
-                    {activeTab === "ordinance" ? <Ordinance /> : null}
+                    {activeTab === "award" ? (
+                        <AwardPosting
+                            items={contents.filter(
+                                (item) => item.normalized_tab_id === "award",
+                            )}
+                            loading={loading}
+                            error={error}
+                        />
+                    ) : null}
+                    {activeTab === "budget" ? (
+                        <Budget
+                            items={contents.filter(
+                                (item) => item.normalized_tab_id === "budget",
+                            )}
+                            loading={loading}
+                            error={error}
+                        />
+                    ) : null}
+                    {activeTab === "memorandum" ? (
+                        <Memorandum
+                            items={contents.filter(
+                                (item) =>
+                                    item.normalized_tab_id === "memorandum",
+                            )}
+                            loading={loading}
+                            error={error}
+                        />
+                    ) : null}
+                    {activeTab === "ordinance" ? (
+                        <Ordinance
+                            items={contents.filter(
+                                (item) =>
+                                    item.normalized_tab_id === "ordinance",
+                            )}
+                            loading={loading}
+                            error={error}
+                        />
+                    ) : null}
                     <div className="fixed inset-x-0 bottom-3 z-30 px-4 md:bottom-6 md:px-6 [@media(orientation:landscape)]:left-4 [@media(orientation:landscape)]:right-auto [@media(orientation:landscape)]:top-1/2 [@media(orientation:landscape)]:bottom-auto [@media(orientation:landscape)]:w-64 [@media(orientation:landscape)]:px-0 [@media(orientation:landscape)]:-translate-y-1/2">
                         <div className="mx-auto max-w-5xl rounded-md border border-white/70 bg-white/60 p-2 shadow-lg backdrop-blur-xl md:rounded-[1.75rem] md:p-4 [@media(orientation:landscape)]:mx-0 [@media(orientation:landscape)]:max-w-none">
                             <div role="tablist" aria-label="Social services sections" className="grid grid-cols-2 gap-2 md:gap-3 [@media(orientation:landscape)]:grid-cols-1">

@@ -5,6 +5,7 @@ import {
     IoConstructOutline,
 } from "react-icons/io5";
 import ClientLayout from "@/Layouts/ClientLayout";
+import useSectionContents from "@/Hooks/useSectionContents";
 import Completed from "./LguMabuhayProjects/Completed";
 import OnGoing from "./LguMabuhayProjects/On-Going";
 
@@ -25,6 +26,16 @@ const LguMabuhayProjects = () => {
     ];
 
     const [activeTab, setActiveTab] = useState("completed");
+    const { contents, loading, error } = useSectionContents(
+        "lgu-mabuhay-projects",
+    );
+
+    const completedItems = contents.filter(
+        (item) => item.normalized_tab_id === "completed",
+    );
+    const ongoingItems = contents.filter(
+        (item) => item.normalized_tab_id === "ongoing",
+    );
 
     const renderTabIcon = (icon, isActive) => {
         const iconClassName = isActive ? "text-white" : "text-emerald-800";
@@ -45,9 +56,21 @@ const LguMabuhayProjects = () => {
             <Head title="LGU Mabuhay Projects" />
             <div className="w-full text-emerald-950">
                 <section className="mx-auto flex w-full max-w-7xl flex-col gap-6 px-4 py-2 pb-36 md:px-6 md:pb-40 [@media(orientation:landscape)]:pl-28 [@media(orientation:landscape)]:pb-8">
-                    {activeTab === "completed" ? <Completed /> : null}
+                    {activeTab === "completed" ? (
+                        <Completed
+                            items={completedItems}
+                            loading={loading}
+                            error={error}
+                        />
+                    ) : null}
 
-                    {activeTab === "ongoing" ? <OnGoing /> : null}
+                    {activeTab === "ongoing" ? (
+                        <OnGoing
+                            items={ongoingItems}
+                            loading={loading}
+                            error={error}
+                        />
+                    ) : null}
 
                     <div className="fixed inset-x-0 bottom-3 z-30 px-4 md:bottom-6 md:px-6 [@media(orientation:landscape)]:left-4 [@media(orientation:landscape)]:right-auto [@media(orientation:landscape)]:top-1/2 [@media(orientation:landscape)]:bottom-auto [@media(orientation:landscape)]:w-64 [@media(orientation:landscape)]:px-0 [@media(orientation:landscape)]:-translate-y-1/2">
                         <div className="mx-auto max-w-4xl rounded-md border border-white/70 bg-white/60 p-2 shadow-lg backdrop-blur-xl md:rounded-[1.75rem] md:p-4 [@media(orientation:landscape)]:mx-0 [@media(orientation:landscape)]:max-w-none">

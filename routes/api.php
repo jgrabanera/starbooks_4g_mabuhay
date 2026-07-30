@@ -17,3 +17,6 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+Route::get('/sections/{slug}/contents', [App\Http\Controllers\Client\SectionContentController::class, 'index'])
+    ->name('api.sections.contents');

@@ -2,18 +2,18 @@
 
 namespace App\Http\Controllers\Admin;
 
-use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use App\Support\FixedCmsSection;
 use Inertia\Inertia;
 use Inertia\Response;
-use App\Http\Controllers\Controller;
 
 class ProjectsAdminController extends Controller
 {
-    //
-    public function index()
+    public function index(): Response
     {
-        return Inertia::render('Admin/Projects');
+        return Inertia::render(
+            'Admin/Projects',
+            FixedCmsSection::payload('lgu-mabuhay-projects'),
+        );
     }
 }
-
-

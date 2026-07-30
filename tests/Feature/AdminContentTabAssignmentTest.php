@@ -40,7 +40,7 @@ class AdminContentTabAssignmentTest extends TestCase
             'pdf' => UploadedFile::fake()->create('ordinance.pdf', 120, 'application/pdf'),
         ]);
 
-        $response->assertRedirect(route('admin.contents.index'));
+        $response->assertRedirect(route('admin.tourism.index'));
 
         $content = SubCategory::query()->firstOrFail();
 

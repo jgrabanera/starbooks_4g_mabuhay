@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\SubCategoryRequest;
 use App\Models\Category;
 use App\Models\SubCategory;
+use App\Support\FixedCmsSection;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -27,6 +28,7 @@ class SubCategoryController extends Controller
     public function store(SubCategoryRequest $request): RedirectResponse
     {
         $validated = $request->validated();
+        $category = Category::query()->findOrFail($validated['category_id']);
         $slug = Str::slug($validated['title']);
         $imageName = $request->file('image')->storeAs(
             'images/thumbnails',
@@ -52,12 +54,13 @@ class SubCategoryController extends Controller
             'is_active' => (bool) ($validated['is_active'] ?? false),
         ]);
 
-        return to_route('admin.contents.index');
+        return to_route($this->resolveAdminIndexRoute($category->slug));
     }
 
     public function update(SubCategoryRequest $request, SubCategory $content): RedirectResponse
     {
         $validated = $request->validated();
+        $category = Category::query()->findOrFail($validated['category_id']);
         $slug = Str::slug($validated['title']);
         $payload = [
             'category_id' => (int) $validated['category_id'],
@@ -98,11 +101,13 @@ class SubCategoryController extends Controller
 
         $content->update($payload);
 
-        return to_route('admin.contents.index');
+        return to_route($this->resolveAdminIndexRoute($category->slug));
     }
 
     public function destroy(SubCategory $content): RedirectResponse
     {
+        $content->loadMissing('category:id,slug');
+
         if (!empty($content->image)) {
             Storage::disk('public')->delete('images/thumbnails/' . $content->image);
         }
@@ -113,12 +118,17 @@ class SubCategoryController extends Controller
 
         $content->delete();
 
-        return to_route('admin.contents.index');
+        return to_route($this->resolveAdminIndexRoute($content->category?->slug));
     }
 
     private function buildStoredFileName(string $slug, string $extension): string
     {
         return now()->timestamp . '_' . $slug . '.' . $extension;
+    }
+
+    private function resolveAdminIndexRoute(?string $categorySlug): string
+    {
+        return FixedCmsSection::resolveAdminIndexRoute($categorySlug);
     }
 
     /**

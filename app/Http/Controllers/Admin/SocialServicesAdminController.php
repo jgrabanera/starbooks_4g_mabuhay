@@ -2,16 +2,18 @@
 
 namespace App\Http\Controllers\Admin;
 
-use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use App\Support\FixedCmsSection;
 use Inertia\Inertia;
 use Inertia\Response;
-use App\Http\Controllers\Controller;
 
 class SocialServicesAdminController extends Controller
 {
-    //
-    public function index()
+    public function index(): Response
     {
-        return Inertia::render('Admin/SocialServices');
+        return Inertia::render(
+            'Admin/SocialServices',
+            FixedCmsSection::payload('social-services'),
+        );
     }
 }
