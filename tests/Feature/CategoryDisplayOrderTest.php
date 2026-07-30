@@ -52,7 +52,7 @@ class CategoryDisplayOrderTest extends TestCase
         $this->assertSame(1, $category->display_order);
     }
 
-    public function test_new_categories_default_to_the_next_display_order(): void
+    public function test_admin_cannot_create_new_categories_when_category_set_is_fixed(): void
     {
         Storage::fake('public');
 
@@ -76,12 +76,7 @@ class CategoryDisplayOrderTest extends TestCase
             'image' => UploadedFile::fake()->image('resources.png'),
         ]);
 
-        $response->assertRedirect(route('admin.categories.index'));
-
-        $createdCategory = Category::query()
-            ->where('title', 'Resources')
-            ->firstOrFail();
-
-        $this->assertSame(2, $createdCategory->display_order);
+        $response->assertNotFound();
+        $this->assertDatabaseCount('categories', 1);
     }
 }

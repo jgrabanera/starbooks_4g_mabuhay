@@ -5,71 +5,56 @@ namespace Tests\Feature;
 use App\Models\Category;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Inertia\Testing\AssertableInertia as Assert;
 use Tests\TestCase;
 
 class CategorySlugTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_category_generates_slug_from_label(): void
+    public function test_category_persists_the_provided_slug_value(): void
     {
-        $category = Category::factory()->create([
-            'label' => 'Science & Technology',
+        $category = Category::create([
+            'title' => 'Science and Technology',
+            'slug' => 'science-and-technology',
+            'description' => 'Books for science learners.',
+            'image' => 'science-and-technology.png',
+            'display_order' => 1,
+            'tabs' => [
+                ['id' => 'memorandum-1', 'label' => 'Memorandum'],
+            ],
+            'is_active' => true,
         ]);
 
-        $this->assertSame('science-technology', $category->slug);
+        $this->assertSame('science-and-technology', $category->slug);
         $this->assertDatabaseHas('categories', [
             'id' => $category->id,
-            'slug' => 'science-technology',
+            'slug' => 'science-and-technology',
         ]);
     }
 
-    public function test_category_generates_unique_slug_for_matching_labels(): void
+    public function test_category_index_data_endpoint_returns_slug_values(): void
     {
-        $firstCategory = Category::factory()->create([
-            'label' => 'Livelihood Education',
-        ]);
-        $secondCategory = Category::factory()->create([
-            'label' => 'Livelihood Education',
-        ]);
-
-        $this->assertSame('livelihood-education', $firstCategory->slug);
-        $this->assertSame('livelihood-education-2', $secondCategory->slug);
-    }
-
-    public function test_category_regenerates_slug_when_label_changes(): void
-    {
-        $category = Category::factory()->create([
-            'label' => 'Science',
-        ]);
-
-        $category->update([
-            'label' => 'Math and Engineering',
-        ]);
-
-        $this->assertSame('math-and-engineering', $category->refresh()->slug);
-    }
-
-    public function test_public_categories_include_slug(): void
-    {
-        Category::factory()->create([
-            'label' => 'Health Sciences',
+        Category::create([
+            'title' => 'Health Sciences',
+            'slug' => 'health-sciences',
+            'description' => 'Health content',
             'image' => 'health-sciences.png',
+            'display_order' => 1,
+            'tabs' => [
+                ['id' => 'memorandum-1', 'label' => 'Memorandum'],
+            ],
+            'is_active' => true,
         ]);
 
-        $response = $this->get('/categories');
+        $response = $this->get(route('client.get-categories'));
 
         $response
             ->assertOk()
-            ->assertInertia(fn (Assert $page) => $page
-                ->component('Client/Categories')
-                ->has('categories', 1)
-                ->where('categories.0.slug', 'health-sciences')
-                ->where('categories.0.image', 'health-sciences.png'));
+            ->assertJsonPath('0.slug', 'health-sciences')
+            ->assertJsonPath('0.image', 'health-sciences.png');
     }
 
-    public function test_admin_can_create_category(): void
+    public function test_admin_cannot_create_category_from_categories_cms(): void
     {
         $user = User::factory()->create();
 
@@ -77,23 +62,15 @@ class CategorySlugTest extends TestCase
             ->actingAs($user)
             ->post(route('admin.categories.store'), [
                 'title' => 'Science',
-                'label' => 'Science & Technology',
                 'image' => 'science-technology.png',
                 'description' => 'Books about science and technology.',
-                'sort_order' => 5,
+                'display_order' => 5,
                 'is_active' => true,
             ]);
 
-        $response->assertSessionHasNoErrors();
-
-        $this->assertDatabaseHas('categories', [
+        $response->assertNotFound();
+        $this->assertDatabaseMissing('categories', [
             'title' => 'Science',
-            'label' => 'Science & Technology',
-            'slug' => 'science-technology',
-            'image' => 'science-technology.png',
-            'description' => 'Books about science and technology.',
-            'sort_order' => 5,
-            'is_active' => true,
         ]);
     }
 }

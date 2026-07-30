@@ -13,7 +13,7 @@ class AdminCategoryImageUploadTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_admin_can_create_a_category_with_an_uploaded_image(): void
+    public function test_admin_cannot_create_a_category_from_the_categories_cms(): void
     {
         Storage::fake('public');
         $user = User::factory()->create();
@@ -25,15 +25,8 @@ class AdminCategoryImageUploadTest extends TestCase
             'image' => UploadedFile::fake()->image('science.png'),
         ]);
 
-        $response->assertRedirect(route('admin.categories.index'));
-
-        $category = Category::query()->firstOrFail();
-
-        $this->assertSame('Science and Technology', $category->title);
-        $this->assertSame('science-and-technology', $category->slug);
-        $this->assertTrue($category->is_active);
-        $this->assertNotEmpty($category->image);
-        Storage::disk('public')->assertExists('images/thumbnails/' . $category->image);
+        $response->assertNotFound();
+        $this->assertDatabaseCount('categories', 0);
     }
 
     public function test_admin_can_update_a_category_with_a_new_uploaded_image(): void

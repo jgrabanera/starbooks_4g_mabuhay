@@ -62,13 +62,6 @@ const navigationItems = [
         isActive: () => route().current("admin.resources.*"),
         icon: HiOutlineDocumentText,
     },
-
-    // {
-    //     label: "Contents",
-    //     href: "admin.contents.index",
-    //     isActive: () => route().current("admin.contents.*"),
-    //     icon: HiOutlineDocumentText,
-    // },
 ];
 
 export default function SidebarNavigation({ user, onNavigate = null }) {

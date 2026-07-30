@@ -16,11 +16,11 @@ class CategorySeeder extends Seeder
         //
         $categories = [
             [
-                'title' => 'Festives & Tourism',
-                'slug' => 'festives-tourism',
+                'title' => 'Tourism',
+                'slug' => 'tourism',
                 'description' => 'Festives & Tourism description',
                 'image' => '1783931169_tourism.jpg',
-                'display_order' => 1,
+                'display_order' => 5,
                 'tabs' => json_encode([
                     ['id' => 'events-1', 'label' => 'Events'],
                     ['id' => 'festivities-2', 'label' => 'Festivities'],
@@ -29,11 +29,11 @@ class CategorySeeder extends Seeder
                 'is_active' => true,
             ],
             [
-                'title' => 'Resources',
-                'slug' => 'resources',
-                'description' => 'Resources description',
-                'image' => '1783931258_local-governance.png',
-                'display_order' => 2,
+                'title' => 'Social Services',
+                'slug' => 'social-services',
+                'description' => 'Social Services',
+                'image' => '1785303760_social-services.png',
+                'display_order' => 4,
                 'tabs' => json_encode([
                     ['id' => 'memorandum-1', 'label' => 'Memorandum'],
                     ['id' => 'ordinance-2', 'label' => 'Ordinance'],
@@ -43,11 +43,11 @@ class CategorySeeder extends Seeder
                 'is_active' => true,
             ],
             [
-                'title' => 'About',
-                'slug' => 'about',
+                'title' => 'About LGU Mabuhay',
+                'slug' => 'about-lgu-mabuhay',
                 'description' => 'About description',
                 'image' => '1783932516_about.png',
-                'display_order' => 3,
+                'display_order' => 1,
                 'tabs' => json_encode([
                     ['id' => 'about-lgu-mabuhay-1', 'label' => 'About LGU Mabuhay'],
                     ['id' => 'organizational-structure-2', 'label' => 'Organizational Structure'],
@@ -59,8 +59,8 @@ class CategorySeeder extends Seeder
                 'title' => 'DOST Services',
                 'slug' => 'dost-services',
                 'description' => null,
-                'image' => '1783933801_dost-services.jpg',
-                'display_order' => 4,
+                'image' => '1784801251_dost-services.png',
+                'display_order' => 2,
                 'tabs' => json_encode([
                     ['id' => 'dost-ix-1', 'label' => 'DOST IX'],
                     ['id' => 'programs-services-2', 'label' => 'Programs & Services'],
@@ -69,15 +69,26 @@ class CategorySeeder extends Seeder
                 'is_active' => true,
             ],
             [
-                'title' => 'Projects',
-                'slug' => 'projects',
+                'title' => 'LGU Mabuhay Projects',
+                'slug' => 'lgu-mabuhay-projects',
                 'description' => null,
                 'image' => '1783933858_projects.jpg',
-                'display_order' => 5,
+                'display_order' => 3,
                 'tabs' => json_encode([
                     ['id' => 'completed-1', 'label' => 'Completed'],
                     ['id' => 'on-going-2', 'label' => 'On-Going'],
                     ['id' => 'cancelled-3', 'label' => 'Cancelled'],
+                ]),
+                'is_active' => true,
+            ],
+            [
+                'title' => 'Resources',
+                'slug' => 'resources',
+                'description' => null,
+                'image' => '1785303724_resources.jpg',
+                'display_order' => 6,
+                'tabs' => json_encode([
+                    ['id' => 'memorandum', 'label' => 'Memorandum'],
                 ]),
                 'is_active' => true,
             ],

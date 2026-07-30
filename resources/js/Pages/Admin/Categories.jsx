@@ -1,14 +1,12 @@
 import { useEffect, useMemo, useState } from "react";
 import { router, useForm, useRemember } from "@inertiajs/react";
 import AdminLayout from "@/Layouts/AdminLayout";
-import DangerButton from "@/Components/DangerButton";
 import InputError from "@/Components/InputError";
 import InputLabel from "@/Components/InputLabel";
 import Modal from "@/Components/Modal";
 import PrimaryButton from "@/Components/PrimaryButton";
 import SecondaryButton from "@/Components/SecondaryButton";
 import TextInput from "@/Components/TextInput";
-import { MdAddCircleOutline } from "react-icons/md";
 
 const emptyCategory = {
     title: "",
@@ -22,18 +20,13 @@ export default function Categories({ categories: categoryItems = [] }) {
     const [categories, setCategories] = useState(categoryItems);
     const [editingCategory, setEditingCategory] = useState(null);
     const [tabsCategory, setTabsCategory] = useState(null);
-    const [categoryPendingDelete, setCategoryPendingDelete] = useState(null);
     const [isFormModalOpen, setIsFormModalOpen] = useState(false);
-    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
     const [isTabsModalOpen, setIsTabsModalOpen] = useState(false);
     const [search, setSearch] = useRemember("", "admin-categories-search");
-    const [loading, setLoading] = useState(false);
 
     const {
         data,
         setData,
-        post,
-        delete: destroy,
         processing,
         errors,
         reset,
@@ -91,11 +84,6 @@ export default function Categories({ categories: categoryItems = [] }) {
         clearForm();
     };
 
-    const openCreateModal = () => {
-        clearForm();
-        setIsFormModalOpen(true);
-    };
-
     const openEditModal = (category) => {
         setEditingCategory(category);
         clearErrors();
@@ -107,16 +95,6 @@ export default function Categories({ categories: categoryItems = [] }) {
             is_active: Boolean(category.is_active),
         });
         setIsFormModalOpen(true);
-    };
-
-    const openDeleteModal = (category) => {
-        setCategoryPendingDelete(category);
-        setIsDeleteModalOpen(true);
-    };
-
-    const closeDeleteModal = () => {
-        setCategoryPendingDelete(null);
-        setIsDeleteModalOpen(false);
     };
 
     const openTabsModal = (category) => {
@@ -172,19 +150,11 @@ export default function Categories({ categories: categoryItems = [] }) {
         });
     };
 
-    const createCategory = () => {
-        const options = {
-            forceFormData: true,
-            preserveScroll: true,
-            onSuccess: () => {
-                closeFormModal();
-            },
-        };
-
-        post(route("admin.categories.store"), options);
-    };
-
     const updateCategory = () => {
+        if (!editingCategory) {
+            return;
+        }
+
         router.post(
             route("admin.categories.update", editingCategory.id),
             data,
@@ -200,30 +170,7 @@ export default function Categories({ categories: categoryItems = [] }) {
 
     const submitCategory = (event) => {
         event.preventDefault();
-
-        if (editingCategory) {
-            updateCategory();
-            return;
-        }
-
-        createCategory();
-    };
-
-    const deleteCategory = () => {
-        if (!categoryPendingDelete) {
-            return;
-        }
-
-        destroy(route("admin.categories.destroy", categoryPendingDelete.id), {
-            preserveScroll: true,
-            onSuccess: () => {
-                closeDeleteModal();
-
-                if (editingCategory?.id === categoryPendingDelete.id) {
-                    closeFormModal();
-                }
-            },
-        });
+        updateCategory();
     };
 
     return (
@@ -275,17 +222,6 @@ export default function Categories({ categories: categoryItems = [] }) {
                                         placeholder="Search categories"
                                     />
                                 </div>
-                                <button
-                                    type="button"
-                                    onClick={openCreateModal}
-                                    disabled={loading}
-                                    className="inline-flex h-12 w-full items-center justify-center gap-2 rounded-lg bg-emerald-600 px-5 text-sm font-semibold text-white shadow-sm transition hover:bg-emerald-700 disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto sm:px-6"
-                                >
-                                    <span className="text-lg">
-                                        <MdAddCircleOutline />
-                                    </span>
-                                    Add Category
-                                </button>
                             </div>
                         </div>
                     </div>
@@ -384,17 +320,6 @@ export default function Categories({ categories: categoryItems = [] }) {
                                                     >
                                                         Edit
                                                     </button>
-                                                    <button
-                                                        type="button"
-                                                        onClick={() =>
-                                                            openDeleteModal(
-                                                                category,
-                                                            )
-                                                        }
-                                                        className="font-semibold text-rose-600 hover:text-rose-800"
-                                                    >
-                                                        Delete
-                                                    </button>
                                                 </div>
                                             </td>
                                         </tr>
@@ -457,7 +382,7 @@ export default function Categories({ categories: categoryItems = [] }) {
                                                 : "Hidden"}
                                         </span>
                                     </div>
-                                    <div className="mt-4 grid grid-cols-1 gap-3 border-t border-slate-100 pt-4 sm:grid-cols-3">
+                                    <div className="mt-4 grid grid-cols-1 gap-3 border-t border-slate-100 pt-4 sm:grid-cols-2">
                                         <button
                                             type="button"
                                             onClick={() =>
@@ -475,15 +400,6 @@ export default function Categories({ categories: categoryItems = [] }) {
                                             className="inline-flex w-full items-center justify-center rounded-full bg-emerald-50 px-4 py-2 text-sm font-semibold text-emerald-700 transition hover:bg-emerald-100"
                                         >
                                             Tabs
-                                        </button>
-                                        <button
-                                            type="button"
-                                            onClick={() =>
-                                                openDeleteModal(category)
-                                            }
-                                            className="inline-flex w-full items-center justify-center rounded-full bg-rose-50 px-4 py-2 text-sm font-semibold text-rose-700 transition hover:bg-rose-100"
-                                        >
-                                            Delete
                                         </button>
                                     </div>
                                 </article>
@@ -511,13 +427,12 @@ export default function Categories({ categories: categoryItems = [] }) {
                                 STARBOOKS 4G Mabuhay
                             </p>
                             <h2 className="mt-2 text-xl font-bold text-gray-950 sm:text-2xl">
-                                {editingCategory
-                                    ? "Edit Category"
-                                    : "Add Category"}
+                                Edit Category
                             </h2>
                             <p className="mt-1 text-sm leading-6 text-gray-600">
-                                Category records appear on the public category
-                                screen.
+                                The public category set is fixed. You can edit
+                                titles, descriptions, ordering, images, tabs,
+                                and visibility here.
                             </p>
                         </div>
                         <button
@@ -652,20 +567,7 @@ export default function Categories({ categories: categoryItems = [] }) {
                             Show publicly
                         </label>
 
-                        <div className="flex flex-col-reverse gap-3 border-t border-slate-100 pt-4 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between">
-                            <div>
-                                {editingCategory ? (
-                                    <DangerButton
-                                        type="button"
-                                        onClick={() =>
-                                            openDeleteModal(editingCategory)
-                                        }
-                                        disabled={processing}
-                                    >
-                                        Delete
-                                    </DangerButton>
-                                ) : null}
-                            </div>
+                        <div className="flex flex-col-reverse gap-3 border-t border-slate-100 pt-4 sm:flex-row sm:flex-wrap sm:items-center sm:justify-end">
                             <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
                                 <SecondaryButton
                                     type="button"
@@ -673,49 +575,12 @@ export default function Categories({ categories: categoryItems = [] }) {
                                 >
                                     Cancel
                                 </SecondaryButton>
-                                <PrimaryButton disabled={processing || loading}>
-                                    {processing
-                                        ? "Saving..."
-                                        : editingCategory
-                                          ? "Update"
-                                          : "Save"}
+                                <PrimaryButton disabled={processing}>
+                                    {processing ? "Saving..." : "Update"}
                                 </PrimaryButton>
                             </div>
                         </div>
                     </form>
-                </div>
-            </Modal>
-
-            <Modal
-                show={isDeleteModalOpen}
-                onClose={closeDeleteModal}
-                maxWidth="lg"
-            >
-                <div className="p-4 sm:p-6">
-                    <h2 className="text-xl font-semibold text-slate-950">
-                        Delete Category
-                    </h2>
-                    <p className="mt-3 text-sm leading-6 text-slate-600">
-                        {categoryPendingDelete
-                            ? `Are you sure you want to delete "${categoryPendingDelete.title}"? This action cannot be undone.`
-                            : "Are you sure you want to delete this category?"}
-                    </p>
-
-                    <div className="mt-6 flex flex-col-reverse gap-3 sm:flex-row sm:flex-wrap sm:justify-end">
-                        <SecondaryButton
-                            type="button"
-                            onClick={closeDeleteModal}
-                        >
-                            Cancel
-                        </SecondaryButton>
-                        <DangerButton
-                            type="button"
-                            onClick={deleteCategory}
-                            disabled={processing}
-                        >
-                            {processing ? "Deleting..." : "Delete"}
-                        </DangerButton>
-                    </div>
                 </div>
             </Modal>
 

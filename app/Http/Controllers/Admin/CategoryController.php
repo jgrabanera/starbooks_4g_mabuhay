@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\CategoryRequest;
 use App\Http\Requests\UpdateCategoryTabsRequest;
 use App\Models\Category;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -21,27 +22,9 @@ class CategoryController extends Controller
         ]);
     }
 
-    public function store(CategoryRequest $request): RedirectResponse
+    public function store(): RedirectResponse
     {
-        $validated = $request->validated();
-        $slug = Str::slug($validated['title']);
-        $imageName = $request->file('image')->storeAs(
-            'images/thumbnails',
-            $this->buildImageName($slug, $request->file('image')->extension()),
-            'public',
-        );
-
-        Category::create([
-            'title' => trim($validated['title']),
-            'slug' => $slug,
-            'description' => $validated['description'] ?? null,
-            'image' => basename($imageName),
-            'display_order' => $validated['display_order'] ?? $this->nextDisplayOrder(),
-            'tabs' => $this->defaultTabs(),
-            'is_active' => (bool) ($validated['is_active'] ?? false),
-        ]);
-
-        return to_route('admin.categories.index');
+        throw new NotFoundHttpException();
     }
 
     public function update(CategoryRequest $request, Category $category): RedirectResponse
@@ -88,13 +71,7 @@ class CategoryController extends Controller
 
     public function destroy(Category $category): RedirectResponse
     {
-        if (!empty($category->image)) {
-            Storage::disk('public')->delete('images/thumbnails/' . $category->image);
-        }
-
-        $category->delete();
-
-        return to_route('admin.categories.index');
+        throw new NotFoundHttpException();
     }
 
     private function buildImageName(string $slug, string $extension): string

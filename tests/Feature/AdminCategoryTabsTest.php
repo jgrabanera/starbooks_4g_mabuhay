@@ -25,7 +25,7 @@ class AdminCategoryTabsTest extends TestCase
             'is_active' => true,
         ]);
 
-        $response = $this->actingAs($user)->put(
+        $response = $this->actingAs($user)->post(
             route('admin.categories.tabs.update', $category),
             [
                 'tabs' => [
