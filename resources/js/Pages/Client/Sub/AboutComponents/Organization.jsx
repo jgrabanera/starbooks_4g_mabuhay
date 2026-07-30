@@ -1,141 +1,224 @@
-import { IoGridOutline } from "react-icons/io5";
+const fallbackPortrait = "/assets/images/lgu_mabuhay.jpg";
 
-const officeCards = [
+const councilMembers = [
     {
-        title: "Executive Leadership",
-        description:
-            "Mayor, Vice Mayor, and policy leadership responsible for municipal direction and strategic priorities.",
+        id: "member-1",
+        name: "Maria Pilar T. Adlaon",
+        role: "Council Member",
+        image: fallbackPortrait,
     },
     {
-        title: "Administrative Services",
-        description:
-            "Records, human resources, office management, and interdepartment coordination.",
+        id: "member-2",
+        name: "Majin V. Andak Sr.",
+        role: "Council Member",
+        image: fallbackPortrait,
     },
     {
-        title: "Community Programs",
-        description:
-            "Social welfare support, citizen assistance, and inclusive local development initiatives.",
+        id: "member-3",
+        name: "Alvarez H. Dammang",
+        role: "Council Member",
+        image: fallbackPortrait,
     },
     {
-        title: "Planning and Support",
-        description:
-            "Finance, planning, information systems, and internal operational support units.",
+        id: "member-4",
+        name: "Nelson L. Mallen",
+        role: "Council Member",
+        image: fallbackPortrait,
+    },
+    {
+        id: "member-5",
+        name: "Baltazar A. Alcala Sr.",
+        role: "Council Member",
+        image: fallbackPortrait,
+    },
+    {
+        id: "member-6",
+        name: "Jermalyn M. Dammang",
+        role: "Council Member",
+        image: fallbackPortrait,
+    },
+    {
+        id: "member-7",
+        name: "Abubakhar S. Anjawan",
+        role: "Council Member",
+        image: fallbackPortrait,
     },
 ];
+
+const desktopFirstRow = councilMembers.slice(0, 4);
+const desktopSecondRow = councilMembers.slice(4);
+
+const MemberCard = ({ member }) => {
+    return (
+        <article className="relative mx-auto w-full max-w-[12.5rem] overflow-visible rounded-[1rem] bg-white px-4 pb-4 pt-14 shadow-[0_12px_28px_rgba(15,23,42,0.12)]">
+            <div className="absolute left-1/2 top-0 h-16 w-16 -translate-x-1/2 -translate-y-1/2 rounded-full bg-gradient-to-br from-sky-500 to-cyan-400 p-1 shadow-md">
+                <div className="h-full w-full overflow-hidden rounded-full border-4 border-white bg-white">
+                    <img
+                        src={member.image || fallbackPortrait}
+                        alt=""
+                        aria-hidden="true"
+                        className="h-full w-full object-cover"
+                    />
+                </div>
+            </div>
+            <div className="rounded-[0.8rem] bg-gradient-to-r from-sky-500 to-cyan-400 px-3 py-3 text-center text-white shadow-sm">
+                <p className="text-[0.82rem] font-black uppercase tracking-[0.04em] leading-5">
+                    {member.name}
+                </p>
+            </div>
+            <p className="pt-4 text-center text-[0.72rem] font-medium uppercase tracking-[0.16em] text-slate-500">
+                {member.role}
+            </p>
+        </article>
+    );
+};
 
 const Organization = () => {
     return (
         <div className="space-y-6">
-            <section className="rounded-[1.9rem] border border-white/75 bg-white/60 p-6 shadow-[0_20px_50px_rgba(15,23,42,0.12)] backdrop-blur-md sm:p-8">
-                <span className="inline-flex rounded-full bg-emerald-100 px-3 py-1 text-xs font-bold uppercase tracking-[0.22em] text-emerald-800">
-                    Internal Structure
-                </span>
-                <h2 className="mt-4 text-3xl font-black text-slate-950 sm:text-4xl">
-                    Organizational Structure
-                </h2>
-                <p className="mt-4 max-w-4xl text-sm leading-7 text-slate-700 sm:text-base">
-                    This section is reserved for the official organizational
-                    chart of LGU Mabuhay. It can later display the approved
-                    office hierarchy, division heads, reporting lines, and unit
-                    assignments for the municipal government.
-                </p>
-            </section>
+            <div className="relative hidden xl:block">
+                <div className="mx-auto max-w-7xl">
+                    <div className="flex justify-center">
+                        <article className="relative mx-auto w-full max-w-[22rem] overflow-visible rounded-[1.2rem] bg-white px-5 pb-5 pt-16 shadow-[0_18px_40px_rgba(15,23,42,0.12)]">
+                            <div className="absolute left-1/2 top-0 h-24 w-24 -translate-x-1/2 -translate-y-1/2 rounded-full bg-gradient-to-br from-fuchsia-500 to-pink-500 p-1 shadow-lg">
+                                <div className="h-full w-full overflow-hidden rounded-full border-4 border-white bg-white">
+                                    <img
+                                        src={fallbackPortrait}
+                                        alt=""
+                                        aria-hidden="true"
+                                        className="h-full w-full object-cover"
+                                    />
+                                </div>
+                            </div>
 
-            <section className="grid gap-6 lg:grid-cols-[0.8fr_1.2fr]">
-                <aside className="rounded-[1.75rem] border border-white/75 bg-emerald-700 p-6 text-white shadow-[0_20px_50px_rgba(6,78,59,0.22)] sm:p-8">
-                    <h3 className="text-xl font-black uppercase tracking-[0.12em] text-emerald-50">
-                        Placeholder Notes
-                    </h3>
-                    <div className="mt-5 space-y-4">
-                        <div className="rounded-2xl border border-white/15 bg-white/10 p-4 backdrop-blur-sm">
-                            <p className="text-xs font-bold uppercase tracking-[0.18em] text-emerald-100/90">
-                                Recommended Content
-                            </p>
-                            <p className="mt-2 text-sm leading-6 text-white/90">
-                                Approved org chart image, office titles, unit
-                                descriptions, and designated contact points.
-                            </p>
-                        </div>
-                        <div className="rounded-2xl border border-white/15 bg-white/10 p-4 backdrop-blur-sm">
-                            <p className="text-xs font-bold uppercase tracking-[0.18em] text-emerald-100/90">
-                                Display Format
-                            </p>
-                            <p className="mt-2 text-sm leading-6 text-white/90">
-                                Portrait chart image, downloadable PDF, or
-                                interactive hierarchy cards.
-                            </p>
-                        </div>
+                            <div className="absolute inset-x-10 top-0 h-12 -translate-y-[8%] rounded-b-full border-[5px] border-t-0 border-sky-900/80" />
+
+                            <div className="rounded-[0.95rem] bg-gradient-to-r from-fuchsia-500 to-pink-500 px-4 py-3 text-center text-white shadow-md">
+                                <p className="text-xl font-black uppercase tracking-[0.04em] leading-8">
+                                    Hon. Edrelusa "Lulu" Calonge
+                                </p>
+                            </div>
+
+                            <div className="px-2 pb-1 pt-4 text-center">
+                                <p className="text-xs font-bold uppercase tracking-[0.22em] text-sky-900">
+                                    Municipal Mayor
+                                </p>
+                            </div>
+                        </article>
                     </div>
-                </aside>
 
-                <div className="rounded-[1.75rem] border border-dashed border-emerald-300 bg-white/70 p-5 shadow-[0_20px_50px_rgba(15,23,42,0.1)] backdrop-blur-md sm:p-8">
-                    <div className="rounded-[1.5rem] border border-emerald-200 bg-white p-6">
-                        <div className="mx-auto max-w-3xl">
-                            <div className="mx-auto flex w-fit flex-col items-center rounded-2xl bg-emerald-700 px-6 py-4 text-center text-white shadow-lg">
-                                <span className="text-xs font-bold uppercase tracking-[0.18em] text-emerald-100">
-                                    Top Office
-                                </span>
-                                <span className="mt-2 text-lg font-black">
-                                    Office of the Mayor
-                                </span>
-                            </div>
+                    <div className="mx-auto h-10 w-0.5 bg-slate-400" />
 
-                            <div className="mx-auto h-8 w-1 bg-emerald-300" />
-
-                            <div className="grid gap-4 md:grid-cols-2">
-                                <div className="rounded-2xl border border-emerald-100 bg-white p-4 text-center shadow-sm">
-                                    <p className="text-sm font-black uppercase tracking-[0.08em] text-emerald-800">
-                                        Executive Branch
-                                    </p>
-                                    <p className="mt-2 text-sm leading-6 text-slate-600">
-                                        Placeholder for department heads and
-                                        senior leadership offices.
-                                    </p>
-                                </div>
-                                <div className="rounded-2xl border border-emerald-100 bg-white p-4 text-center shadow-sm">
-                                    <p className="text-sm font-black uppercase tracking-[0.08em] text-emerald-800">
-                                        Support Offices
-                                    </p>
-                                    <p className="mt-2 text-sm leading-6 text-slate-600">
-                                        Placeholder for finance, planning, HR,
-                                        records, and administrative services.
-                                    </p>
+                    <div className="flex justify-center">
+                        <article className="relative mx-auto w-full max-w-[16rem] overflow-visible rounded-[1.2rem] bg-white px-4 pb-4 pt-14 shadow-[0_18px_40px_rgba(15,23,42,0.12)]">
+                            <div className="absolute left-1/2 top-0 h-[4.5rem] w-[4.5rem] -translate-x-1/2 -translate-y-1/2 rounded-full bg-gradient-to-br from-amber-400 to-orange-500 p-1 shadow-lg">
+                                <div className="h-full w-full overflow-hidden rounded-full border-4 border-white bg-white">
+                                    <img
+                                        src={fallbackPortrait}
+                                        alt=""
+                                        aria-hidden="true"
+                                        className="h-full w-full object-cover"
+                                    />
                                 </div>
                             </div>
 
-                            <div className="mt-6 rounded-2xl border border-dashed border-emerald-300 bg-white/80 px-5 py-10 text-center">
-                                <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-emerald-100 text-emerald-700">
-                                    <IoGridOutline className="h-8 w-8" />
-                                </div>
-                                <p className="mt-4 text-lg font-black uppercase tracking-[0.08em] text-emerald-900">
-                                    Official Organization Chart Placeholder
-                                </p>
-                                <p className="mt-3 text-sm leading-7 text-slate-600">
-                                    Replace this area with the final
-                                    organizational chart image or diagram once
-                                    the approved structure is available.
+                            <div className="absolute inset-x-7 top-0 h-11 -translate-y-[8%] rounded-b-full border-[5px] border-t-0 border-sky-900/80" />
+
+                            <div className="rounded-[0.95rem] bg-gradient-to-r from-amber-400 to-orange-500 px-3 py-2.5 text-center text-white shadow-md">
+                                <p className="text-base font-black uppercase tracking-[0.04em] leading-6">
+                                    Hon. Joval John B. Samonte
                                 </p>
                             </div>
-                        </div>
+
+                            <div className="px-2 pb-1 pt-4 text-center">
+                                <p className="text-[0.68rem] font-bold uppercase tracking-[0.22em] text-sky-900">
+                                    Municipal Vice Mayor
+                                </p>
+                            </div>
+                        </article>
+                    </div>
+
+                    <div className="mx-auto h-10 w-0.5 bg-slate-400" />
+                    <div className="mx-auto h-10 max-w-6xl border-t-2 border-dashed border-slate-400/80" />
+
+                    <div className="mx-auto -mt-1 grid max-w-6xl grid-cols-4 gap-8">
+                        {desktopFirstRow.map((member) => (
+                            <div
+                                key={member.id}
+                                className="flex flex-col items-center"
+                            >
+                                <div className="h-7 w-0.5 bg-slate-400" />
+                                <MemberCard member={member} />
+                            </div>
+                        ))}
+                    </div>
+
+                    <div className="mx-auto mt-8 grid max-w-[50rem] grid-cols-3 gap-8">
+                        {desktopSecondRow.map((member) => (
+                            <div
+                                key={`${member.id}-second-row`}
+                                className="flex flex-col items-center"
+                            >
+                                <div className="h-7 w-0.5 bg-slate-400" />
+                                <MemberCard member={member} />
+                            </div>
+                        ))}
                     </div>
                 </div>
-            </section>
+            </div>
 
-            <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-                {officeCards.map((card) => (
-                    <div
-                        key={card.title}
-                        className="rounded-[1.5rem] border border-white/75 bg-white/65 p-5 shadow-[0_16px_34px_rgba(15,23,42,0.08)] backdrop-blur-md"
-                    >
-                        <h3 className="text-sm font-black uppercase tracking-[0.08em] text-emerald-900">
-                            {card.title}
-                        </h3>
-                        <p className="mt-3 text-sm leading-6 text-slate-600">
-                            {card.description}
+            <div className="relative space-y-6 xl:hidden">
+                <article className="relative mx-auto w-full max-w-[22rem] overflow-visible rounded-[1.2rem] bg-white px-5 pb-5 pt-16 shadow-[0_18px_40px_rgba(15,23,42,0.12)]">
+                    <div className="absolute left-1/2 top-0 h-24 w-24 -translate-x-1/2 -translate-y-1/2 rounded-full bg-gradient-to-br from-fuchsia-500 to-pink-500 p-1 shadow-lg">
+                        <div className="h-full w-full overflow-hidden rounded-full border-4 border-white bg-white">
+                            <img src={fallbackPortrait} alt="" aria-hidden="true" className="h-full w-full object-cover" />
+                        </div>
+                    </div>
+                    <div className="absolute inset-x-10 top-0 h-12 -translate-y-[8%] rounded-b-full border-[5px] border-t-0 border-sky-900/80" />
+                    <div className="rounded-[0.95rem] bg-gradient-to-r from-fuchsia-500 to-pink-500 px-4 py-3 text-center text-white shadow-md">
+                        <p className="text-xl font-black uppercase tracking-[0.04em] leading-8">
+                            Hon. Edrelusa "Lulu" Calonge
                         </p>
                     </div>
-                ))}
-            </section>
+                    <div className="px-2 pb-1 pt-4 text-center">
+                        <p className="text-xs font-bold uppercase tracking-[0.22em] text-sky-900">
+                            Municipal Mayor
+                        </p>
+                    </div>
+                </article>
+
+                <div className="mx-auto h-8 w-0.5 bg-slate-400" />
+
+                <article className="relative mx-auto w-full max-w-[16rem] overflow-visible rounded-[1.2rem] bg-white px-4 pb-4 pt-14 shadow-[0_18px_40px_rgba(15,23,42,0.12)]">
+                    <div className="absolute left-1/2 top-0 h-[4.5rem] w-[4.5rem] -translate-x-1/2 -translate-y-1/2 rounded-full bg-gradient-to-br from-amber-400 to-orange-500 p-1 shadow-lg">
+                        <div className="h-full w-full overflow-hidden rounded-full border-4 border-white bg-white">
+                            <img src={fallbackPortrait} alt="" aria-hidden="true" className="h-full w-full object-cover" />
+                        </div>
+                    </div>
+                    <div className="absolute inset-x-7 top-0 h-11 -translate-y-[8%] rounded-b-full border-[5px] border-t-0 border-sky-900/80" />
+                    <div className="rounded-[0.95rem] bg-gradient-to-r from-amber-400 to-orange-500 px-3 py-2.5 text-center text-white shadow-md">
+                        <p className="text-base font-black uppercase tracking-[0.04em] leading-6">
+                            Hon. Joval John B. Samonte
+                        </p>
+                    </div>
+                    <div className="px-2 pb-1 pt-4 text-center">
+                        <p className="text-[0.68rem] font-bold uppercase tracking-[0.22em] text-sky-900">
+                            Municipal Vice Mayor
+                        </p>
+                    </div>
+                </article>
+
+                <div className="rounded-[1.5rem] border border-white/80 bg-white/92 p-5 shadow-[0_16px_40px_rgba(15,23,42,0.1)]">
+                    <p className="text-center text-xs font-bold uppercase tracking-[0.22em] text-sky-900">
+                        Sangguniang Bayan Members
+                    </p>
+                    <div className="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                        {councilMembers.map((member) => (
+                            <MemberCard key={member.id} member={member} />
+                        ))}
+                    </div>
+                </div>
+            </div>
         </div>
     );
 };
