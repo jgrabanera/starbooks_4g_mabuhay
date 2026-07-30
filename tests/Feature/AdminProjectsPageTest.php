@@ -3,7 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\Category;
-use App\Models\SubCategory;
+use App\Models\ProjectContent;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Inertia\Testing\AssertableInertia as Assert;
@@ -22,10 +22,6 @@ class AdminProjectsPageTest extends TestCase
             'description' => 'Projects section',
             'image' => 'projects.png',
             'display_order' => 3,
-            'tabs' => [
-                ['id' => 'completed', 'label' => 'Completed'],
-                ['id' => 'ongoing', 'label' => 'On-Going'],
-            ],
             'is_active' => true,
         ]);
 
@@ -35,30 +31,15 @@ class AdminProjectsPageTest extends TestCase
             'description' => 'Tourism section',
             'image' => 'tourism.png',
             'display_order' => 4,
-            'tabs' => [
-                ['id' => 'events', 'label' => 'Events'],
-            ],
             'is_active' => true,
         ]);
 
-        SubCategory::create([
-            'category_id' => $projectCategory->id,
+        ProjectContent::create([
             'tab_id' => 'completed',
             'title' => 'Finished Road Project',
             'slug' => 'finished-road-project',
             'description' => 'Completed project',
             'image' => 'finished-road-project.png',
-            'pdf' => null,
-            'is_active' => true,
-        ]);
-
-        SubCategory::create([
-            'category_id' => $otherCategory->id,
-            'tab_id' => 'events',
-            'title' => 'Tourism Festival',
-            'slug' => 'tourism-festival',
-            'description' => 'Tourism content',
-            'image' => 'tourism-festival.png',
             'pdf' => null,
             'is_active' => true,
         ]);

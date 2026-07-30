@@ -51,7 +51,6 @@ export default function AdminFixedSectionPage({
         clearErrors,
     } = useForm({
         ...emptyContent,
-        category_id: sectionCategory?.id ? String(sectionCategory.id) : "",
         tab_id: config.tabs[0]?.id ?? "",
     });
 
@@ -94,7 +93,6 @@ export default function AdminFixedSectionPage({
         reset();
         setData({
             ...emptyContent,
-            category_id: sectionCategory?.id ? String(sectionCategory.id) : "",
             tab_id: tabId,
         });
     };
@@ -113,7 +111,6 @@ export default function AdminFixedSectionPage({
         setEditingContent(content);
         clearErrors();
         setData({
-            category_id: String(content.category_id ?? sectionCategory?.id ?? ""),
             tab_id: normalizeTabId(content.tab_id ?? activeTab),
             title: content.title ?? "",
             image: null,
@@ -142,7 +139,7 @@ export default function AdminFixedSectionPage({
         }
 
         if (editingContent) {
-            router.post(route("admin.contents.update", editingContent.id), data, {
+            router.post(route(config.routes.update, editingContent.id), data, {
                 forceFormData: true,
                 preserveScroll: true,
                 onSuccess: () => {
@@ -152,7 +149,7 @@ export default function AdminFixedSectionPage({
             return;
         }
 
-        post(route("admin.contents.store"), {
+        post(route(config.routes.store), {
             forceFormData: true,
             preserveScroll: true,
             onSuccess: () => {
@@ -166,7 +163,7 @@ export default function AdminFixedSectionPage({
             return;
         }
 
-        destroy(route("admin.contents.destroy", contentPendingDelete.id), {
+        destroy(route(config.routes.destroy, contentPendingDelete.id), {
             preserveScroll: true,
             onSuccess: () => {
                 closeDeleteModal();
@@ -541,8 +538,6 @@ export default function AdminFixedSectionPage({
                     </div>
 
                     <form onSubmit={submitContent} className="mt-6 space-y-4">
-                        <input type="hidden" value={data.category_id} readOnly />
-
                         <div className="grid gap-4 md:grid-cols-2">
                             <div>
                                 <InputLabel

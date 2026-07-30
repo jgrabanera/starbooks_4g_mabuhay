@@ -3,7 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\Category;
-use App\Models\SubCategory;
+use App\Models\TourismContent;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -25,8 +25,7 @@ class ClientSectionContentApiTest extends TestCase
             'is_active' => true,
         ]);
 
-        SubCategory::create([
-            'category_id' => $category->id,
+        TourismContent::create([
             'tab_id' => 'events-1',
             'title' => 'Founding Anniversary Parade',
             'slug' => 'founding-anniversary-parade',
@@ -36,8 +35,7 @@ class ClientSectionContentApiTest extends TestCase
             'is_active' => true,
         ]);
 
-        SubCategory::create([
-            'category_id' => $category->id,
+        TourismContent::create([
             'tab_id' => 'events-1',
             'title' => 'Hidden Event',
             'slug' => 'hidden-event',

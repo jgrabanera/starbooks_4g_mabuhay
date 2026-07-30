@@ -33,6 +33,11 @@ export const fixedSectionConfigs = {
         formIdPrefix: "projects",
         searchKey: "admin-projects-search",
         tabGridClassName: "md:grid-cols-2",
+        routes: {
+            store: "admin.projects.store",
+            update: "admin.projects.update",
+            destroy: "admin.projects.destroy",
+        },
         tabs: [
             {
                 id: "completed",
@@ -60,6 +65,11 @@ export const fixedSectionConfigs = {
         formIdPrefix: "resources",
         searchKey: "admin-resources-search",
         tabGridClassName: "md:grid-cols-1",
+        routes: {
+            store: "admin.resources.store",
+            update: "admin.resources.update",
+            destroy: "admin.resources.destroy",
+        },
         tabs: [
             {
                 id: "resources",
@@ -80,6 +90,11 @@ export const fixedSectionConfigs = {
         formIdPrefix: "social-services",
         searchKey: "admin-social-services-search",
         tabGridClassName: "md:grid-cols-2 xl:grid-cols-4",
+        routes: {
+            store: "admin.social-services.store",
+            update: "admin.social-services.update",
+            destroy: "admin.social-services.destroy",
+        },
         tabs: [
             {
                 id: "award",
@@ -121,6 +136,11 @@ export const fixedSectionConfigs = {
         formIdPrefix: "tourism",
         searchKey: "admin-tourism-search",
         tabGridClassName: "md:grid-cols-3",
+        routes: {
+            store: "admin.tourism.store",
+            update: "admin.tourism.update",
+            destroy: "admin.tourism.destroy",
+        },
         tabs: [
             {
                 id: "events",
@@ -155,6 +175,11 @@ export const fixedSectionConfigs = {
         formIdPrefix: "dost-services",
         searchKey: "admin-dost-services-search",
         tabGridClassName: "md:grid-cols-3",
+        routes: {
+            store: "admin.dost-services.store",
+            update: "admin.dost-services.update",
+            destroy: "admin.dost-services.destroy",
+        },
         tabs: [
             {
                 id: "Dost-ix",

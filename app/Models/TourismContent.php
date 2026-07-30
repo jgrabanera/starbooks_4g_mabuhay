@@ -4,31 +4,22 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Support\Str;
 
-class Category extends Model
+class TourismContent extends Model
 {
     use HasFactory;
 
-    protected $table = 'categories';
-
     protected $fillable = [
+        'tab_id',
         'title',
         'slug',
         'description',
         'image',
-        'display_order',
+        'pdf',
         'is_active',
     ];
 
     protected $casts = [
-        'display_order' => 'integer',
         'is_active' => 'boolean',
     ];
-
-    public function subCategories(): HasMany
-    {
-        return $this->hasMany(SubCategory::class);
-    }
 }

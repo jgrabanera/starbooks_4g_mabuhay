@@ -3,7 +3,10 @@
 namespace Tests\Feature;
 
 use App\Models\Category;
-use App\Models\SubCategory;
+use App\Models\DostServiceContent;
+use App\Models\ResourceContent;
+use App\Models\SocialServiceContent;
+use App\Models\TourismContent;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Inertia\Testing\AssertableInertia as Assert;
@@ -65,40 +68,45 @@ class AdminFixedSectionPagesTest extends TestCase
                 'is_active' => true,
             ]);
 
-            SubCategory::create([
-                'category_id' => $category->id,
-                'tab_id' => $definition['tab_id'],
-                'title' => $definition['content_title'],
-                'slug' => str($definition['content_title'])->slug()->toString(),
-                'description' => $definition['title'] . ' content',
-                'image' => $definition['slug'] . '-content.png',
-                'pdf' => null,
-                'is_active' => true,
-            ]);
+            match ($definition['slug']) {
+                'resources' => ResourceContent::create([
+                    'tab_id' => $definition['tab_id'],
+                    'title' => $definition['content_title'],
+                    'slug' => str($definition['content_title'])->slug()->toString(),
+                    'description' => $definition['title'] . ' content',
+                    'image' => $definition['slug'] . '-content.png',
+                    'pdf' => null,
+                    'is_active' => true,
+                ]),
+                'social-services' => SocialServiceContent::create([
+                    'tab_id' => $definition['tab_id'],
+                    'title' => $definition['content_title'],
+                    'slug' => str($definition['content_title'])->slug()->toString(),
+                    'description' => $definition['title'] . ' content',
+                    'image' => $definition['slug'] . '-content.png',
+                    'pdf' => null,
+                    'is_active' => true,
+                ]),
+                'tourism' => TourismContent::create([
+                    'tab_id' => $definition['tab_id'],
+                    'title' => $definition['content_title'],
+                    'slug' => str($definition['content_title'])->slug()->toString(),
+                    'description' => $definition['title'] . ' content',
+                    'image' => $definition['slug'] . '-content.png',
+                    'pdf' => null,
+                    'is_active' => true,
+                ]),
+                'dost-services' => DostServiceContent::create([
+                    'tab_id' => $definition['tab_id'],
+                    'title' => $definition['content_title'],
+                    'slug' => str($definition['content_title'])->slug()->toString(),
+                    'description' => $definition['title'] . ' content',
+                    'image' => $definition['slug'] . '-content.png',
+                    'pdf' => null,
+                    'is_active' => true,
+                ]),
+            };
         }
-
-        $otherCategory = Category::create([
-            'title' => 'Other Category',
-            'slug' => 'other-category',
-            'description' => 'Other section',
-            'image' => 'other-category.png',
-            'display_order' => 50,
-            'tabs' => [
-                ['id' => 'other', 'label' => 'Other'],
-            ],
-            'is_active' => true,
-        ]);
-
-        SubCategory::create([
-            'category_id' => $otherCategory->id,
-            'tab_id' => 'other',
-            'title' => 'Other Category Item',
-            'slug' => 'other-category-item',
-            'description' => 'Other content',
-            'image' => 'other-category-item.png',
-            'pdf' => null,
-            'is_active' => true,
-        ]);
 
         foreach ($definitions as $definition) {
             $this->actingAs($user)

@@ -19,9 +19,7 @@ const emptyCategory = {
 export default function Categories({ categories: categoryItems = [] }) {
     const [categories, setCategories] = useState(categoryItems);
     const [editingCategory, setEditingCategory] = useState(null);
-    const [tabsCategory, setTabsCategory] = useState(null);
     const [isFormModalOpen, setIsFormModalOpen] = useState(false);
-    const [isTabsModalOpen, setIsTabsModalOpen] = useState(false);
     const [search, setSearch] = useRemember("", "admin-categories-search");
 
     const {
@@ -32,17 +30,6 @@ export default function Categories({ categories: categoryItems = [] }) {
         reset,
         clearErrors,
     } = useForm(emptyCategory);
-
-    const {
-        data: tabsData,
-        setData: setTabsData,
-        post: postTabs,
-        processing: tabsProcessing,
-        errors: tabErrors,
-        clearErrors: clearTabErrors,
-    } = useForm({
-        tabs: [{ label: "Memorandum" }],
-    });
 
     const filteredCategories = useMemo(() => {
         const term = search.trim().toLowerCase();
@@ -69,16 +56,6 @@ export default function Categories({ categories: categoryItems = [] }) {
         setData(emptyCategory);
     };
 
-    const normalizeTabs = (tabs) => {
-        if (!Array.isArray(tabs) || tabs.length === 0) {
-            return [{ label: "Memorandum" }];
-        }
-
-        return tabs.map((tab) => ({
-            label: tab.label ?? "",
-        }));
-    };
-
     const closeFormModal = () => {
         setIsFormModalOpen(false);
         clearForm();
@@ -95,59 +72,6 @@ export default function Categories({ categories: categoryItems = [] }) {
             is_active: Boolean(category.is_active),
         });
         setIsFormModalOpen(true);
-    };
-
-    const openTabsModal = (category) => {
-        setTabsCategory(category);
-        clearTabErrors();
-        setTabsData("tabs", normalizeTabs(category.tabs));
-        setIsTabsModalOpen(true);
-    };
-
-    const closeTabsModal = () => {
-        setTabsCategory(null);
-        clearTabErrors();
-        setTabsData("tabs", [{ label: "Memorandum" }]);
-        setIsTabsModalOpen(false);
-    };
-
-    const updateTabLabel = (index, value) => {
-        const nextTabs = [...tabsData.tabs];
-        nextTabs[index] = {
-            ...nextTabs[index],
-            label: value,
-        };
-        setTabsData("tabs", nextTabs);
-    };
-
-    const addTabField = () => {
-        setTabsData("tabs", [...tabsData.tabs, { label: "" }]);
-    };
-
-    const removeTabField = (index) => {
-        if (tabsData.tabs.length === 1) {
-            return;
-        }
-
-        setTabsData(
-            "tabs",
-            tabsData.tabs.filter((_, tabIndex) => tabIndex !== index),
-        );
-    };
-
-    const submitTabs = (event) => {
-        event.preventDefault();
-
-        if (!tabsCategory) {
-            return;
-        }
-
-        postTabs(route("admin.categories.tabs.update", tabsCategory.id), {
-            preserveScroll: true,
-            onSuccess: () => {
-                closeTabsModal();
-            },
-        });
     };
 
     const updateCategory = () => {
@@ -189,8 +113,8 @@ export default function Categories({ categories: categoryItems = [] }) {
                                     </h2>
                                     <p className="max-w-2xl text-sm leading-6 text-slate-600">
                                         Manage titles, descriptions, visibility,
-                                        and the tabs shown on each category
-                                        page.
+                                        display order, and images for the fixed
+                                        public category pages.
                                     </p>
                                 </div>
                             </div>
@@ -240,9 +164,6 @@ export default function Categories({ categories: categoryItems = [] }) {
                                         Image
                                     </th>
                                     <th className="px-6 py-3 text-left text-xs font-bold uppercase tracking-wider text-slate-800">
-                                        Tabs
-                                    </th>
-                                    <th className="px-6 py-3 text-left text-xs font-bold uppercase tracking-wider text-slate-800">
                                         Status
                                     </th>
                                     <th className="px-6 py-3 text-right text-xs font-bold uppercase tracking-wider text-slate-800">
@@ -269,20 +190,6 @@ export default function Categories({ categories: categoryItems = [] }) {
                                             <td className="max-w-[12rem] truncate px-6 py-4 text-xs text-gray-600">
                                                 {category.image || "No image"}
                                             </td>
-                                            <td className="px-6 py-4 text-sm text-gray-600">
-                                                <div className="flex max-w-xs flex-wrap gap-2">
-                                                    {(category.tabs ?? []).map(
-                                                        (tab) => (
-                                                            <span
-                                                                key={tab.id}
-                                                                className="rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-700"
-                                                            >
-                                                                {tab.label}
-                                                            </span>
-                                                        ),
-                                                    )}
-                                                </div>
-                                            </td>
                                             <td className="whitespace-nowrap px-6 py-4 text-sm">
                                                 <span
                                                     className={`rounded-full px-3 py-1 text-xs font-semibold ${
@@ -301,17 +208,6 @@ export default function Categories({ categories: categoryItems = [] }) {
                                                     <button
                                                         type="button"
                                                         onClick={() =>
-                                                            openTabsModal(
-                                                                category,
-                                                            )
-                                                        }
-                                                        className="font-semibold text-emerald-700 hover:text-emerald-900"
-                                                    >
-                                                        Tabs
-                                                    </button>
-                                                    <button
-                                                        type="button"
-                                                        onClick={() =>
                                                             openEditModal(
                                                                 category,
                                                             )
@@ -327,7 +223,7 @@ export default function Categories({ categories: categoryItems = [] }) {
                                 ) : (
                                     <tr>
                                         <td
-                                            colSpan="6"
+                                            colSpan="5"
                                             className="px-6 py-8 text-center text-sm text-gray-500"
                                         >
                                             No categories found.
@@ -357,18 +253,6 @@ export default function Categories({ categories: categoryItems = [] }) {
                                             <p className="mt-2 break-all text-sm text-slate-500">
                                                 {category.image || "No image"}
                                             </p>
-                                            <div className="mt-3 flex flex-wrap gap-2">
-                                                {(category.tabs ?? []).map(
-                                                    (tab) => (
-                                                        <span
-                                                            key={tab.id}
-                                                            className="rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-700"
-                                                        >
-                                                            {tab.label}
-                                                        </span>
-                                                    ),
-                                                )}
-                                            </div>
                                         </div>
                                         <span
                                             className={`inline-flex w-fit rounded-full px-3 py-1 text-xs font-semibold ${
@@ -382,7 +266,7 @@ export default function Categories({ categories: categoryItems = [] }) {
                                                 : "Hidden"}
                                         </span>
                                     </div>
-                                    <div className="mt-4 grid grid-cols-1 gap-3 border-t border-slate-100 pt-4 sm:grid-cols-2">
+                                    <div className="mt-4 grid grid-cols-1 gap-3 border-t border-slate-100 pt-4">
                                         <button
                                             type="button"
                                             onClick={() =>
@@ -391,15 +275,6 @@ export default function Categories({ categories: categoryItems = [] }) {
                                             className="inline-flex w-full items-center justify-center rounded-full bg-slate-100 px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-200"
                                         >
                                             Edit
-                                        </button>
-                                        <button
-                                            type="button"
-                                            onClick={() =>
-                                                openTabsModal(category)
-                                            }
-                                            className="inline-flex w-full items-center justify-center rounded-full bg-emerald-50 px-4 py-2 text-sm font-semibold text-emerald-700 transition hover:bg-emerald-100"
-                                        >
-                                            Tabs
                                         </button>
                                     </div>
                                 </article>
@@ -431,8 +306,8 @@ export default function Categories({ categories: categoryItems = [] }) {
                             </h2>
                             <p className="mt-1 text-sm leading-6 text-gray-600">
                                 The public category set is fixed. You can edit
-                                titles, descriptions, ordering, images, tabs,
-                                and visibility here.
+                                titles, descriptions, ordering, images, and
+                                visibility here.
                             </p>
                         </div>
                         <button
@@ -577,120 +452,6 @@ export default function Categories({ categories: categoryItems = [] }) {
                                 </SecondaryButton>
                                 <PrimaryButton disabled={processing}>
                                     {processing ? "Saving..." : "Update"}
-                                </PrimaryButton>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-            </Modal>
-
-            <Modal
-                show={isTabsModalOpen}
-                onClose={closeTabsModal}
-                maxWidth="2xl"
-            >
-                <div className="p-4 sm:p-6">
-                    <div className="flex items-start justify-between gap-4">
-                        <div className="min-w-0">
-                            <p className="text-xs font-bold uppercase tracking-[0.22em] text-emerald-700">
-                                Category Tabs
-                            </p>
-                            <h2 className="mt-2 text-xl font-bold text-gray-950 sm:text-2xl">
-                                {tabsCategory?.title ?? "Manage Tabs"}
-                            </h2>
-                            <p className="mt-1 text-sm leading-6 text-gray-600">
-                                Add the tabs you want to show on this category's
-                                sub-category page.
-                            </p>
-                        </div>
-                        <button
-                            type="button"
-                            onClick={closeTabsModal}
-                            className="rounded-full p-2 text-gray-400 transition hover:bg-gray-100 hover:text-gray-600"
-                        >
-                            <span className="sr-only">Close modal</span>
-                            <svg
-                                className="h-5 w-5"
-                                viewBox="0 0 24 24"
-                                fill="none"
-                                stroke="currentColor"
-                                strokeWidth="2"
-                            >
-                                <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    d="M6 6l12 12M18 6L6 18"
-                                />
-                            </svg>
-                        </button>
-                    </div>
-
-                    <form onSubmit={submitTabs} className="mt-6 space-y-4">
-                        <div className="space-y-3">
-                            {tabsData.tabs.map((tab, index) => (
-                                <div
-                                    key={`tab-field-${index}`}
-                                    className="flex flex-col gap-3 sm:flex-row sm:items-start"
-                                >
-                                    <div className="flex-1">
-                                        <InputLabel
-                                            htmlFor={`tab-label-${index}`}
-                                            value={`Tab ${index + 1}`}
-                                        />
-                                        <TextInput
-                                            id={`tab-label-${index}`}
-                                            value={tab.label}
-                                            onChange={(event) =>
-                                                updateTabLabel(
-                                                    index,
-                                                    event.target.value,
-                                                )
-                                            }
-                                            className="mt-1 block w-full"
-                                            disabled={tabsProcessing}
-                                            placeholder="Enter tab label"
-                                        />
-                                        <InputError
-                                            message={
-                                                tabErrors[`tabs.${index}.label`]
-                                            }
-                                            className="mt-2"
-                                        />
-                                    </div>
-                                    <button
-                                        type="button"
-                                        onClick={() => removeTabField(index)}
-                                        disabled={
-                                            tabsProcessing ||
-                                            tabsData.tabs.length === 1
-                                        }
-                                        className="inline-flex w-full items-center justify-center rounded-full border border-rose-200 px-3 py-2 text-xs font-semibold uppercase tracking-wide text-rose-700 transition hover:bg-rose-50 disabled:cursor-not-allowed disabled:opacity-50 sm:mt-7 sm:w-auto"
-                                    >
-                                        Remove
-                                    </button>
-                                </div>
-                            ))}
-                        </div>
-
-                        <InputError message={tabErrors.tabs} className="mt-2" />
-
-                        <div className="flex flex-col gap-3 border-t border-slate-100 pt-4 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between">
-                            <SecondaryButton
-                                type="button"
-                                onClick={addTabField}
-                                disabled={tabsProcessing}
-                            >
-                                Add Tab
-                            </SecondaryButton>
-                            <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
-                                <SecondaryButton
-                                    type="button"
-                                    onClick={closeTabsModal}
-                                >
-                                    Cancel
-                                </SecondaryButton>
-                                <PrimaryButton disabled={tabsProcessing}>
-                                    {tabsProcessing ? "Saving..." : "Save Tabs"}
                                 </PrimaryButton>
                             </div>
                         </div>

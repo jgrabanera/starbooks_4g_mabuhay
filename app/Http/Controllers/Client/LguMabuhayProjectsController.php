@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Client;
 
 use App\Http\Controllers\Controller;
 use App\Models\Category;
+use App\Models\ProjectContent;
 use Illuminate\Http\JsonResponse;
 
 class LguMabuhayProjectsController extends Controller
@@ -15,7 +16,7 @@ class LguMabuhayProjectsController extends Controller
             ->where('is_active', true)
             ->firstOrFail(['id', 'title', 'slug']);
 
-        $contents = $category->subCategories()
+        $contents = ProjectContent::query()
             ->where('is_active', true)
             ->orderByDesc('id')
             ->get()

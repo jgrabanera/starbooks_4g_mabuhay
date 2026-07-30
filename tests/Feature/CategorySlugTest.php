@@ -19,9 +19,6 @@ class CategorySlugTest extends TestCase
             'description' => 'Books for science learners.',
             'image' => 'science-and-technology.png',
             'display_order' => 1,
-            'tabs' => [
-                ['id' => 'memorandum-1', 'label' => 'Memorandum'],
-            ],
             'is_active' => true,
         ]);
 
@@ -40,9 +37,6 @@ class CategorySlugTest extends TestCase
             'description' => 'Health content',
             'image' => 'health-sciences.png',
             'display_order' => 1,
-            'tabs' => [
-                ['id' => 'memorandum-1', 'label' => 'Memorandum'],
-            ],
             'is_active' => true,
         ]);
 

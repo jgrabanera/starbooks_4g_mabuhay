@@ -63,20 +63,43 @@ Route::middleware(['auth'])->group(function () {
         ->name('admin.categories.store');
     Route::post('/admin/categories/{category}', [App\Http\Controllers\Admin\CategoryController::class, 'update'])
         ->name('admin.categories.update');
-    Route::post('/admin/categories/{category}/tabs', [App\Http\Controllers\Admin\CategoryController::class, 'updateTabs'])
-        ->name('admin.categories.tabs.update');
     Route::delete('/admin/categories/{category}', [App\Http\Controllers\Admin\CategoryController::class, 'destroy'])
         ->name('admin.categories.destroy');
 
-    Route::get('/admin/about/create', [App\Http\Controllers\Admin\SubCategoryController::class, 'create'])
-        ->name('admin.about.create');
+    Route::post('/admin/projects', [App\Http\Controllers\Admin\ProjectsAdminController::class, 'store'])
+        ->name('admin.projects.store');
+    Route::post('/admin/projects/{project}', [App\Http\Controllers\Admin\ProjectsAdminController::class, 'update'])
+        ->name('admin.projects.update');
+    Route::delete('/admin/projects/{project}', [App\Http\Controllers\Admin\ProjectsAdminController::class, 'destroy'])
+        ->name('admin.projects.destroy');
 
-    Route::post('/admin/contents', [App\Http\Controllers\Admin\SubCategoryController::class, 'store'])
-        ->name('admin.contents.store');
-    Route::post('/admin/contents/{content}', [App\Http\Controllers\Admin\SubCategoryController::class, 'update'])
-        ->name('admin.contents.update');
-    Route::delete('/admin/contents/{content}', [App\Http\Controllers\Admin\SubCategoryController::class, 'destroy'])
-        ->name('admin.contents.destroy');
+    Route::post('/admin/resources', [App\Http\Controllers\Admin\ResourcesAdminController::class, 'store'])
+        ->name('admin.resources.store');
+    Route::post('/admin/resources/{resource}', [App\Http\Controllers\Admin\ResourcesAdminController::class, 'update'])
+        ->name('admin.resources.update');
+    Route::delete('/admin/resources/{resource}', [App\Http\Controllers\Admin\ResourcesAdminController::class, 'destroy'])
+        ->name('admin.resources.destroy');
+
+    Route::post('/admin/social-services', [App\Http\Controllers\Admin\SocialServicesAdminController::class, 'store'])
+        ->name('admin.social-services.store');
+    Route::post('/admin/social-services/{socialService}', [App\Http\Controllers\Admin\SocialServicesAdminController::class, 'update'])
+        ->name('admin.social-services.update');
+    Route::delete('/admin/social-services/{socialService}', [App\Http\Controllers\Admin\SocialServicesAdminController::class, 'destroy'])
+        ->name('admin.social-services.destroy');
+
+    Route::post('/admin/tourism', [App\Http\Controllers\Admin\TourismAdminController::class, 'store'])
+        ->name('admin.tourism.store');
+    Route::post('/admin/tourism/{tourismContent}', [App\Http\Controllers\Admin\TourismAdminController::class, 'update'])
+        ->name('admin.tourism.update');
+    Route::delete('/admin/tourism/{tourismContent}', [App\Http\Controllers\Admin\TourismAdminController::class, 'destroy'])
+        ->name('admin.tourism.destroy');
+
+    Route::post('/admin/dost-services', [App\Http\Controllers\Admin\DostServicesAdminController::class, 'store'])
+        ->name('admin.dost-services.store');
+    Route::post('/admin/dost-services/{dostService}', [App\Http\Controllers\Admin\DostServicesAdminController::class, 'update'])
+        ->name('admin.dost-services.update');
+    Route::delete('/admin/dost-services/{dostService}', [App\Http\Controllers\Admin\DostServicesAdminController::class, 'destroy'])
+        ->name('admin.dost-services.destroy');
 });
 
 Route::middleware('auth')->group(function () {

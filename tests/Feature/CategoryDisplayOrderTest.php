@@ -24,9 +24,6 @@ class CategoryDisplayOrderTest extends TestCase
             'description' => 'Project updates',
             'image' => 'projects.png',
             'display_order' => 3,
-            'tabs' => [
-                ['id' => 'memorandum', 'label' => 'Memorandum'],
-            ],
             'is_active' => true,
         ]);
 
@@ -63,9 +60,6 @@ class CategoryDisplayOrderTest extends TestCase
             'description' => 'About section',
             'image' => 'about.png',
             'display_order' => 1,
-            'tabs' => [
-                ['id' => 'memorandum', 'label' => 'Memorandum'],
-            ],
             'is_active' => true,
         ]);
 

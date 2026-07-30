@@ -3,7 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\Category;
-use App\Models\SubCategory;
+use App\Models\TourismContent;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
@@ -30,8 +30,7 @@ class AdminContentTabAssignmentTest extends TestCase
             'is_active' => true,
         ]);
 
-        $response = $this->actingAs($user)->post(route('admin.contents.store'), [
-            'category_id' => $category->id,
+        $response = $this->actingAs($user)->post(route('admin.tourism.store'), [
             'tab_id' => 'ordinance-2',
             'title' => 'Local Tourism Ordinance',
             'description' => 'Ordinance content',
@@ -42,9 +41,8 @@ class AdminContentTabAssignmentTest extends TestCase
 
         $response->assertRedirect(route('admin.tourism.index'));
 
-        $content = SubCategory::query()->firstOrFail();
+        $content = TourismContent::query()->firstOrFail();
 
-        $this->assertSame($category->id, $content->category_id);
         $this->assertSame('ordinance-2', $content->tab_id);
         $this->assertSame('local-tourism-ordinance', $content->slug);
         $this->assertNotEmpty($content->pdf);
