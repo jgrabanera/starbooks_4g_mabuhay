@@ -12,6 +12,49 @@ class AboutFactory extends Factory
 {
     protected $model = About::class;
 
+    public function configure(): static
+    {
+        return $this->afterCreating(function (About $about): void {
+            foreach (array_values($about->priorities_items ?? []) as $index => $priority) {
+                $about->priorities()->create([
+                    'title' => $priority['title'] ?? '',
+                    'description' => $priority['description'] ?? '',
+                    'display_order' => $index,
+                ]);
+            }
+
+            foreach (array_values($about->organization_council_members ?? []) as $index => $member) {
+                $about->councilMembers()->create([
+                    'name' => $member['name'] ?? '',
+                    'role' => $member['role'] ?? 'Council Member',
+                    'image' => $member['image'] ?? null,
+                    'display_order' => $index,
+                ]);
+            }
+
+            foreach (array_values($about->lgu_barangays ?? []) as $index => $barangay) {
+                $barangayRecord = $about->barangays()->create([
+                    'title' => $barangay['title'] ?? '',
+                    'reference' => $barangay['reference'] ?? '',
+                    'population' => (int) ($barangay['population'] ?? 0),
+                    'captain_image' => $barangay['captain_image'] ?? null,
+                    'captain_name' => $barangay['officials']['captain'] ?? '',
+                    'secretary_name' => $barangay['officials']['secretary'] ?? '',
+                    'treasurer_name' => $barangay['officials']['treasurer'] ?? '',
+                    'sk_chairperson_name' => $barangay['officials']['skChairperson'] ?? '',
+                    'display_order' => $index,
+                ]);
+
+                foreach (array_values($barangay['officials']['kagawads'] ?? []) as $kagawadIndex => $kagawad) {
+                    $barangayRecord->kagawads()->create([
+                        'name' => $kagawad,
+                        'display_order' => $kagawadIndex,
+                    ]);
+                }
+            }
+        });
+    }
+
     /**
      * Define the model's default state.
      *

@@ -4,12 +4,15 @@ namespace App\Http\Controllers\Client;
 
 use App\Http\Controllers\Controller;
 use App\Models\About;
+use App\Models\AboutBarangay;
+use App\Models\AboutCouncilMember;
+use App\Models\AboutPriority;
 use App\Models\Category;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Schema;
 use Inertia\Inertia;
 use Inertia\Response;
-
 
 class CategoryController extends Controller
 {
@@ -31,9 +34,7 @@ class CategoryController extends Controller
     public function show(string $slug): Response|RedirectResponse
     {
         if ($slug === 'about-lgu-mabuhay') {
-            $about = About::query()
-                ->where('page_key', 'about-lgu-mabuhay')
-                ->first();
+            $about = $this->loadAboutRecord();
 
             return Inertia::render('Client/Sub/AboutLguMabuhay', [
                 'aboutData' => $this->buildAboutData($about),
@@ -120,7 +121,7 @@ class CategoryController extends Controller
             ],
             'priorities' => [
                 'title' => $about->priorities_title,
-                'items' => $about->priorities_items ?? [],
+                'items' => $this->buildPriorityItems($about),
             ],
         ];
     }
@@ -146,17 +147,7 @@ class CategoryController extends Controller
                     ? '/storage/images/thumbnails/' . $about->organization_vice_mayor_image
                     : null,
             ],
-            'councilMembers' => collect($about->organization_council_members ?? [])
-                ->map(fn (array $member) => [
-                    'id' => $member['id'] ?? null,
-                    'name' => $member['name'] ?? null,
-                    'role' => $member['role'] ?? 'Council Member',
-                    'image' => !empty($member['image'])
-                        ? '/storage/images/thumbnails/' . $member['image']
-                        : null,
-                ])
-                ->values()
-                ->all(),
+            'councilMembers' => $this->buildCouncilMembers($about),
         ];
     }
 
@@ -173,8 +164,115 @@ class CategoryController extends Controller
             'logo' => $about->lgu_logo
                 ? '/storage/images/thumbnails/' . $about->lgu_logo
                 : null,
-            'barangays' => $about->lgu_barangays ?? [],
+            'barangays' => $this->buildBarangays($about),
         ];
     }
 
+    private function buildPriorityItems(About $about): array
+    {
+        if ($this->prioritiesTableExists() && $about->relationLoaded('priorities') && $about->priorities->isNotEmpty()) {
+            return $about->priorities
+                ->map(fn (AboutPriority $priority) => [
+                    'id' => $priority->id,
+                    'title' => $priority->title,
+                    'description' => $priority->description,
+                ])
+                ->values()
+                ->all();
+        }
+
+        return $about->priorities_items ?? [];
+    }
+
+    private function buildCouncilMembers(About $about): array
+    {
+        if ($this->councilMembersTableExists() && $about->relationLoaded('councilMembers') && $about->councilMembers->isNotEmpty()) {
+            return $about->councilMembers
+                ->map(fn (AboutCouncilMember $member) => [
+                    'id' => $member->id,
+                    'name' => $member->name,
+                    'role' => $member->role,
+                    'image' => $member->image
+                        ? '/storage/images/thumbnails/' . $member->image
+                        : null,
+                ])
+                ->values()
+                ->all();
+        }
+
+        return collect($about->organization_council_members ?? [])
+            ->map(fn (array $member) => [
+                'id' => $member['id'] ?? null,
+                'name' => $member['name'] ?? null,
+                'role' => $member['role'] ?? 'Council Member',
+                'image' => ! empty($member['image'])
+                    ? '/storage/images/thumbnails/' . $member['image']
+                    : null,
+            ])
+            ->values()
+            ->all();
+    }
+
+    private function buildBarangays(About $about): array
+    {
+        if ($this->barangaysTablesExist() && $about->relationLoaded('barangays') && $about->barangays->isNotEmpty()) {
+            return $about->barangays
+                ->map(fn (AboutBarangay $barangay) => [
+                    'id' => $barangay->id,
+                    'title' => $barangay->title,
+                    'reference' => $barangay->reference,
+                    'population' => $barangay->population,
+                    'captain_image' => $barangay->captain_image,
+                    'officials' => [
+                        'captain' => $barangay->captain_name,
+                        'secretary' => $barangay->secretary_name,
+                        'treasurer' => $barangay->treasurer_name,
+                        'skChairperson' => $barangay->sk_chairperson_name,
+                        'kagawads' => $barangay->kagawads->pluck('name')->values()->all(),
+                    ],
+                ])
+                ->values()
+                ->all();
+        }
+
+        return $about->lgu_barangays ?? [];
+    }
+
+    private function loadAboutRecord(): ?About
+    {
+        $query = About::query()->where('page_key', 'about-lgu-mabuhay');
+
+        if ($this->usesNormalizedTables()) {
+            $query->with([
+                'priorities',
+                'councilMembers',
+                'barangays.kagawads',
+            ]);
+        }
+
+        return $query->first();
+    }
+
+    private function usesNormalizedTables(): bool
+    {
+        return $this->prioritiesTableExists()
+            && $this->councilMembersTableExists()
+            && $this->barangaysTablesExist();
+    }
+
+    private function prioritiesTableExists(): bool
+    {
+        return Schema::hasTable('about_priorities');
+    }
+
+    private function councilMembersTableExists(): bool
+    {
+        return Schema::hasTable('about_council_members');
+    }
+
+    private function barangaysTablesExist(): bool
+    {
+        return Schema::hasTable('about_barangays')
+            && Schema::hasTable('about_barangay_kagawads');
+    }
 }

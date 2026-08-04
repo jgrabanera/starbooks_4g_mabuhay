@@ -5,7 +5,12 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\AboutContentRequest;
 use App\Models\About;
+use App\Models\AboutBarangay;
+use App\Models\AboutCouncilMember;
+use App\Models\AboutPriority;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -14,12 +19,8 @@ class AboutAdminController extends Controller
 {
     public function index(): Response
     {
-        $about = About::query()
-            ->where('page_key', 'about-lgu-mabuhay')
-            ->first();
-
         return Inertia::render('Admin/About', [
-            'aboutContent' => $this->buildFormData($about),
+            'aboutContent' => $this->buildFormData($this->loadAboutRecord()),
         ]);
     }
 
@@ -47,11 +48,46 @@ class AboutAdminController extends Controller
 
         $about->fill($payload)->save();
 
+        if ($this->prioritiesTableExists() && ($section === 'about' || $section === null)) {
+            $this->syncPriorities($about, $validated);
+        }
+
+        if ($this->councilMembersTableExists() && ($section === 'organization' || $section === null)) {
+            $this->syncCouncilMembers($request, $about, $validated);
+        }
+
+        if ($this->barangaysTablesExist() && ($section === 'lgu' || $section === null)) {
+            $this->syncBarangays($about, $validated);
+        }
+
+        if ($this->usesNormalizedTables()) {
+            $about->refresh()->load([
+                'priorities',
+                'councilMembers',
+                'barangays.kagawads',
+            ]);
+
+            $about->forceFill([
+                'priorities_items' => $this->buildPriorityItemsFromRelations($about),
+                'organization_council_members' => $this->buildCouncilMembersFromRelations($about),
+                'lgu_barangays' => $this->buildBarangaysFromRelations($about),
+            ])->save();
+        }
+
         return to_route('admin.about.index');
     }
 
     private function buildAboutPayload(AboutContentRequest $request, About $about, array $validated): array
     {
+        $priorityItems = collect($validated['priorities_items'])
+            ->values()
+            ->map(fn (array $item, int $index) => [
+                'id' => $item['id'] ?? 'priority-' . ($index + 1),
+                'title' => trim($item['title']),
+                'description' => trim($item['description']),
+            ])
+            ->all();
+
         $payload = [
             'hero_logo_alt' => $validated['hero_logo_alt'] ?? null,
             'hero_title' => trim($validated['hero_title']),
@@ -67,14 +103,7 @@ class AboutAdminController extends Controller
             'media_footer_left' => trim($validated['media_footer_left']),
             'media_footer_right' => trim($validated['media_footer_right']),
             'priorities_title' => trim($validated['priorities_title']),
-            'priorities_items' => collect($validated['priorities_items'])
-                ->values()
-                ->map(fn (array $item, int $index) => [
-                    'id' => 'priority-' . ($index + 1),
-                    'title' => trim($item['title']),
-                    'description' => trim($item['description']),
-                ])
-                ->all(),
+            'priorities_items' => $priorityItems,
         ];
 
         if ($request->hasFile('hero_logo')) {
@@ -84,7 +113,7 @@ class AboutAdminController extends Controller
                 'public',
             );
 
-            if (!empty($about->hero_logo)) {
+            if (! empty($about->hero_logo)) {
                 Storage::disk('public')->delete('images/thumbnails/' . $about->hero_logo);
             }
 
@@ -98,7 +127,7 @@ class AboutAdminController extends Controller
                 'public',
             );
 
-            if (!empty($about->media_preview_image)) {
+            if (! empty($about->media_preview_image)) {
                 Storage::disk('public')->delete('images/thumbnails/' . $about->media_preview_image);
             }
 
@@ -112,7 +141,7 @@ class AboutAdminController extends Controller
                 'public',
             );
 
-            if (!empty($about->media_video)) {
+            if (! empty($about->media_video)) {
                 Storage::disk('public')->delete('videos/about/' . $about->media_video);
             }
 
@@ -124,43 +153,45 @@ class AboutAdminController extends Controller
 
     private function buildOrganizationPayload(AboutContentRequest $request, About $about, array $validated): array
     {
-        $existingCouncilMembers = collect($about->organization_council_members ?? [])
-            ->keyBy(fn (array $member) => $member['id'] ?? null);
+        $existingMembers = collect($about->organization_council_members ?? [])
+            ->keyBy(fn (array $member) => (string) ($member['id'] ?? ''));
+
+        $councilMembers = collect($validated['organization_council_members'])
+            ->values()
+            ->map(function (array $member, int $index) use ($request, $existingMembers) {
+                $memberId = (string) ($member['id'] ?? 'member-' . ($index + 1));
+                $storedImage = $existingMembers->get($memberId)['image'] ?? null;
+
+                if ($request->hasFile("organization_council_members.$index.image")) {
+                    $uploadedImage = $request->file("organization_council_members.$index.image");
+                    $storedPath = $uploadedImage->storeAs(
+                        'images/thumbnails',
+                        $this->buildStoredFileName('organization-council-member-' . ($index + 1), $uploadedImage->extension()),
+                        'public',
+                    );
+
+                    if (! empty($storedImage)) {
+                        Storage::disk('public')->delete('images/thumbnails/' . $storedImage);
+                    }
+
+                    $storedImage = basename($storedPath);
+                }
+
+                return [
+                    'id' => $memberId,
+                    'name' => trim($member['name']),
+                    'role' => trim($member['role']),
+                    'image' => $storedImage,
+                ];
+            })
+            ->all();
 
         $payload = [
             'organization_mayor_name' => trim($validated['organization_mayor_name']),
             'organization_mayor_role' => trim($validated['organization_mayor_role']),
             'organization_vice_mayor_name' => trim($validated['organization_vice_mayor_name']),
             'organization_vice_mayor_role' => trim($validated['organization_vice_mayor_role']),
-            'organization_council_members' => collect($validated['organization_council_members'])
-                ->values()
-                ->map(function (array $member, int $index) use ($request, $existingCouncilMembers) {
-                    $memberId = $member['id'] ?? 'member-' . ($index + 1);
-                    $storedImage = $existingCouncilMembers->get($memberId)['image'] ?? null;
-
-                    if ($request->hasFile("organization_council_members.$index.image")) {
-                        $uploadedImage = $request->file("organization_council_members.$index.image");
-                        $storedPath = $uploadedImage->storeAs(
-                            'images/thumbnails',
-                            $this->buildStoredFileName('organization-council-member-' . ($index + 1), $uploadedImage->extension()),
-                            'public',
-                        );
-
-                        if (!empty($storedImage)) {
-                            Storage::disk('public')->delete('images/thumbnails/' . $storedImage);
-                        }
-
-                        $storedImage = basename($storedPath);
-                    }
-
-                    return [
-                        'id' => $memberId,
-                        'name' => trim($member['name']),
-                        'role' => trim($member['role']),
-                        'image' => $storedImage,
-                    ];
-                })
-                ->all(),
+            'organization_council_members' => $councilMembers,
         ];
 
         if ($request->hasFile('organization_mayor_image')) {
@@ -170,7 +201,7 @@ class AboutAdminController extends Controller
                 'public',
             );
 
-            if (!empty($about->organization_mayor_image)) {
+            if (! empty($about->organization_mayor_image)) {
                 Storage::disk('public')->delete('images/thumbnails/' . $about->organization_mayor_image);
             }
 
@@ -184,7 +215,7 @@ class AboutAdminController extends Controller
                 'public',
             );
 
-            if (!empty($about->organization_vice_mayor_image)) {
+            if (! empty($about->organization_vice_mayor_image)) {
                 Storage::disk('public')->delete('images/thumbnails/' . $about->organization_vice_mayor_image);
             }
 
@@ -226,7 +257,7 @@ class AboutAdminController extends Controller
                 'public',
             );
 
-            if (!empty($about->lgu_logo)) {
+            if (! empty($about->lgu_logo)) {
                 Storage::disk('public')->delete('images/thumbnails/' . $about->lgu_logo);
             }
 
@@ -238,6 +269,10 @@ class AboutAdminController extends Controller
 
     private function buildFormData(?About $about): array
     {
+        $priorityItems = $this->buildPriorityItemsForForm($about);
+        $councilMembers = $this->buildCouncilMembersForForm($about);
+        $barangays = $this->buildBarangaysForForm($about);
+
         return [
             'hero_logo' => $about?->hero_logo,
             'hero_logo_alt' => $about?->hero_logo_alt ?? 'LGU Mabuhay',
@@ -265,63 +300,348 @@ class AboutAdminController extends Controller
             'organization_vice_mayor_name' => $about?->organization_vice_mayor_name ?? 'Hon. Joval John B. Samonte',
             'organization_vice_mayor_role' => $about?->organization_vice_mayor_role ?? 'Municipal Vice Mayor',
             'organization_vice_mayor_image' => $about?->organization_vice_mayor_image,
-            'organization_council_members' => collect($about?->organization_council_members ?? [
-                ['id' => 'member-1', 'name' => 'Maria Pilar T. Adlaon', 'role' => 'Council Member', 'image' => null],
-                ['id' => 'member-2', 'name' => 'Majin V. Andak Sr.', 'role' => 'Council Member', 'image' => null],
-                ['id' => 'member-3', 'name' => 'Alvarez H. Dammang', 'role' => 'Council Member', 'image' => null],
-            ])
-                ->map(fn (array $member, int $index) => [
-                    'id' => $member['id'] ?? 'member-' . ($index + 1),
-                    'name' => $member['name'] ?? '',
-                    'role' => $member['role'] ?? 'Council Member',
-                    'image' => null,
-                    'current_image' => $member['image'] ?? null,
-                ])
-                ->values()
-                ->all(),
+            'organization_council_members' => $councilMembers,
             'lgu_badge' => $about?->lgu_badge ?? 'Barangay Reference Collection',
             'lgu_subtitle' => $about?->lgu_subtitle ?? 'Municipal Directory Layout Preview',
             'lgu_title' => $about?->lgu_title ?? 'Municipality of Mabuhay',
             'lgu_logo' => $about?->lgu_logo,
-            'lgu_barangays' => $about?->lgu_barangays ?? [
-                [
-                    'id' => 1,
-                    'title' => 'Abunda',
-                    'reference' => 'BRGY-001',
-                    'population' => 893,
-                    'captain_image' => null,
-                    'officials' => [
-                        'captain' => 'Juan Dela Cruz',
-                        'secretary' => 'Maria Santos',
-                        'treasurer' => 'Pedro Reyes',
-                        'skChairperson' => 'Angela Flores',
-                        'kagawads' => ['Ramon Garcia', 'Liza Mendoza'],
-                    ],
-                ],
-            ],
+            'lgu_barangays' => $barangays,
             'media_overlay_title' => $about?->media_overlay_title ?? 'Mabuhay Overview Video',
             'media_overlay_description' => $about?->media_overlay_description ?? 'Replace this showcase with the official LGU Mabuhay video presentation, tourism reel, or public service introduction when media is ready.',
             'media_footer_left' => $about?->media_footer_left ?? 'Video Player Placeholder',
             'media_footer_right' => $about?->media_footer_right ?? '16:9 Presentation Area',
             'priorities_title' => $about?->priorities_title ?? 'Governance Priorities',
-            'priorities_items' => $about?->priorities_items ?? [
-                [
-                    'id' => 'priority-1',
-                    'title' => 'Good Governance',
-                    'description' => 'Transparent decision-making and accountable public service systems.',
-                ],
-                [
-                    'id' => 'priority-2',
-                    'title' => 'Inclusive Growth',
-                    'description' => 'Community development through agriculture, education, health, and livelihood support.',
-                ],
-                [
-                    'id' => 'priority-3',
-                    'title' => 'Digital Access',
-                    'description' => 'Improved citizen access to information and municipal programs through digital tools.',
+            'priorities_items' => $priorityItems,
+        ];
+    }
+
+    private function buildPriorityItemsForForm(?About $about): array
+    {
+        if ($about !== null && $this->prioritiesTableExists() && $about->relationLoaded('priorities') && $about->priorities->isNotEmpty()) {
+            return $about->priorities
+                ->map(fn (AboutPriority $priority) => [
+                    'id' => (string) $priority->id,
+                    'title' => $priority->title,
+                    'description' => $priority->description,
+                ])
+                ->all();
+        }
+
+        return $about?->priorities_items ?? [
+            [
+                'id' => 'priority-1',
+                'title' => 'Good Governance',
+                'description' => 'Transparent decision-making and accountable public service systems.',
+            ],
+            [
+                'id' => 'priority-2',
+                'title' => 'Inclusive Growth',
+                'description' => 'Community development through agriculture, education, health, and livelihood support.',
+            ],
+            [
+                'id' => 'priority-3',
+                'title' => 'Digital Access',
+                'description' => 'Improved citizen access to information and municipal programs through digital tools.',
+            ],
+        ];
+    }
+
+    private function buildCouncilMembersForForm(?About $about): array
+    {
+        if ($about !== null && $this->councilMembersTableExists() && $about->relationLoaded('councilMembers') && $about->councilMembers->isNotEmpty()) {
+            return $about->councilMembers
+                ->map(fn (AboutCouncilMember $member) => [
+                    'id' => (string) $member->id,
+                    'name' => $member->name,
+                    'role' => $member->role,
+                    'image' => null,
+                    'current_image' => $member->image,
+                ])
+                ->all();
+        }
+
+        return collect($about?->organization_council_members ?? [
+            ['id' => 'member-1', 'name' => 'Maria Pilar T. Adlaon', 'role' => 'Council Member', 'image' => null],
+            ['id' => 'member-2', 'name' => 'Majin V. Andak Sr.', 'role' => 'Council Member', 'image' => null],
+            ['id' => 'member-3', 'name' => 'Alvarez H. Dammang', 'role' => 'Council Member', 'image' => null],
+        ])
+            ->map(fn (array $member, int $index) => [
+                'id' => (string) ($member['id'] ?? 'member-' . ($index + 1)),
+                'name' => $member['name'] ?? '',
+                'role' => $member['role'] ?? 'Council Member',
+                'image' => null,
+                'current_image' => $member['image'] ?? null,
+            ])
+            ->values()
+            ->all();
+    }
+
+    private function buildBarangaysForForm(?About $about): array
+    {
+        if ($about !== null && $this->barangaysTablesExist() && $about->relationLoaded('barangays') && $about->barangays->isNotEmpty()) {
+            return $about->barangays
+                ->map(fn (AboutBarangay $barangay) => [
+                    'id' => $barangay->id,
+                    'title' => $barangay->title,
+                    'reference' => $barangay->reference,
+                    'population' => $barangay->population,
+                    'captain_image' => $barangay->captain_image,
+                    'officials' => [
+                        'captain' => $barangay->captain_name,
+                        'secretary' => $barangay->secretary_name,
+                        'treasurer' => $barangay->treasurer_name,
+                        'skChairperson' => $barangay->sk_chairperson_name,
+                        'kagawads' => $barangay->kagawads->pluck('name')->values()->all(),
+                    ],
+                ])
+                ->all();
+        }
+
+        return $about?->lgu_barangays ?? [
+            [
+                'id' => 1,
+                'title' => 'Abunda',
+                'reference' => 'BRGY-001',
+                'population' => 893,
+                'captain_image' => null,
+                'officials' => [
+                    'captain' => 'Juan Dela Cruz',
+                    'secretary' => 'Maria Santos',
+                    'treasurer' => 'Pedro Reyes',
+                    'skChairperson' => 'Angela Flores',
+                    'kagawads' => ['Ramon Garcia', 'Liza Mendoza'],
                 ],
             ],
         ];
+    }
+
+    private function syncPriorities(About $about, array $validated): void
+    {
+        $existingPriorities = $about->priorities()->get()->keyBy('id');
+        $keptPriorityIds = [];
+
+        foreach (array_values($validated['priorities_items']) as $index => $item) {
+            $priorityId = is_numeric($item['id'] ?? null) ? (int) $item['id'] : null;
+            $priority = $priorityId !== null ? $existingPriorities->get($priorityId) : null;
+
+            if ($priority === null) {
+                $priority = new AboutPriority();
+                $priority->about()->associate($about);
+            }
+
+            $priority->fill([
+                'title' => trim($item['title']),
+                'description' => trim($item['description']),
+                'display_order' => $index,
+            ])->save();
+
+            $keptPriorityIds[] = $priority->id;
+        }
+
+        $query = $about->priorities();
+
+        if ($keptPriorityIds !== []) {
+            $query->whereNotIn('id', $keptPriorityIds)->delete();
+
+            return;
+        }
+
+        $query->delete();
+    }
+
+    private function syncCouncilMembers(AboutContentRequest $request, About $about, array $validated): void
+    {
+        $existingMembers = $about->councilMembers()->get()->keyBy('id');
+        $keptMemberIds = [];
+
+        foreach (array_values($validated['organization_council_members']) as $index => $item) {
+            $memberId = is_numeric($item['id'] ?? null) ? (int) $item['id'] : null;
+            $member = $memberId !== null ? $existingMembers->get($memberId) : null;
+            $storedImage = $member?->image;
+
+            if ($request->hasFile("organization_council_members.$index.image")) {
+                $uploadedImage = $request->file("organization_council_members.$index.image");
+                $storedPath = $uploadedImage->storeAs(
+                    'images/thumbnails',
+                    $this->buildStoredFileName('organization-council-member-' . ($index + 1), $uploadedImage->extension()),
+                    'public',
+                );
+
+                if (! empty($storedImage)) {
+                    Storage::disk('public')->delete('images/thumbnails/' . $storedImage);
+                }
+
+                $storedImage = basename($storedPath);
+            }
+
+            if ($member === null) {
+                $member = new AboutCouncilMember();
+                $member->about()->associate($about);
+            }
+
+            $member->fill([
+                'name' => trim($item['name']),
+                'role' => trim($item['role']),
+                'image' => $storedImage,
+                'display_order' => $index,
+            ])->save();
+
+            $keptMemberIds[] = $member->id;
+        }
+
+        $membersToDelete = $about->councilMembers()
+            ->when($keptMemberIds !== [], fn ($query) => $query->whereNotIn('id', $keptMemberIds))
+            ->when($keptMemberIds === [], fn ($query) => $query)
+            ->get();
+
+        $membersToDelete->each(function (AboutCouncilMember $member): void {
+            if (! empty($member->image)) {
+                Storage::disk('public')->delete('images/thumbnails/' . $member->image);
+            }
+
+            $member->delete();
+        });
+    }
+
+    private function syncBarangays(About $about, array $validated): void
+    {
+        $existingBarangays = $about->barangays()->with('kagawads')->get()->keyBy('id');
+        $keptBarangayIds = [];
+
+        foreach (array_values($validated['lgu_barangays']) as $index => $item) {
+            $barangayId = is_numeric($item['id'] ?? null) ? (int) $item['id'] : null;
+            $barangay = $barangayId !== null ? $existingBarangays->get($barangayId) : null;
+
+            if ($barangay === null) {
+                $barangay = new AboutBarangay();
+                $barangay->about()->associate($about);
+            }
+
+            $barangay->fill([
+                'title' => trim($item['title']),
+                'reference' => trim($item['reference']),
+                'population' => (int) $item['population'],
+                'captain_image' => $item['captain_image'] ?? null,
+                'captain_name' => trim($item['officials']['captain']),
+                'secretary_name' => trim($item['officials']['secretary']),
+                'treasurer_name' => trim($item['officials']['treasurer']),
+                'sk_chairperson_name' => trim($item['officials']['skChairperson']),
+                'display_order' => $index,
+            ])->save();
+
+            $keptBarangayIds[] = $barangay->id;
+            $this->syncBarangayKagawads($barangay, collect($item['officials']['kagawads'] ?? []));
+        }
+
+        $query = $about->barangays();
+
+        if ($keptBarangayIds !== []) {
+            $query->whereNotIn('id', $keptBarangayIds)->delete();
+
+            return;
+        }
+
+        $query->delete();
+    }
+
+    private function syncBarangayKagawads(AboutBarangay $barangay, Collection $kagawads): void
+    {
+        $barangay->kagawads()->delete();
+
+        $kagawads
+            ->map(fn ($name) => trim((string) $name))
+            ->filter()
+            ->values()
+            ->each(function (string $name, int $index) use ($barangay): void {
+                $barangay->kagawads()->create([
+                    'name' => $name,
+                    'display_order' => $index,
+                ]);
+            });
+    }
+
+    private function buildPriorityItemsFromRelations(About $about): array
+    {
+        return $about->priorities
+            ->map(fn (AboutPriority $priority) => [
+                'id' => (string) $priority->id,
+                'title' => $priority->title,
+                'description' => $priority->description,
+            ])
+            ->values()
+            ->all();
+    }
+
+    private function buildCouncilMembersFromRelations(About $about): array
+    {
+        return $about->councilMembers
+            ->map(fn (AboutCouncilMember $member) => [
+                'id' => (string) $member->id,
+                'name' => $member->name,
+                'role' => $member->role,
+                'image' => $member->image,
+            ])
+            ->values()
+            ->all();
+    }
+
+    private function buildBarangaysFromRelations(About $about): array
+    {
+        return $about->barangays
+            ->map(fn (AboutBarangay $barangay) => [
+                'id' => $barangay->id,
+                'title' => $barangay->title,
+                'reference' => $barangay->reference,
+                'population' => $barangay->population,
+                'captain_image' => $barangay->captain_image,
+                'officials' => [
+                    'captain' => $barangay->captain_name,
+                    'secretary' => $barangay->secretary_name,
+                    'treasurer' => $barangay->treasurer_name,
+                    'skChairperson' => $barangay->sk_chairperson_name,
+                    'kagawads' => $barangay->kagawads->pluck('name')->values()->all(),
+                ],
+            ])
+            ->values()
+            ->all();
+    }
+
+    private function loadAboutRecord(): ?About
+    {
+        $query = About::query()->where('page_key', 'about-lgu-mabuhay');
+
+        if ($this->usesNormalizedTables()) {
+            $query->with([
+                'priorities',
+                'councilMembers',
+                'barangays.kagawads',
+            ]);
+        }
+
+        return $query->first();
+    }
+
+    private function usesNormalizedTables(): bool
+    {
+        return $this->prioritiesTableExists()
+            && $this->councilMembersTableExists()
+            && $this->barangaysTablesExist();
+    }
+
+    private function prioritiesTableExists(): bool
+    {
+        return Schema::hasTable('about_priorities');
+    }
+
+    private function councilMembersTableExists(): bool
+    {
+        return Schema::hasTable('about_council_members');
+    }
+
+    private function barangaysTablesExist(): bool
+    {
+        return Schema::hasTable('about_barangays')
+            && Schema::hasTable('about_barangay_kagawads');
     }
 
     private function buildStoredFileName(string $prefix, string $extension): string

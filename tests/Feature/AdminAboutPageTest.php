@@ -131,6 +131,7 @@ class AdminAboutPageTest extends TestCase
         );
         $this->assertSame('Priority One', $about->priorities_items[0]['title']);
         $this->assertNotNull($about->media_video);
+        $this->assertCount(2, $about->priorities()->get());
 
         Storage::disk('public')->assertExists('images/thumbnails/' . $about->hero_logo);
         Storage::disk('public')->assertExists('images/thumbnails/' . $about->media_preview_image);
@@ -181,6 +182,8 @@ class AdminAboutPageTest extends TestCase
         $this->assertSame('Hon. Updated Mayor', $about->organization_mayor_name);
         $this->assertSame('Maria Pilar T. Adlaon', $about->organization_council_members[0]['name']);
         $this->assertNotNull($about->organization_council_members[0]['image']);
+        $this->assertCount(2, $about->councilMembers()->get());
+        $this->assertSame('Maria Pilar T. Adlaon', $about->councilMembers()->first()->name);
 
         Storage::disk('public')->assertExists(
             'images/thumbnails/' . $about->organization_council_members[0]['image'],
@@ -226,6 +229,8 @@ class AdminAboutPageTest extends TestCase
             'Council Member',
             $about->organization_council_members[0]['role'],
         );
+        $this->assertCount(1, $about->councilMembers()->get());
+        $this->assertSame('New Council Member', $about->councilMembers()->first()->name);
     }
 
     public function test_admin_about_page_can_save_lgu_tab_independently_with_logo(): void
@@ -276,17 +281,50 @@ class AdminAboutPageTest extends TestCase
         $this->assertSame('Keep Existing Mayor', $about->organization_mayor_name);
         $this->assertSame('Updated LGU Title', $about->lgu_title);
         $this->assertNotNull($about->lgu_logo);
+        $this->assertCount(1, $about->barangays()->get());
+        $this->assertCount(2, $about->barangays()->first()->kagawads()->get());
 
         Storage::disk('public')->assertExists('images/thumbnails/' . $about->lgu_logo);
     }
 
     public function test_public_about_page_receives_about_cms_data(): void
     {
-        About::factory()->create([
+        $about = About::factory()->create([
             'hero_title' => 'CMS Driven Mabuhay',
             'overview_badge' => 'CMS Overview',
             'media_title' => 'CMS Media Title',
             'priorities_title' => 'CMS Priorities',
+            'organization_council_members' => [],
+            'lgu_barangays' => [],
+            'priorities_items' => [],
+        ]);
+
+        $about->priorities()->create([
+            'title' => 'Priority From Table',
+            'description' => 'Priority description from table.',
+            'display_order' => 0,
+        ]);
+
+        $about->councilMembers()->create([
+            'name' => 'Member From Table',
+            'role' => 'Council Member',
+            'display_order' => 0,
+        ]);
+
+        $barangay = $about->barangays()->create([
+            'title' => 'Barangay From Table',
+            'reference' => 'BRGY-099',
+            'population' => 1500,
+            'captain_name' => 'Captain From Table',
+            'secretary_name' => 'Secretary From Table',
+            'treasurer_name' => 'Treasurer From Table',
+            'sk_chairperson_name' => 'SK From Table',
+            'display_order' => 0,
+        ]);
+
+        $barangay->kagawads()->create([
+            'name' => 'Kagawad From Table',
+            'display_order' => 0,
         ]);
 
         $this->get(route('client.category.show', [
@@ -298,6 +336,9 @@ class AdminAboutPageTest extends TestCase
                 ->where('aboutData.hero.title', 'CMS Driven Mabuhay')
                 ->where('aboutData.overview.badge', 'CMS Overview')
                 ->where('aboutData.media.title', 'CMS Media Title')
-                ->where('aboutData.priorities.title', 'CMS Priorities'));
+                ->where('aboutData.priorities.title', 'CMS Priorities')
+                ->where('aboutData.priorities.items.0.title', 'Priority From Table')
+                ->where('organizationData.councilMembers.0.name', 'Member From Table')
+                ->where('lguData.barangays.0.title', 'Barangay From Table'));
     }
 }

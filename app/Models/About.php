@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class About extends Model
 {
@@ -50,4 +51,19 @@ class About extends Model
         'lgu_barangays' => 'array',
         'priorities_items' => 'array',
     ];
+
+    public function priorities(): HasMany
+    {
+        return $this->hasMany(AboutPriority::class)->orderBy('display_order');
+    }
+
+    public function councilMembers(): HasMany
+    {
+        return $this->hasMany(AboutCouncilMember::class)->orderBy('display_order');
+    }
+
+    public function barangays(): HasMany
+    {
+        return $this->hasMany(AboutBarangay::class)->orderBy('display_order');
+    }
 }
