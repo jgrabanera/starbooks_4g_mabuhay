@@ -41,6 +41,39 @@ class AboutAdminController extends Controller
             'overview_highlights' => array_values($validated['overview_highlights']),
             'media_badge' => trim($validated['media_badge']),
             'media_title' => trim($validated['media_title']),
+            'organization_mayor_name' => trim($validated['organization_mayor_name']),
+            'organization_mayor_role' => trim($validated['organization_mayor_role']),
+            'organization_vice_mayor_name' => trim($validated['organization_vice_mayor_name']),
+            'organization_vice_mayor_role' => trim($validated['organization_vice_mayor_role']),
+            'organization_council_members' => collect($validated['organization_council_members'])
+                ->values()
+                ->map(fn (array $member, int $index) => [
+                    'id' => $member['id'] ?? 'member-' . ($index + 1),
+                    'name' => trim($member['name']),
+                    'role' => trim($member['role']),
+                    'image' => $member['image'] ?? null,
+                ])
+                ->all(),
+            'lgu_badge' => trim($validated['lgu_badge']),
+            'lgu_subtitle' => trim($validated['lgu_subtitle']),
+            'lgu_title' => trim($validated['lgu_title']),
+            'lgu_barangays' => collect($validated['lgu_barangays'])
+                ->values()
+                ->map(fn (array $barangay, int $index) => [
+                    'id' => $barangay['id'] ?? ($index + 1),
+                    'title' => trim($barangay['title']),
+                    'reference' => trim($barangay['reference']),
+                    'population' => (int) $barangay['population'],
+                    'captain_image' => $barangay['captain_image'] ?? null,
+                    'officials' => [
+                        'captain' => trim($barangay['officials']['captain']),
+                        'secretary' => trim($barangay['officials']['secretary']),
+                        'treasurer' => trim($barangay['officials']['treasurer']),
+                        'skChairperson' => trim($barangay['officials']['skChairperson']),
+                        'kagawads' => array_values($barangay['officials']['kagawads']),
+                    ],
+                ])
+                ->all(),
             'media_overlay_title' => trim($validated['media_overlay_title']),
             'media_overlay_description' => trim($validated['media_overlay_description']),
             'media_footer_left' => trim($validated['media_footer_left']),
@@ -98,6 +131,48 @@ class AboutAdminController extends Controller
             $payload['media_video'] = basename($mediaVideoPath);
         }
 
+        if ($request->hasFile('organization_mayor_image')) {
+            $storedPath = $request->file('organization_mayor_image')->storeAs(
+                'images/thumbnails',
+                $this->buildStoredFileName('organization-mayor', $request->file('organization_mayor_image')->extension()),
+                'public',
+            );
+
+            if (!empty($about->organization_mayor_image)) {
+                Storage::disk('public')->delete('images/thumbnails/' . $about->organization_mayor_image);
+            }
+
+            $payload['organization_mayor_image'] = basename($storedPath);
+        }
+
+        if ($request->hasFile('organization_vice_mayor_image')) {
+            $storedPath = $request->file('organization_vice_mayor_image')->storeAs(
+                'images/thumbnails',
+                $this->buildStoredFileName('organization-vice-mayor', $request->file('organization_vice_mayor_image')->extension()),
+                'public',
+            );
+
+            if (!empty($about->organization_vice_mayor_image)) {
+                Storage::disk('public')->delete('images/thumbnails/' . $about->organization_vice_mayor_image);
+            }
+
+            $payload['organization_vice_mayor_image'] = basename($storedPath);
+        }
+
+        if ($request->hasFile('lgu_logo')) {
+            $storedPath = $request->file('lgu_logo')->storeAs(
+                'images/thumbnails',
+                $this->buildStoredFileName('lgu-logo', $request->file('lgu_logo')->extension()),
+                'public',
+            );
+
+            if (!empty($about->lgu_logo)) {
+                Storage::disk('public')->delete('images/thumbnails/' . $about->lgu_logo);
+            }
+
+            $payload['lgu_logo'] = basename($storedPath);
+        }
+
         $about->fill($payload)->save();
 
         return to_route('admin.about.index');
@@ -126,6 +201,37 @@ class AboutAdminController extends Controller
             'media_title' => $about?->media_title ?? 'Municipal Video Showcase',
             'media_preview_image' => $about?->media_preview_image,
             'media_video' => $about?->media_video,
+            'organization_mayor_name' => $about?->organization_mayor_name ?? 'Hon. Edrelusa "Lulu" Calonge',
+            'organization_mayor_role' => $about?->organization_mayor_role ?? 'Municipal Mayor',
+            'organization_mayor_image' => $about?->organization_mayor_image,
+            'organization_vice_mayor_name' => $about?->organization_vice_mayor_name ?? 'Hon. Joval John B. Samonte',
+            'organization_vice_mayor_role' => $about?->organization_vice_mayor_role ?? 'Municipal Vice Mayor',
+            'organization_vice_mayor_image' => $about?->organization_vice_mayor_image,
+            'organization_council_members' => $about?->organization_council_members ?? [
+                ['id' => 'member-1', 'name' => 'Maria Pilar T. Adlaon', 'role' => 'Council Member', 'image' => null],
+                ['id' => 'member-2', 'name' => 'Majin V. Andak Sr.', 'role' => 'Council Member', 'image' => null],
+                ['id' => 'member-3', 'name' => 'Alvarez H. Dammang', 'role' => 'Council Member', 'image' => null],
+            ],
+            'lgu_badge' => $about?->lgu_badge ?? 'Barangay Reference Collection',
+            'lgu_subtitle' => $about?->lgu_subtitle ?? 'Municipal Directory Layout Preview',
+            'lgu_title' => $about?->lgu_title ?? 'Municipality of Mabuhay',
+            'lgu_logo' => $about?->lgu_logo,
+            'lgu_barangays' => $about?->lgu_barangays ?? [
+                [
+                    'id' => 1,
+                    'title' => 'Abunda',
+                    'reference' => 'BRGY-001',
+                    'population' => 893,
+                    'captain_image' => null,
+                    'officials' => [
+                        'captain' => 'Juan Dela Cruz',
+                        'secretary' => 'Maria Santos',
+                        'treasurer' => 'Pedro Reyes',
+                        'skChairperson' => 'Angela Flores',
+                        'kagawads' => ['Ramon Garcia', 'Liza Mendoza'],
+                    ],
+                ],
+            ],
             'media_overlay_title' => $about?->media_overlay_title ?? 'Mabuhay Overview Video',
             'media_overlay_description' => $about?->media_overlay_description ?? 'Replace this showcase with the official LGU Mabuhay video presentation, tourism reel, or public service introduction when media is ready.',
             'media_footer_left' => $about?->media_footer_left ?? 'Video Player Placeholder',

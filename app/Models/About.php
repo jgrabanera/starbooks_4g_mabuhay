@@ -23,6 +23,18 @@ class About extends Model
         'media_title',
         'media_preview_image',
         'media_video',
+        'organization_mayor_name',
+        'organization_mayor_role',
+        'organization_mayor_image',
+        'organization_vice_mayor_name',
+        'organization_vice_mayor_role',
+        'organization_vice_mayor_image',
+        'organization_council_members',
+        'lgu_badge',
+        'lgu_subtitle',
+        'lgu_title',
+        'lgu_logo',
+        'lgu_barangays',
         'media_overlay_title',
         'media_overlay_description',
         'media_footer_left',
@@ -34,6 +46,8 @@ class About extends Model
     protected $casts = [
         'overview_paragraphs' => 'array',
         'overview_highlights' => 'array',
+        'organization_council_members' => 'array',
+        'lgu_barangays' => 'array',
         'priorities_items' => 'array',
     ];
 }

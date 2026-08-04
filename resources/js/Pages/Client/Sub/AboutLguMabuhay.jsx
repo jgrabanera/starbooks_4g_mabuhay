@@ -13,6 +13,7 @@ import About from "./AboutComponents/About";
 const AboutLguMabuhay = ({
     aboutData = null,
     organizationData = null,
+    lguData = null,
 }) => {
     const tabs = [
         {
@@ -67,7 +68,7 @@ const AboutLguMabuhay = ({
                         <Organization organizationData={organizationData} />
                     ) : null}
 
-                    {activeTab === "lgu" ? <LGU /> : null}
+                    {activeTab === "lgu" ? <LGU lguData={lguData} /> : null}
 
                     <div className="fixed inset-x-0 bottom-3 z-30 px-4 md:bottom-6 md:px-6 [@media(orientation:landscape)]:left-4 [@media(orientation:landscape)]:right-auto [@media(orientation:landscape)]:top-1/2 [@media(orientation:landscape)]:bottom-auto [@media(orientation:landscape)]:w-64 [@media(orientation:landscape)]:px-0 [@media(orientation:landscape)]:-translate-y-1/2">
                         <div className="mx-auto max-w-6xl rounded-md border border-white/70 bg-white/60 p-2 shadow-lg backdrop-blur-xl md:rounded-[1.75rem] md:p-4 [@media(orientation:landscape)]:mx-0 [@media(orientation:landscape)]:max-w-none">

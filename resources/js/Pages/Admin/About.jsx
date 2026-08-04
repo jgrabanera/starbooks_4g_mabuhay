@@ -9,11 +9,10 @@ import { useForm } from "@inertiajs/react";
 const normalizeArray = (items, fallback) =>
     Array.isArray(items) && items.length > 0 ? items : fallback;
 
-const defaultParagraphs = [""];
-const defaultHighlights = [""];
-const defaultPriorities = [{ id: "priority-1", title: "", description: "" }];
+const sectionClassName =
+    "rounded-3xl border border-slate-200 bg-white p-5 shadow-sm";
 
-const About = ({ aboutContent }) => {
+export default function About({ aboutContent }) {
     const {
         data,
         setData,
@@ -30,11 +29,11 @@ const About = ({ aboutContent }) => {
         overview_title: aboutContent?.overview_title ?? "",
         overview_paragraphs: normalizeArray(
             aboutContent?.overview_paragraphs,
-            defaultParagraphs,
+            [""],
         ),
         overview_highlights: normalizeArray(
             aboutContent?.overview_highlights,
-            defaultHighlights,
+            [""],
         ),
         media_badge: aboutContent?.media_badge ?? "",
         media_title: aboutContent?.media_title ?? "",
@@ -45,66 +44,112 @@ const About = ({ aboutContent }) => {
             aboutContent?.media_overlay_description ?? "",
         media_footer_left: aboutContent?.media_footer_left ?? "",
         media_footer_right: aboutContent?.media_footer_right ?? "",
+        organization_mayor_name:
+            aboutContent?.organization_mayor_name ?? "",
+        organization_mayor_role:
+            aboutContent?.organization_mayor_role ?? "",
+        organization_mayor_image: null,
+        organization_vice_mayor_name:
+            aboutContent?.organization_vice_mayor_name ?? "",
+        organization_vice_mayor_role:
+            aboutContent?.organization_vice_mayor_role ?? "",
+        organization_vice_mayor_image: null,
+        organization_council_members: normalizeArray(
+            aboutContent?.organization_council_members,
+            [{ id: "member-1", name: "", role: "Council Member", image: null }],
+        ),
+        lgu_badge: aboutContent?.lgu_badge ?? "",
+        lgu_subtitle: aboutContent?.lgu_subtitle ?? "",
+        lgu_title: aboutContent?.lgu_title ?? "",
+        lgu_logo: null,
+        lgu_barangays: normalizeArray(aboutContent?.lgu_barangays, [
+            {
+                id: 1,
+                title: "",
+                reference: "",
+                population: 0,
+                captain_image: null,
+                officials: {
+                    captain: "",
+                    secretary: "",
+                    treasurer: "",
+                    skChairperson: "",
+                    kagawads: [""],
+                },
+            },
+        ]),
         priorities_title: aboutContent?.priorities_title ?? "",
-        priorities_items: normalizeArray(
-            aboutContent?.priorities_items,
-            defaultPriorities,
-        ).map((item, index) => ({
-            id: item?.id || `priority-${index + 1}`,
-            title: item?.title ?? "",
-            description: item?.description ?? "",
-        })),
+        priorities_items: normalizeArray(aboutContent?.priorities_items, [
+            { id: "priority-1", title: "", description: "" },
+        ]),
     });
 
-    const updateParagraph = (index, value) => {
-        const nextParagraphs = [...data.overview_paragraphs];
-        nextParagraphs[index] = value;
-        setData("overview_paragraphs", nextParagraphs);
+    const replaceList = (key, nextValue) => {
+        setData(key, nextValue);
     };
 
-    const updateHighlight = (index, value) => {
-        const nextHighlights = [...data.overview_highlights];
-        nextHighlights[index] = value;
-        setData("overview_highlights", nextHighlights);
+    const updateSimpleListItem = (key, index, value) => {
+        const nextItems = [...data[key]];
+        nextItems[index] = value;
+        replaceList(key, nextItems);
     };
 
-    const updatePriority = (index, key, value) => {
-        const nextPriorities = [...data.priorities_items];
-        nextPriorities[index] = {
-            ...nextPriorities[index],
-            [key]: value,
+    const addSimpleListItem = (key, value = "") => {
+        replaceList(key, [...data[key], value]);
+    };
+
+    const removeSimpleListItem = (key, index) => {
+        if (data[key].length === 1) {
+            return;
+        }
+
+        replaceList(
+            key,
+            data[key].filter((_, itemIndex) => itemIndex !== index),
+        );
+    };
+
+    const updateCouncilMember = (index, field, value) => {
+        const nextMembers = [...data.organization_council_members];
+        nextMembers[index] = {
+            ...nextMembers[index],
+            [field]: value,
         };
-        setData("priorities_items", nextPriorities);
+        setData("organization_council_members", nextMembers);
     };
 
-    const addParagraph = () => {
-        setData("overview_paragraphs", [...data.overview_paragraphs, ""]);
+    const addCouncilMember = () => {
+        setData("organization_council_members", [
+            ...data.organization_council_members,
+            {
+                id: `member-${data.organization_council_members.length + 1}`,
+                name: "",
+                role: "Council Member",
+                image: null,
+            },
+        ]);
     };
 
-    const removeParagraph = (index) => {
-        if (data.overview_paragraphs.length === 1) {
+    const removeCouncilMember = (index) => {
+        if (data.organization_council_members.length === 1) {
             return;
         }
 
         setData(
-            "overview_paragraphs",
-            data.overview_paragraphs.filter((_, itemIndex) => itemIndex !== index),
+            "organization_council_members",
+            data.organization_council_members.filter(
+                (_, itemIndex) => itemIndex !== index,
+            ),
         );
     };
 
-    const addHighlight = () => {
-        setData("overview_highlights", [...data.overview_highlights, ""]);
-    };
-
-    const removeHighlight = (index) => {
-        if (data.overview_highlights.length === 1) {
-            return;
-        }
-
-        setData(
-            "overview_highlights",
-            data.overview_highlights.filter((_, itemIndex) => itemIndex !== index),
-        );
+    const updatePriority = (index, field, value) => {
+        const nextItems = [...data.priorities_items];
+        nextItems[index] = {
+            ...nextItems[index],
+            [field]: value,
+        };
+        setData("priorities_items", nextItems);
     };
 
     const addPriority = () => {
@@ -126,6 +171,73 @@ const About = ({ aboutContent }) => {
         setData(
             "priorities_items",
             data.priorities_items.filter((_, itemIndex) => itemIndex !== index),
+        );
+    };
+
+    const updateBarangay = (index, field, value) => {
+        const nextBarangays = [...data.lgu_barangays];
+        nextBarangays[index] = {
+            ...nextBarangays[index],
+            [field]: value,
+        };
+        setData("lgu_barangays", nextBarangays);
+    };
+
+    const updateBarangayOfficial = (index, field, value) => {
+        const nextBarangays = [...data.lgu_barangays];
+        nextBarangays[index] = {
+            ...nextBarangays[index],
+            officials: {
+                ...nextBarangays[index].officials,
+                [field]: value,
+            },
+        };
+        setData("lgu_barangays", nextBarangays);
+    };
+
+    const updateBarangayKagawads = (index, value) => {
+        const nextBarangays = [...data.lgu_barangays];
+        nextBarangays[index] = {
+            ...nextBarangays[index],
+            officials: {
+                ...nextBarangays[index].officials,
+                kagawads: value
+                    .split("\n")
+                    .map((item) => item.trim())
+                    .filter(Boolean),
+            },
+        };
+        setData("lgu_barangays", nextBarangays);
+    };
+
+    const addBarangay = () => {
+        setData("lgu_barangays", [
+            ...data.lgu_barangays,
+            {
+                id: data.lgu_barangays.length + 1,
+                title: "",
+                reference: "",
+                population: 0,
+                captain_image: null,
+                officials: {
+                    captain: "",
+                    secretary: "",
+                    treasurer: "",
+                    skChairperson: "",
+                    kagawads: [""],
+                },
+            },
+        ]);
+    };
+
+    const removeBarangay = (index) => {
+        if (data.lgu_barangays.length === 1) {
+            return;
+        }
+
+        setData(
+            "lgu_barangays",
+            data.lgu_barangays.filter((_, itemIndex) => itemIndex !== index),
         );
     };
 
@@ -151,10 +263,8 @@ const About = ({ aboutContent }) => {
                                 About LGU Mabuhay CMS
                             </h2>
                             <p className="max-w-3xl text-sm leading-6 text-slate-600">
-                                Manage the public About tab content for hero,
-                                overview, media showcase, and governance
-                                priorities. This page saves one structured
-                                record for the fixed About layout.
+                                Manage the About, Organization, and LGU tabs
+                                from one structured CMS page.
                             </p>
                         </div>
 
@@ -164,29 +274,19 @@ const About = ({ aboutContent }) => {
                                     Saved
                                 </span>
                             ) : null}
-                            <PrimaryButton
-                                onClick={submit}
-                                disabled={processing}
-                                className="justify-center"
-                            >
-                                {processing ? "Saving..." : "Save About Content"}
+                            <PrimaryButton onClick={submit} disabled={processing}>
+                                {processing ? "Saving..." : "Save About CMS"}
                             </PrimaryButton>
                         </div>
                     </div>
                 </div>
 
                 <form onSubmit={submit} className="space-y-6 p-5 sm:p-6">
-                    <section className="rounded-3xl border border-slate-200 bg-slate-50/70 p-5">
-                        <div className="mb-5">
-                            <p className="text-xs font-bold uppercase tracking-[0.22em] text-emerald-700">
-                                Hero Section
-                            </p>
-                            <h3 className="mt-1 text-xl font-bold text-slate-900">
-                                Hero Content
-                            </h3>
-                        </div>
-
-                        <div className="grid gap-5 md:grid-cols-2">
+                    <section className={sectionClassName}>
+                        <p className="text-xs font-bold uppercase tracking-[0.22em] text-emerald-700">
+                            About Tab
+                        </p>
+                        <div className="mt-5 grid gap-5 md:grid-cols-2">
                             <div>
                                 <InputLabel value="Hero Logo" />
                                 <input
@@ -198,70 +298,33 @@ const About = ({ aboutContent }) => {
                                             event.target.files?.[0] ?? null,
                                         )
                                     }
-                                    className="mt-1 block w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm file:mr-4 file:rounded-md file:border-0 file:bg-emerald-50 file:px-3 file:py-2 file:font-semibold file:text-emerald-700 hover:file:bg-emerald-100"
-                                    disabled={processing}
-                                />
-                                {aboutContent?.hero_logo ? (
-                                    <p className="mt-2 text-xs text-slate-500">
-                                        Current file: {aboutContent.hero_logo}
-                                    </p>
-                                ) : null}
-                                <InputError
-                                    message={errors.hero_logo}
-                                    className="mt-2"
+                                    className="mt-1 block w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm"
                                 />
                             </div>
-
                             <div>
-                                <InputLabel
-                                    htmlFor="hero_logo_alt"
-                                    value="Logo Alt Text"
-                                />
+                                <InputLabel value="Hero Logo Alt" />
                                 <TextInput
-                                    id="hero_logo_alt"
                                     value={data.hero_logo_alt}
                                     onChange={(event) =>
-                                        setData(
-                                            "hero_logo_alt",
-                                            event.target.value,
-                                        )
+                                        setData("hero_logo_alt", event.target.value)
                                     }
                                     className="mt-1 block w-full"
-                                    disabled={processing}
-                                />
-                                <InputError
-                                    message={errors.hero_logo_alt}
-                                    className="mt-2"
                                 />
                             </div>
-
                             <div>
-                                <InputLabel
-                                    htmlFor="hero_title"
-                                    value="Hero Title"
-                                />
+                                <InputLabel value="Hero Title" />
                                 <TextInput
-                                    id="hero_title"
                                     value={data.hero_title}
                                     onChange={(event) =>
                                         setData("hero_title", event.target.value)
                                     }
                                     className="mt-1 block w-full"
-                                    disabled={processing}
                                 />
-                                <InputError
-                                    message={errors.hero_title}
-                                    className="mt-2"
-                                />
+                                <InputError message={errors.hero_title} className="mt-2" />
                             </div>
-
                             <div className="md:col-span-2">
-                                <InputLabel
-                                    htmlFor="hero_description"
-                                    value="Hero Description"
-                                />
+                                <InputLabel value="Hero Description" />
                                 <textarea
-                                    id="hero_description"
                                     value={data.hero_description}
                                     onChange={(event) =>
                                         setData(
@@ -270,51 +333,12 @@ const About = ({ aboutContent }) => {
                                         )
                                     }
                                     rows="4"
-                                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                                    disabled={processing}
-                                />
-                                <InputError
-                                    message={errors.hero_description}
-                                    className="mt-2"
+                                    className="mt-1 block w-full rounded-md border-gray-300"
                                 />
                             </div>
-                        </div>
-                    </section>
-
-                    <section className="rounded-3xl border border-slate-200 bg-white p-5">
-                        <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                             <div>
-                                <p className="text-xs font-bold uppercase tracking-[0.22em] text-emerald-700">
-                                    Overview Section
-                                </p>
-                                <h3 className="mt-1 text-xl font-bold text-slate-900">
-                                    Overview Content
-                                </h3>
-                            </div>
-                            <div className="flex gap-3">
-                                <SecondaryButton
-                                    type="button"
-                                    onClick={addParagraph}
-                                >
-                                    Add Paragraph
-                                </SecondaryButton>
-                                <SecondaryButton
-                                    type="button"
-                                    onClick={addHighlight}
-                                >
-                                    Add Highlight
-                                </SecondaryButton>
-                            </div>
-                        </div>
-
-                        <div className="grid gap-5 md:grid-cols-2">
-                            <div>
-                                <InputLabel
-                                    htmlFor="overview_badge"
-                                    value="Overview Badge"
-                                />
+                                <InputLabel value="Overview Badge" />
                                 <TextInput
-                                    id="overview_badge"
                                     value={data.overview_badge}
                                     onChange={(event) =>
                                         setData(
@@ -323,21 +347,11 @@ const About = ({ aboutContent }) => {
                                         )
                                     }
                                     className="mt-1 block w-full"
-                                    disabled={processing}
-                                />
-                                <InputError
-                                    message={errors.overview_badge}
-                                    className="mt-2"
                                 />
                             </div>
-
                             <div>
-                                <InputLabel
-                                    htmlFor="overview_title"
-                                    value="Overview Title"
-                                />
+                                <InputLabel value="Overview Title" />
                                 <TextInput
-                                    id="overview_title"
                                     value={data.overview_title}
                                     onChange={(event) =>
                                         setData(
@@ -346,485 +360,329 @@ const About = ({ aboutContent }) => {
                                         )
                                     }
                                     className="mt-1 block w-full"
-                                    disabled={processing}
-                                />
-                                <InputError
-                                    message={errors.overview_title}
-                                    className="mt-2"
                                 />
                             </div>
                         </div>
 
                         <div className="mt-5 grid gap-5 xl:grid-cols-2">
                             <div className="space-y-4">
-                                <div>
+                                <div className="flex items-center justify-between">
                                     <p className="text-sm font-semibold text-slate-800">
                                         Overview Paragraphs
                                     </p>
-                                    <p className="text-xs text-slate-500">
-                                        These paragraphs feed the About Mabuhay
-                                        text block on the public page.
-                                    </p>
+                                    <SecondaryButton
+                                        type="button"
+                                        onClick={() =>
+                                            addSimpleListItem(
+                                                "overview_paragraphs",
+                                            )
+                                        }
+                                    >
+                                        Add
+                                    </SecondaryButton>
                                 </div>
-
-                                {data.overview_paragraphs.map(
-                                    (paragraph, index) => (
-                                        <div
-                                            key={`paragraph-${index}`}
-                                            className="rounded-2xl border border-slate-200 bg-slate-50 p-4"
-                                        >
-                                            <div className="mb-3 flex items-center justify-between gap-3">
-                                                <p className="text-sm font-semibold text-slate-700">
-                                                    Paragraph {index + 1}
-                                                </p>
-                                                <button
-                                                    type="button"
-                                                    onClick={() =>
-                                                        removeParagraph(index)
-                                                    }
-                                                    className="text-xs font-semibold uppercase tracking-[0.16em] text-rose-600"
-                                                >
-                                                    Remove
-                                                </button>
-                                            </div>
-                                            <textarea
-                                                value={paragraph}
-                                                onChange={(event) =>
-                                                    updateParagraph(
+                                {data.overview_paragraphs.map((item, index) => (
+                                    <div
+                                        key={`paragraph-${index}`}
+                                        className="rounded-2xl border border-slate-200 bg-slate-50 p-4"
+                                    >
+                                        <div className="mb-3 flex items-center justify-between">
+                                            <p className="text-sm font-semibold text-slate-700">
+                                                Paragraph {index + 1}
+                                            </p>
+                                            <button
+                                                type="button"
+                                                onClick={() =>
+                                                    removeSimpleListItem(
+                                                        "overview_paragraphs",
                                                         index,
-                                                        event.target.value,
                                                     )
                                                 }
-                                                rows="5"
-                                                className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                                                disabled={processing}
-                                            />
-                                            <InputError
-                                                message={
-                                                    errors[
-                                                        `overview_paragraphs.${index}`
-                                                    ]
-                                                }
-                                                className="mt-2"
-                                            />
+                                                className="text-xs font-semibold uppercase text-rose-600"
+                                            >
+                                                Remove
+                                            </button>
                                         </div>
-                                    ),
-                                )}
-                                <InputError
-                                    message={errors.overview_paragraphs}
-                                    className="mt-2"
-                                />
+                                        <textarea
+                                            value={item}
+                                            onChange={(event) =>
+                                                updateSimpleListItem(
+                                                    "overview_paragraphs",
+                                                    index,
+                                                    event.target.value,
+                                                )
+                                            }
+                                            rows="4"
+                                            className="block w-full rounded-md border-gray-300"
+                                        />
+                                    </div>
+                                ))}
                             </div>
 
                             <div className="space-y-4">
-                                <div>
+                                <div className="flex items-center justify-between">
                                     <p className="text-sm font-semibold text-slate-800">
-                                        Highlight Cards
+                                        Highlights
                                     </p>
-                                    <p className="text-xs text-slate-500">
-                                        These short items appear in the green
-                                        highlight cards.
-                                    </p>
+                                    <SecondaryButton
+                                        type="button"
+                                        onClick={() =>
+                                            addSimpleListItem(
+                                                "overview_highlights",
+                                            )
+                                        }
+                                    >
+                                        Add
+                                    </SecondaryButton>
                                 </div>
-
-                                {data.overview_highlights.map(
-                                    (highlight, index) => (
-                                        <div
-                                            key={`highlight-${index}`}
-                                            className="rounded-2xl border border-slate-200 bg-slate-50 p-4"
-                                        >
-                                            <div className="mb-3 flex items-center justify-between gap-3">
-                                                <p className="text-sm font-semibold text-slate-700">
-                                                    Highlight {index + 1}
-                                                </p>
-                                                <button
-                                                    type="button"
-                                                    onClick={() =>
-                                                        removeHighlight(index)
-                                                    }
-                                                    className="text-xs font-semibold uppercase tracking-[0.16em] text-rose-600"
-                                                >
-                                                    Remove
-                                                </button>
-                                            </div>
-                                            <TextInput
-                                                value={highlight}
-                                                onChange={(event) =>
-                                                    updateHighlight(
+                                {data.overview_highlights.map((item, index) => (
+                                    <div
+                                        key={`highlight-${index}`}
+                                        className="rounded-2xl border border-slate-200 bg-slate-50 p-4"
+                                    >
+                                        <div className="mb-3 flex items-center justify-between">
+                                            <p className="text-sm font-semibold text-slate-700">
+                                                Highlight {index + 1}
+                                            </p>
+                                            <button
+                                                type="button"
+                                                onClick={() =>
+                                                    removeSimpleListItem(
+                                                        "overview_highlights",
                                                         index,
-                                                        event.target.value,
                                                     )
                                                 }
-                                                className="block w-full"
-                                                disabled={processing}
-                                            />
-                                            <InputError
-                                                message={
-                                                    errors[
-                                                        `overview_highlights.${index}`
-                                                    ]
-                                                }
-                                                className="mt-2"
-                                            />
+                                                className="text-xs font-semibold uppercase text-rose-600"
+                                            >
+                                                Remove
+                                            </button>
                                         </div>
-                                    ),
-                                )}
-                                <InputError
-                                    message={errors.overview_highlights}
-                                    className="mt-2"
-                                />
+                                        <TextInput
+                                            value={item}
+                                            onChange={(event) =>
+                                                updateSimpleListItem(
+                                                    "overview_highlights",
+                                                    index,
+                                                    event.target.value,
+                                                )
+                                            }
+                                            className="block w-full"
+                                        />
+                                    </div>
+                                ))}
                             </div>
                         </div>
                     </section>
 
-                    <section className="rounded-3xl border border-slate-200 bg-slate-50/70 p-5">
-                        <div className="mb-5">
-                            <p className="text-xs font-bold uppercase tracking-[0.22em] text-emerald-700">
-                                Media Section
-                            </p>
-                            <h3 className="mt-1 text-xl font-bold text-slate-900">
-                                Media Showcase Content
-                            </h3>
-                        </div>
-
-                        <div className="grid gap-5 md:grid-cols-2">
+                    <section className={sectionClassName}>
+                        <p className="text-xs font-bold uppercase tracking-[0.22em] text-emerald-700">
+                            Media And Priorities
+                        </p>
+                        <div className="mt-5 grid gap-5 md:grid-cols-2">
                             <div>
-                                <InputLabel
-                                    htmlFor="media_badge"
-                                    value="Media Badge"
-                                />
-                                <TextInput
-                                    id="media_badge"
-                                    value={data.media_badge}
-                                    onChange={(event) =>
-                                        setData(
-                                            "media_badge",
-                                            event.target.value,
-                                        )
-                                    }
-                                    className="mt-1 block w-full"
-                                    disabled={processing}
-                                />
-                                <InputError
-                                    message={errors.media_badge}
-                                    className="mt-2"
-                                />
+                                <InputLabel value="Media Badge" />
+                                <TextInput value={data.media_badge} onChange={(event) => setData("media_badge", event.target.value)} className="mt-1 block w-full" />
                             </div>
-
                             <div>
-                                <InputLabel
-                                    htmlFor="media_title"
-                                    value="Media Title"
-                                />
-                                <TextInput
-                                    id="media_title"
-                                    value={data.media_title}
-                                    onChange={(event) =>
-                                        setData("media_title", event.target.value)
-                                    }
-                                    className="mt-1 block w-full"
-                                    disabled={processing}
-                                />
-                                <InputError
-                                    message={errors.media_title}
-                                    className="mt-2"
-                                />
+                                <InputLabel value="Media Title" />
+                                <TextInput value={data.media_title} onChange={(event) => setData("media_title", event.target.value)} className="mt-1 block w-full" />
                             </div>
-
                             <div>
-                                <InputLabel value="Media Preview Image" />
-                                <input
-                                    type="file"
-                                    accept=".png,.jpg,.jpeg,.webp"
-                                    onChange={(event) =>
-                                        setData(
-                                            "media_preview_image",
-                                            event.target.files?.[0] ?? null,
-                                        )
-                                    }
-                                    className="mt-1 block w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm file:mr-4 file:rounded-md file:border-0 file:bg-emerald-50 file:px-3 file:py-2 file:font-semibold file:text-emerald-700 hover:file:bg-emerald-100"
-                                    disabled={processing}
-                                />
-                                {aboutContent?.media_preview_image ? (
-                                    <p className="mt-2 text-xs text-slate-500">
-                                        Current file:{" "}
-                                        {aboutContent.media_preview_image}
-                                    </p>
-                                ) : null}
-                                <InputError
-                                    message={errors.media_preview_image}
-                                    className="mt-2"
-                                />
+                                <InputLabel value="Preview Image" />
+                                <input type="file" accept=".png,.jpg,.jpeg,.webp" onChange={(event) => setData("media_preview_image", event.target.files?.[0] ?? null)} className="mt-1 block w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm" />
                             </div>
-
                             <div>
                                 <InputLabel value="Video File" />
-                                <input
-                                    type="file"
-                                    accept=".mp4,.webm,.mov,video/mp4,video/webm,video/quicktime"
-                                    onChange={(event) =>
-                                        setData(
-                                            "media_video",
-                                            event.target.files?.[0] ?? null,
-                                        )
-                                    }
-                                    className="mt-1 block w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm file:mr-4 file:rounded-md file:border-0 file:bg-emerald-50 file:px-3 file:py-2 file:font-semibold file:text-emerald-700 hover:file:bg-emerald-100"
-                                    disabled={processing}
-                                />
-                                {aboutContent?.media_video ? (
-                                    <p className="mt-2 text-xs text-slate-500">
-                                        Current video: {aboutContent.media_video}
-                                    </p>
-                                ) : (
-                                    <p className="mt-2 text-xs text-slate-500">
-                                        Upload an MP4, WEBM, or MOV file to show
-                                        an actual video player on the public
-                                        About page.
-                                    </p>
-                                )}
-                                <InputError
-                                    message={errors.media_video}
-                                    className="mt-2"
-                                />
+                                <input type="file" accept=".mp4,.webm,.mov,video/mp4,video/webm,video/quicktime" onChange={(event) => setData("media_video", event.target.files?.[0] ?? null)} className="mt-1 block w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm" />
+                                <InputError message={errors.media_video} className="mt-2" />
                             </div>
-
                             <div>
-                                <InputLabel
-                                    htmlFor="media_overlay_title"
-                                    value="Overlay Title"
-                                />
-                                <TextInput
-                                    id="media_overlay_title"
-                                    value={data.media_overlay_title}
-                                    onChange={(event) =>
-                                        setData(
-                                            "media_overlay_title",
-                                            event.target.value,
-                                        )
-                                    }
-                                    className="mt-1 block w-full"
-                                    disabled={processing}
-                                />
-                                <InputError
-                                    message={errors.media_overlay_title}
-                                    className="mt-2"
-                                />
+                                <InputLabel value="Overlay Title" />
+                                <TextInput value={data.media_overlay_title} onChange={(event) => setData("media_overlay_title", event.target.value)} className="mt-1 block w-full" />
                             </div>
-
+                            <div>
+                                <InputLabel value="Priorities Title" />
+                                <TextInput value={data.priorities_title} onChange={(event) => setData("priorities_title", event.target.value)} className="mt-1 block w-full" />
+                            </div>
                             <div className="md:col-span-2">
-                                <InputLabel
-                                    htmlFor="media_overlay_description"
-                                    value="Overlay Description"
-                                />
-                                <textarea
-                                    id="media_overlay_description"
-                                    value={data.media_overlay_description}
-                                    onChange={(event) =>
-                                        setData(
-                                            "media_overlay_description",
-                                            event.target.value,
-                                        )
-                                    }
-                                    rows="4"
-                                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                                    disabled={processing}
-                                />
-                                <InputError
-                                    message={errors.media_overlay_description}
-                                    className="mt-2"
-                                />
-                            </div>
-
-                            <div>
-                                <InputLabel
-                                    htmlFor="media_footer_left"
-                                    value="Footer Left Label"
-                                />
-                                <TextInput
-                                    id="media_footer_left"
-                                    value={data.media_footer_left}
-                                    onChange={(event) =>
-                                        setData(
-                                            "media_footer_left",
-                                            event.target.value,
-                                        )
-                                    }
-                                    className="mt-1 block w-full"
-                                    disabled={processing}
-                                />
-                                <InputError
-                                    message={errors.media_footer_left}
-                                    className="mt-2"
-                                />
-                            </div>
-
-                            <div>
-                                <InputLabel
-                                    htmlFor="media_footer_right"
-                                    value="Footer Right Label"
-                                />
-                                <TextInput
-                                    id="media_footer_right"
-                                    value={data.media_footer_right}
-                                    onChange={(event) =>
-                                        setData(
-                                            "media_footer_right",
-                                            event.target.value,
-                                        )
-                                    }
-                                    className="mt-1 block w-full"
-                                    disabled={processing}
-                                />
-                                <InputError
-                                    message={errors.media_footer_right}
-                                    className="mt-2"
-                                />
+                                <InputLabel value="Overlay Description" />
+                                <textarea value={data.media_overlay_description} onChange={(event) => setData("media_overlay_description", event.target.value)} rows="4" className="mt-1 block w-full rounded-md border-gray-300" />
                             </div>
                         </div>
-                    </section>
 
-                    <section className="rounded-3xl border border-slate-200 bg-white p-5">
-                        <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                            <div>
-                                <p className="text-xs font-bold uppercase tracking-[0.22em] text-emerald-700">
-                                    Priorities Section
-                                </p>
-                                <h3 className="mt-1 text-xl font-bold text-slate-900">
-                                    Governance Priorities
-                                </h3>
-                            </div>
-                            <SecondaryButton
-                                type="button"
-                                onClick={addPriority}
-                            >
+                        <div className="mt-5 flex items-center justify-between">
+                            <p className="text-sm font-semibold text-slate-800">
+                                Priority Cards
+                            </p>
+                            <SecondaryButton type="button" onClick={addPriority}>
                                 Add Priority
                             </SecondaryButton>
                         </div>
-
-                        <div className="mb-5">
-                            <InputLabel
-                                htmlFor="priorities_title"
-                                value="Priorities Section Title"
-                            />
-                            <TextInput
-                                id="priorities_title"
-                                value={data.priorities_title}
-                                onChange={(event) =>
-                                    setData(
-                                        "priorities_title",
-                                        event.target.value,
-                                    )
-                                }
-                                className="mt-1 block w-full"
-                                disabled={processing}
-                            />
-                            <InputError
-                                message={errors.priorities_title}
-                                className="mt-2"
-                            />
-                        </div>
-
-                        <div className="grid gap-4 xl:grid-cols-2">
+                        <div className="mt-4 grid gap-4 xl:grid-cols-2">
                             {data.priorities_items.map((item, index) => (
-                                <div
-                                    key={item.id || `priority-${index}`}
-                                    className="rounded-2xl border border-slate-200 bg-slate-50 p-4"
-                                >
-                                    <div className="mb-4 flex items-center justify-between gap-3">
-                                        <p className="text-sm font-semibold text-slate-800">
+                                <div key={item.id || index} className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
+                                    <div className="mb-3 flex items-center justify-between">
+                                        <p className="text-sm font-semibold text-slate-700">
                                             Priority {index + 1}
                                         </p>
-                                        <button
-                                            type="button"
-                                            onClick={() => removePriority(index)}
-                                            className="text-xs font-semibold uppercase tracking-[0.16em] text-rose-600"
-                                        >
+                                        <button type="button" onClick={() => removePriority(index)} className="text-xs font-semibold uppercase text-rose-600">
                                             Remove
                                         </button>
                                     </div>
+                                    <div className="space-y-3">
+                                        <TextInput value={item.title} onChange={(event) => updatePriority(index, "title", event.target.value)} className="block w-full" />
+                                        <textarea value={item.description} onChange={(event) => updatePriority(index, "description", event.target.value)} rows="3" className="block w-full rounded-md border-gray-300" />
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </section>
 
-                                    <div className="space-y-4">
-                                        <div>
-                                            <InputLabel
-                                                value="Priority Title"
-                                            />
-                                            <TextInput
-                                                value={item.title}
-                                                onChange={(event) =>
-                                                    updatePriority(
-                                                        index,
-                                                        "title",
-                                                        event.target.value,
-                                                    )
-                                                }
-                                                className="mt-1 block w-full"
-                                                disabled={processing}
-                                            />
-                                            <InputError
-                                                message={
-                                                    errors[
-                                                        `priorities_items.${index}.title`
-                                                    ]
-                                                }
-                                                className="mt-2"
-                                            />
-                                        </div>
+                    <section className={sectionClassName}>
+                        <div className="flex items-center justify-between">
+                            <div>
+                                <p className="text-xs font-bold uppercase tracking-[0.22em] text-emerald-700">
+                                    Organization Tab
+                                </p>
+                                <p className="mt-1 text-sm text-slate-600">
+                                    Update the mayor, vice mayor, and council members shown in the organizational layout.
+                                </p>
+                            </div>
+                            <SecondaryButton type="button" onClick={addCouncilMember}>
+                                Add Member
+                            </SecondaryButton>
+                        </div>
 
-                                        <div>
-                                            <InputLabel
-                                                value="Priority Description"
-                                            />
+                        <div className="mt-5 grid gap-5 md:grid-cols-2">
+                            <div>
+                                <InputLabel value="Mayor Name" />
+                                <TextInput value={data.organization_mayor_name} onChange={(event) => setData("organization_mayor_name", event.target.value)} className="mt-1 block w-full" />
+                            </div>
+                            <div>
+                                <InputLabel value="Mayor Role" />
+                                <TextInput value={data.organization_mayor_role} onChange={(event) => setData("organization_mayor_role", event.target.value)} className="mt-1 block w-full" />
+                            </div>
+                            <div>
+                                <InputLabel value="Mayor Image" />
+                                <input type="file" accept=".png,.jpg,.jpeg,.webp" onChange={(event) => setData("organization_mayor_image", event.target.files?.[0] ?? null)} className="mt-1 block w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm" />
+                            </div>
+                            <div>
+                                <InputLabel value="Vice Mayor Image" />
+                                <input type="file" accept=".png,.jpg,.jpeg,.webp" onChange={(event) => setData("organization_vice_mayor_image", event.target.files?.[0] ?? null)} className="mt-1 block w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm" />
+                            </div>
+                            <div>
+                                <InputLabel value="Vice Mayor Name" />
+                                <TextInput value={data.organization_vice_mayor_name} onChange={(event) => setData("organization_vice_mayor_name", event.target.value)} className="mt-1 block w-full" />
+                            </div>
+                            <div>
+                                <InputLabel value="Vice Mayor Role" />
+                                <TextInput value={data.organization_vice_mayor_role} onChange={(event) => setData("organization_vice_mayor_role", event.target.value)} className="mt-1 block w-full" />
+                            </div>
+                        </div>
+
+                        <div className="mt-5 grid gap-4 xl:grid-cols-2">
+                            {data.organization_council_members.map((member, index) => (
+                                <div key={member.id || index} className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
+                                    <div className="mb-3 flex items-center justify-between">
+                                        <p className="text-sm font-semibold text-slate-700">
+                                            Council Member {index + 1}
+                                        </p>
+                                        <button type="button" onClick={() => removeCouncilMember(index)} className="text-xs font-semibold uppercase text-rose-600">
+                                            Remove
+                                        </button>
+                                    </div>
+                                    <div className="space-y-3">
+                                        <TextInput value={member.name} onChange={(event) => updateCouncilMember(index, "name", event.target.value)} className="block w-full" />
+                                        <TextInput value={member.role} onChange={(event) => updateCouncilMember(index, "role", event.target.value)} className="block w-full" />
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </section>
+
+                    <section className={sectionClassName}>
+                        <div className="flex items-center justify-between">
+                            <div>
+                                <p className="text-xs font-bold uppercase tracking-[0.22em] text-emerald-700">
+                                    LGU Tab
+                                </p>
+                                <p className="mt-1 text-sm text-slate-600">
+                                    Manage the LGU directory header and barangay records used by the search page and modal.
+                                </p>
+                            </div>
+                            <SecondaryButton type="button" onClick={addBarangay}>
+                                Add Barangay
+                            </SecondaryButton>
+                        </div>
+
+                        <div className="mt-5 grid gap-5 md:grid-cols-2">
+                            <div>
+                                <InputLabel value="LGU Badge" />
+                                <TextInput value={data.lgu_badge} onChange={(event) => setData("lgu_badge", event.target.value)} className="mt-1 block w-full" />
+                            </div>
+                            <div>
+                                <InputLabel value="LGU Subtitle" />
+                                <TextInput value={data.lgu_subtitle} onChange={(event) => setData("lgu_subtitle", event.target.value)} className="mt-1 block w-full" />
+                            </div>
+                            <div>
+                                <InputLabel value="LGU Title" />
+                                <TextInput value={data.lgu_title} onChange={(event) => setData("lgu_title", event.target.value)} className="mt-1 block w-full" />
+                            </div>
+                            <div>
+                                <InputLabel value="LGU Logo" />
+                                <input type="file" accept=".png,.jpg,.jpeg,.webp" onChange={(event) => setData("lgu_logo", event.target.files?.[0] ?? null)} className="mt-1 block w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm" />
+                            </div>
+                        </div>
+
+                        <div className="mt-5 space-y-4">
+                            {data.lgu_barangays.map((barangay, index) => (
+                                <div key={barangay.id || index} className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
+                                    <div className="mb-4 flex items-center justify-between">
+                                        <p className="text-sm font-semibold text-slate-700">
+                                            Barangay {index + 1}
+                                        </p>
+                                        <button type="button" onClick={() => removeBarangay(index)} className="text-xs font-semibold uppercase text-rose-600">
+                                            Remove
+                                        </button>
+                                    </div>
+                                    <div className="grid gap-4 md:grid-cols-2">
+                                        <TextInput value={barangay.title} onChange={(event) => updateBarangay(index, "title", event.target.value)} className="block w-full" />
+                                        <TextInput value={barangay.reference} onChange={(event) => updateBarangay(index, "reference", event.target.value)} className="block w-full" />
+                                        <TextInput value={barangay.population} onChange={(event) => updateBarangay(index, "population", event.target.value)} className="block w-full" />
+                                        <TextInput value={barangay.officials.captain} onChange={(event) => updateBarangayOfficial(index, "captain", event.target.value)} className="block w-full" />
+                                        <TextInput value={barangay.officials.secretary} onChange={(event) => updateBarangayOfficial(index, "secretary", event.target.value)} className="block w-full" />
+                                        <TextInput value={barangay.officials.treasurer} onChange={(event) => updateBarangayOfficial(index, "treasurer", event.target.value)} className="block w-full" />
+                                        <TextInput value={barangay.officials.skChairperson} onChange={(event) => updateBarangayOfficial(index, "skChairperson", event.target.value)} className="block w-full md:col-span-2" />
+                                        <div className="md:col-span-2">
+                                            <InputLabel value="Kagawads (one per line)" />
                                             <textarea
-                                                value={item.description}
+                                                value={(barangay.officials.kagawads ?? []).join("\n")}
                                                 onChange={(event) =>
-                                                    updatePriority(
+                                                    updateBarangayKagawads(
                                                         index,
-                                                        "description",
                                                         event.target.value,
                                                     )
                                                 }
                                                 rows="4"
-                                                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                                                disabled={processing}
-                                            />
-                                            <InputError
-                                                message={
-                                                    errors[
-                                                        `priorities_items.${index}.description`
-                                                    ]
-                                                }
-                                                className="mt-2"
+                                                className="mt-1 block w-full rounded-md border-gray-300"
                                             />
                                         </div>
                                     </div>
                                 </div>
                             ))}
                         </div>
-                        <InputError
-                            message={errors.priorities_items}
-                            className="mt-2"
-                        />
                     </section>
 
                     <div className="flex justify-end gap-3 border-t border-slate-100 pt-5">
-                        <SecondaryButton
-                            type="button"
-                            onClick={() => window.location.reload()}
-                            disabled={processing}
-                        >
-                            Reset View
-                        </SecondaryButton>
                         <PrimaryButton disabled={processing}>
-                            {processing ? "Saving..." : "Save About Content"}
+                            {processing ? "Saving..." : "Save About CMS"}
                         </PrimaryButton>
                     </div>
                 </form>
             </section>
         </div>
     );
-};
-
-export default About;
+}
 
 About.layout = (page) => (
     <AdminLayout

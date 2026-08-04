@@ -6,7 +6,7 @@ import {
 } from "react-icons/io5";
 import Modal from "@/Components/Modal";
 
-const barangays = [
+const defaultBarangays = [
     {
         id: 1,
         title: "Abunda",
@@ -387,7 +387,16 @@ const barangays = [
     },
 ];
 
-const LGU = () => {
+const LGU = ({ lguData = null }) => {
+    const barangays =
+        Array.isArray(lguData?.barangays) && lguData.barangays.length > 0
+            ? lguData.barangays
+            : defaultBarangays;
+    const logo = lguData?.logo || "/assets/images/logos/lgu-mabuhay.png";
+    const badge = lguData?.badge || "Barangay Reference Collection";
+    const subtitle =
+        lguData?.subtitle || "Municipal Directory Layout Preview";
+    const title = lguData?.title || "Municipality of Mabuhay";
     const [searchTerm, setSearchTerm] = useState("");
     const [currentPage, setCurrentPage] = useState(1);
     const [selectedBarangay, setSelectedBarangay] = useState(null);
@@ -435,18 +444,18 @@ const LGU = () => {
             <div className="mx-auto flex min-h-[78vh] max-w-5xl flex-col">
                 <div className="text-center">
                     <img
-                        src="/assets/images/logos/lgu-mabuhay.png"
+                        src={logo}
                         alt="LGU Mabuhay"
                         className="mx-auto h-20 w-auto"
                     />
                     <p className="mt-4 text-[0.6rem] font-bold uppercase tracking-[0.24em] text-emerald-800 md:text-xs">
-                        Barangay Reference Collection
+                        {badge}
                     </p>
                     <p className="mt-1 text-[0.55rem] font-semibold uppercase tracking-[0.28em] text-emerald-700/80 md:text-[0.65rem]">
-                        Municipal Directory Layout Preview
+                        {subtitle}
                     </p>
                     <h1 className="mt-3 text-3xl font-black uppercase tracking-[0.06em] text-emerald-950 md:text-4xl">
-                        Municipality of Mabuhay
+                        {title}
                     </h1>
                 </div>
 
@@ -525,7 +534,10 @@ const LGU = () => {
 
                                     <div className="mt-auto hidden overflow-hidden rounded-xl border border-white/80 shadow-sm md:block">
                                         <img
-                                            src="/assets/images/lgu_mabuhay.jpg"
+                                            src={
+                                                barangay.captain_image ||
+                                                "/assets/images/lgu_mabuhay.jpg"
+                                            }
                                             alt=""
                                             aria-hidden="true"
                                             className="h-24 w-full object-cover"
@@ -651,7 +663,10 @@ const LGU = () => {
                                         <div className="flex flex-col items-center gap-4 text-center sm:flex-row sm:items-end sm:text-left">
                                             <div className="h-28 w-28 overflow-hidden rounded-[1.6rem] border-4 border-white bg-emerald-50 shadow-lg">
                                                 <img
-                                                    src="/assets/images/lgu_mabuhay.jpg"
+                                                    src={
+                                                        selectedBarangay.captain_image ||
+                                                        "/assets/images/lgu_mabuhay.jpg"
+                                                    }
                                                     alt={`${selectedBarangay.officials.captain} portrait`}
                                                     className="h-full w-full object-cover"
                                                 />

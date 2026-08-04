@@ -37,7 +37,8 @@ class CategoryController extends Controller
 
             return Inertia::render('Client/Sub/AboutLguMabuhay', [
                 'aboutData' => $this->buildAboutData($about),
-                'organizationData' => null,
+                'organizationData' => $this->buildOrganizationData($about),
+                'lguData' => $this->buildLguData($about),
             ]);
         }
 
@@ -121,6 +122,58 @@ class CategoryController extends Controller
                 'title' => $about->priorities_title,
                 'items' => $about->priorities_items ?? [],
             ],
+        ];
+    }
+
+    private function buildOrganizationData(?About $about): ?array
+    {
+        if ($about === null) {
+            return null;
+        }
+
+        return [
+            'mayor' => [
+                'name' => $about->organization_mayor_name,
+                'role' => $about->organization_mayor_role,
+                'image' => $about->organization_mayor_image
+                    ? '/storage/images/thumbnails/' . $about->organization_mayor_image
+                    : null,
+            ],
+            'viceMayor' => [
+                'name' => $about->organization_vice_mayor_name,
+                'role' => $about->organization_vice_mayor_role,
+                'image' => $about->organization_vice_mayor_image
+                    ? '/storage/images/thumbnails/' . $about->organization_vice_mayor_image
+                    : null,
+            ],
+            'councilMembers' => collect($about->organization_council_members ?? [])
+                ->map(fn (array $member) => [
+                    'id' => $member['id'] ?? null,
+                    'name' => $member['name'] ?? null,
+                    'role' => $member['role'] ?? 'Council Member',
+                    'image' => !empty($member['image'])
+                        ? '/storage/images/thumbnails/' . $member['image']
+                        : null,
+                ])
+                ->values()
+                ->all(),
+        ];
+    }
+
+    private function buildLguData(?About $about): ?array
+    {
+        if ($about === null) {
+            return null;
+        }
+
+        return [
+            'badge' => $about->lgu_badge,
+            'subtitle' => $about->lgu_subtitle,
+            'title' => $about->lgu_title,
+            'logo' => $about->lgu_logo
+                ? '/storage/images/thumbnails/' . $about->lgu_logo
+                : null,
+            'barangays' => $about->lgu_barangays ?? [],
         ];
     }
 
