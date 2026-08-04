@@ -57,8 +57,6 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/cms/resources', [App\Http\Controllers\Admin\ResourcesAdminController::class, 'index'])
         ->name('admin.resources.index');
 
-
-
     Route::post('/admin/categories', [App\Http\Controllers\Admin\CategoryController::class, 'store'])
         ->name('admin.categories.store');
     Route::post('/admin/categories/{category}', [App\Http\Controllers\Admin\CategoryController::class, 'update'])

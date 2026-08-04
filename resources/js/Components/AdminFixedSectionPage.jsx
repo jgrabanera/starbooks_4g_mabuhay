@@ -1,4 +1,6 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import ActionConfirmationModal from "@/Components/ActionConfirmationModal";
+import ActionStatusAlert from "@/Components/ActionStatusAlert";
 import { router, useForm, useRemember } from "@inertiajs/react";
 import DangerButton from "@/Components/DangerButton";
 import InputError from "@/Components/InputError";
@@ -38,7 +40,20 @@ export default function AdminFixedSectionPage({
     const [contentPendingDelete, setContentPendingDelete] = useState(null);
     const [isFormModalOpen, setIsFormModalOpen] = useState(false);
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+    const [confirmationState, setConfirmationState] = useState({
+        show: false,
+        title: "",
+        message: "",
+        confirmLabel: "Confirm",
+    });
+    const [notification, setNotification] = useState({
+        show: false,
+        type: "success",
+        message: "",
+    });
     const [search, setSearch] = useRemember("", config.searchKey);
+    const pendingConfirmationActionRef = useRef(null);
+    const notificationTimeoutRef = useRef(null);
 
     const {
         data,
@@ -126,6 +141,55 @@ export default function AdminFixedSectionPage({
         setIsDeleteModalOpen(true);
     };
 
+    const openConfirmation = ({
+        title,
+        message,
+        confirmLabel = "Confirm",
+        onConfirm,
+    }) => {
+        pendingConfirmationActionRef.current = onConfirm;
+        setConfirmationState({
+            show: true,
+            title,
+            message,
+            confirmLabel,
+        });
+    };
+
+    const closeConfirmation = () => {
+        pendingConfirmationActionRef.current = null;
+        setConfirmationState((currentState) => ({
+            ...currentState,
+            show: false,
+        }));
+    };
+
+    const confirmPendingAction = () => {
+        const action = pendingConfirmationActionRef.current;
+
+        closeConfirmation();
+
+        if (action) {
+            action();
+        }
+    };
+
+    const showNotification = (type, message) => {
+        setNotification({
+            show: true,
+            type,
+            message,
+        });
+
+        window.clearTimeout(notificationTimeoutRef.current);
+        notificationTimeoutRef.current = window.setTimeout(() => {
+            setNotification((currentState) => ({
+                ...currentState,
+                show: false,
+            }));
+        }, 4000);
+    };
+
     const closeDeleteModal = () => {
         setContentPendingDelete(null);
         setIsDeleteModalOpen(false);
@@ -138,22 +202,59 @@ export default function AdminFixedSectionPage({
             return;
         }
 
-        if (editingContent) {
-            router.post(route(config.routes.update, editingContent.id), data, {
-                forceFormData: true,
-                preserveScroll: true,
-                onSuccess: () => {
-                    closeFormModal();
-                },
-            });
-            return;
-        }
+        const isEditing = Boolean(editingContent);
 
-        post(route(config.routes.store), {
-            forceFormData: true,
-            preserveScroll: true,
-            onSuccess: () => {
-                closeFormModal();
+        openConfirmation({
+            title: isEditing
+                ? `Save changes to ${config.entityLabel}?`
+                : `Add new ${config.entityLabel}?`,
+            message: isEditing
+                ? `Are you sure you want to save the updates to this ${config.entityLabel.toLowerCase()} item?`
+                : `Are you sure you want to add this new ${config.entityLabel.toLowerCase()} item to the ${config.publicPageLabel} page?`,
+            confirmLabel: isEditing ? "Save Changes" : "Add Content",
+            onConfirm: () => {
+                if (editingContent) {
+                    router.post(
+                        route(config.routes.update, editingContent.id),
+                        data,
+                        {
+                            forceFormData: true,
+                            preserveScroll: true,
+                            onSuccess: () => {
+                                closeFormModal();
+                                showNotification(
+                                    "success",
+                                    `${config.entityLabel} content was updated successfully.`,
+                                );
+                            },
+                            onError: () => {
+                                showNotification(
+                                    "error",
+                                    `The ${config.entityLabel.toLowerCase()} item could not be updated. Please review the form and try again.`,
+                                );
+                            },
+                        },
+                    );
+                    return;
+                }
+
+                post(route(config.routes.store), {
+                    forceFormData: true,
+                    preserveScroll: true,
+                    onSuccess: () => {
+                        closeFormModal();
+                        showNotification(
+                            "success",
+                            `New ${config.entityLabel.toLowerCase()} content was added successfully.`,
+                        );
+                    },
+                    onError: () => {
+                        showNotification(
+                            "error",
+                            `The new ${config.entityLabel.toLowerCase()} item could not be added. Please review the form and try again.`,
+                        );
+                    },
+                });
             },
         });
     };
@@ -167,10 +268,20 @@ export default function AdminFixedSectionPage({
             preserveScroll: true,
             onSuccess: () => {
                 closeDeleteModal();
+                showNotification(
+                    "success",
+                    `${config.entityLabel} content was deleted successfully.`,
+                );
 
                 if (editingContent?.id === contentPendingDelete.id) {
                     closeFormModal();
                 }
+            },
+            onError: () => {
+                showNotification(
+                    "error",
+                    `The ${config.entityLabel.toLowerCase()} item could not be deleted. Please try again.`,
+                );
             },
         });
     };
@@ -178,6 +289,8 @@ export default function AdminFixedSectionPage({
     return (
         <>
             <div className="space-y-6">
+                <ActionStatusAlert notification={notification} />
+
                 <section className="overflow-hidden rounded-[24px] border border-slate-200 bg-white shadow-sm">
                     <div className="border-b border-slate-100 bg-gradient-to-r from-emerald-50 via-white to-white px-5 py-5 sm:px-6">
                         <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
@@ -755,6 +868,16 @@ export default function AdminFixedSectionPage({
                     </div>
                 </div>
             </Modal>
+
+            <ActionConfirmationModal
+                show={confirmationState.show}
+                onClose={closeConfirmation}
+                onConfirm={confirmPendingAction}
+                title={confirmationState.title}
+                message={confirmationState.message}
+                confirmLabel={confirmationState.confirmLabel}
+                processing={processing}
+            />
         </>
     );
 }

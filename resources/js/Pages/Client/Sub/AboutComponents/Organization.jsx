@@ -1,79 +1,34 @@
-const fallbackPortrait = "/assets/images/lgu_mabuhay.jpg";
+const renderPortrait = (official, label) => {
+    if (official?.image) {
+        return (
+            <img
+                src={official.image}
+                alt={official.name || label}
+                className="h-full w-full object-cover"
+            />
+        );
+    }
 
-const defaultOrganizationData = {
-    mayor: {
-        name: 'Hon. Edrelusa "Lulu" Calonge',
-        role: "Municipal Mayor",
-        image: fallbackPortrait,
-    },
-    viceMayor: {
-        name: "Hon. Joval John B. Samonte",
-        role: "Municipal Vice Mayor",
-        image: fallbackPortrait,
-    },
-    councilMembers: [
-        {
-            id: "member-1",
-            name: "Maria Pilar T. Adlaon",
-            role: "Council Member",
-            image: fallbackPortrait,
-        },
-        {
-            id: "member-2",
-            name: "Majin V. Andak Sr.",
-            role: "Council Member",
-            image: fallbackPortrait,
-        },
-        {
-            id: "member-3",
-            name: "Alvarez H. Dammang",
-            role: "Council Member",
-            image: fallbackPortrait,
-        },
-        {
-            id: "member-4",
-            name: "Nelson L. Mallen",
-            role: "Council Member",
-            image: fallbackPortrait,
-        },
-        {
-            id: "member-5",
-            name: "Baltazar A. Alcala Sr.",
-            role: "Council Member",
-            image: fallbackPortrait,
-        },
-        {
-            id: "member-6",
-            name: "Jermalyn M. Dammang",
-            role: "Council Member",
-            image: fallbackPortrait,
-        },
-        {
-            id: "member-7",
-            name: "Abubakhar S. Anjawan",
-            role: "Council Member",
-            image: fallbackPortrait,
-        },
-    ],
+    return (
+        <div className="flex h-full w-full items-center justify-center bg-[linear-gradient(135deg,rgba(236,253,245,1),rgba(255,251,235,0.95))] text-center text-[0.7rem] font-bold uppercase tracking-[0.18em] text-emerald-700">
+            No Image
+        </div>
+    );
 };
-
-const mergeOfficial = (defaultOfficial, official) => ({
-    ...defaultOfficial,
-    ...(official ?? {}),
-    image: official?.image || defaultOfficial.image,
-});
 
 const normalizeCouncilMembers = (members = []) => {
     if (!Array.isArray(members) || members.length === 0) {
-        return defaultOrganizationData.councilMembers;
+        return [];
     }
 
-    return members.map((member, index) => ({
-        id: member?.id || `member-${index + 1}`,
-        name: member?.name || `Council Member ${index + 1}`,
-        role: member?.role || "Council Member",
-        image: member?.image || fallbackPortrait,
-    }));
+    return members
+        .map((member, index) => ({
+            id: member?.id || `member-${index + 1}`,
+            name: member?.name || "",
+            role: member?.role || "Council Member",
+            image: member?.image || null,
+        }))
+        .filter((member) => member.name || member.role || member.image);
 };
 
 const MemberCard = ({ member }) => {
@@ -81,12 +36,7 @@ const MemberCard = ({ member }) => {
         <article className=" mx-auto w-full max-w-[12.5rem]">
             <div className="  mx-auto h-32 w-32  rounded-full  shadow-md">
                 <div className="h-full w-full overflow-hidden rounded-full border-4 border-white bg-white">
-                    <img
-                        src={member.image || fallbackPortrait}
-                        alt=""
-                        aria-hidden="true"
-                        className="h-full w-full object-cover"
-                    />
+                    {renderPortrait(member, member.name || "Council Member")}
                 </div>
             </div>
             <div className="rounded-[0.8rem] bg-white px-3 py-3 text-center shadow-lg">
@@ -102,17 +52,33 @@ const MemberCard = ({ member }) => {
 };
 
 const Organization = ({ organizationData = null }) => {
-    const mayor = mergeOfficial(
-        defaultOrganizationData.mayor,
-        organizationData?.mayor,
-    );
-    const viceMayor = mergeOfficial(
-        defaultOrganizationData.viceMayor,
-        organizationData?.viceMayor,
-    );
+    const mayor = organizationData?.mayor ?? {};
+    const viceMayor = organizationData?.viceMayor ?? {};
     const councilMembers = normalizeCouncilMembers(
         organizationData?.councilMembers,
     );
+    const hasContent =
+        mayor.name ||
+        mayor.role ||
+        mayor.image ||
+        viceMayor.name ||
+        viceMayor.role ||
+        viceMayor.image ||
+        councilMembers.length > 0;
+
+    if (!hasContent) {
+        return (
+            <div className="rounded-[2rem] border border-dashed border-emerald-200 bg-white/60 px-6 py-12 text-center shadow-lg backdrop-blur-md">
+                <p className="text-base font-bold text-emerald-950">
+                    No organization data available yet.
+                </p>
+                <p className="mt-2 text-sm text-slate-600">
+                    This section will appear once organization content is added
+                    from the CMS.
+                </p>
+            </div>
+        );
+    }
     const desktopFirstRow = councilMembers.slice(0, 4);
     const desktopSecondRow = councilMembers.slice(4);
 
@@ -124,11 +90,7 @@ const Organization = ({ organizationData = null }) => {
                     <article className="relative mx-auto w-full max-w-[22rem] overflow-visible rounded-[1.2rem] bg-white px-5 pt-10 pb-5 shadow-[0_18px_40px_rgba(15,23,42,0.12)] mt-52">
                         <div className="absolute left-1/2 -top-6 h-60 w-60 -translate-x-1/2 -translate-y-3/4 rounded-full  shadow-lg">
                             <div className="h-full w-full overflow-hidden rounded-full border-4 border-white bg-white">
-                                <img
-                                    src={mayor.image}
-                                    alt={mayor.name}
-                                    className="h-full w-full object-cover"
-                                />
+                                {renderPortrait(mayor, "Mayor")}
                             </div>
                         </div>
                         {/* <div className="absolute inset-x-10 top-0 h-12 -translate-y-[8%] rounded-b-full border-[5px] border-t-0 border-sky-900/80" /> */}
@@ -148,11 +110,7 @@ const Organization = ({ organizationData = null }) => {
                     {/* vice mayor */}
                     <article className=" mx-auto w-full max-w-[22rem]  overflow-visible rounded-[1.2rem] ">
                         <div className="mx-auto flex h-48 w-48 items-center justify-center overflow-hidden rounded-full border-4 border-white bg-white shadow-lg">
-                            <img
-                                src={viceMayor.image}
-                                alt={viceMayor.name}
-                                className="h-full w-full object-cover"
-                            />
+                            {renderPortrait(viceMayor, "Vice Mayor")}
                         </div>
 
                         <div className=" bg-white p-5 rounded-xl -mt-5">
@@ -202,11 +160,7 @@ const Organization = ({ organizationData = null }) => {
                 <article className="relative mx-auto w-full max-w-[22rem] overflow-visible rounded-[1.2rem] bg-white px-5 pt-10 pb-5 shadow-[0_18px_40px_rgba(15,23,42,0.12)] mt-52">
                     <div className="absolute left-1/2 -top-6 h-60 w-60 -translate-x-1/2 -translate-y-3/4 rounded-full  shadow-lg">
                         <div className="h-full w-full overflow-hidden rounded-full border-4 border-white bg-white">
-                            <img
-                                src={mayor.image}
-                                alt={mayor.name}
-                                className="h-full w-full object-cover"
-                            />
+                            {renderPortrait(mayor, "Mayor")}
                         </div>
                     </div>
                     {/* <div className="absolute inset-x-10 top-0 h-12 -translate-y-[8%] rounded-b-full border-[5px] border-t-0 border-sky-900/80" /> */}
@@ -226,11 +180,7 @@ const Organization = ({ organizationData = null }) => {
                 {/* vice mayor */}
                 <article className=" mx-auto w-full max-w-[22rem]  overflow-visible rounded-[1.2rem] mt-48">
                     <div className="mx-auto flex h-48 w-48 items-center justify-center overflow-hidden rounded-full border-4 border-white bg-white shadow-lg">
-                        <img
-                            src={viceMayor.image}
-                            alt={viceMayor.name}
-                            className="h-full w-full object-cover"
-                        />
+                        {renderPortrait(viceMayor, "Vice Mayor")}
                     </div>
 
                     <div className=" bg-white p-5 rounded-xl -mt-5">

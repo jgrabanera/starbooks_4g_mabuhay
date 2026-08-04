@@ -30,8 +30,29 @@ class AboutAdminController extends Controller
         ]);
 
         $validated = $request->validated();
+        $payload = ['page_key' => 'about-lgu-mabuhay'];
+        $section = $validated['section'] ?? null;
+
+        if ($section === 'about' || $section === null) {
+            $payload = array_merge($payload, $this->buildAboutPayload($request, $about, $validated));
+        }
+
+        if ($section === 'organization' || $section === null) {
+            $payload = array_merge($payload, $this->buildOrganizationPayload($request, $about, $validated));
+        }
+
+        if ($section === 'lgu' || $section === null) {
+            $payload = array_merge($payload, $this->buildLguPayload($request, $about, $validated));
+        }
+
+        $about->fill($payload)->save();
+
+        return to_route('admin.about.index');
+    }
+
+    private function buildAboutPayload(AboutContentRequest $request, About $about, array $validated): array
+    {
         $payload = [
-            'page_key' => 'about-lgu-mabuhay',
             'hero_logo_alt' => $validated['hero_logo_alt'] ?? null,
             'hero_title' => trim($validated['hero_title']),
             'hero_description' => trim($validated['hero_description']),
@@ -41,39 +62,6 @@ class AboutAdminController extends Controller
             'overview_highlights' => array_values($validated['overview_highlights']),
             'media_badge' => trim($validated['media_badge']),
             'media_title' => trim($validated['media_title']),
-            'organization_mayor_name' => trim($validated['organization_mayor_name']),
-            'organization_mayor_role' => trim($validated['organization_mayor_role']),
-            'organization_vice_mayor_name' => trim($validated['organization_vice_mayor_name']),
-            'organization_vice_mayor_role' => trim($validated['organization_vice_mayor_role']),
-            'organization_council_members' => collect($validated['organization_council_members'])
-                ->values()
-                ->map(fn (array $member, int $index) => [
-                    'id' => $member['id'] ?? 'member-' . ($index + 1),
-                    'name' => trim($member['name']),
-                    'role' => trim($member['role']),
-                    'image' => $member['image'] ?? null,
-                ])
-                ->all(),
-            'lgu_badge' => trim($validated['lgu_badge']),
-            'lgu_subtitle' => trim($validated['lgu_subtitle']),
-            'lgu_title' => trim($validated['lgu_title']),
-            'lgu_barangays' => collect($validated['lgu_barangays'])
-                ->values()
-                ->map(fn (array $barangay, int $index) => [
-                    'id' => $barangay['id'] ?? ($index + 1),
-                    'title' => trim($barangay['title']),
-                    'reference' => trim($barangay['reference']),
-                    'population' => (int) $barangay['population'],
-                    'captain_image' => $barangay['captain_image'] ?? null,
-                    'officials' => [
-                        'captain' => trim($barangay['officials']['captain']),
-                        'secretary' => trim($barangay['officials']['secretary']),
-                        'treasurer' => trim($barangay['officials']['treasurer']),
-                        'skChairperson' => trim($barangay['officials']['skChairperson']),
-                        'kagawads' => array_values($barangay['officials']['kagawads']),
-                    ],
-                ])
-                ->all(),
             'media_overlay_title' => trim($validated['media_overlay_title']),
             'media_overlay_description' => trim($validated['media_overlay_description']),
             'media_footer_left' => trim($validated['media_footer_left']),
@@ -131,6 +119,50 @@ class AboutAdminController extends Controller
             $payload['media_video'] = basename($mediaVideoPath);
         }
 
+        return $payload;
+    }
+
+    private function buildOrganizationPayload(AboutContentRequest $request, About $about, array $validated): array
+    {
+        $existingCouncilMembers = collect($about->organization_council_members ?? [])
+            ->keyBy(fn (array $member) => $member['id'] ?? null);
+
+        $payload = [
+            'organization_mayor_name' => trim($validated['organization_mayor_name']),
+            'organization_mayor_role' => trim($validated['organization_mayor_role']),
+            'organization_vice_mayor_name' => trim($validated['organization_vice_mayor_name']),
+            'organization_vice_mayor_role' => trim($validated['organization_vice_mayor_role']),
+            'organization_council_members' => collect($validated['organization_council_members'])
+                ->values()
+                ->map(function (array $member, int $index) use ($request, $existingCouncilMembers) {
+                    $memberId = $member['id'] ?? 'member-' . ($index + 1);
+                    $storedImage = $existingCouncilMembers->get($memberId)['image'] ?? null;
+
+                    if ($request->hasFile("organization_council_members.$index.image")) {
+                        $uploadedImage = $request->file("organization_council_members.$index.image");
+                        $storedPath = $uploadedImage->storeAs(
+                            'images/thumbnails',
+                            $this->buildStoredFileName('organization-council-member-' . ($index + 1), $uploadedImage->extension()),
+                            'public',
+                        );
+
+                        if (!empty($storedImage)) {
+                            Storage::disk('public')->delete('images/thumbnails/' . $storedImage);
+                        }
+
+                        $storedImage = basename($storedPath);
+                    }
+
+                    return [
+                        'id' => $memberId,
+                        'name' => trim($member['name']),
+                        'role' => trim($member['role']),
+                        'image' => $storedImage,
+                    ];
+                })
+                ->all(),
+        ];
+
         if ($request->hasFile('organization_mayor_image')) {
             $storedPath = $request->file('organization_mayor_image')->storeAs(
                 'images/thumbnails',
@@ -159,6 +191,34 @@ class AboutAdminController extends Controller
             $payload['organization_vice_mayor_image'] = basename($storedPath);
         }
 
+        return $payload;
+    }
+
+    private function buildLguPayload(AboutContentRequest $request, About $about, array $validated): array
+    {
+        $payload = [
+            'lgu_badge' => trim($validated['lgu_badge']),
+            'lgu_subtitle' => trim($validated['lgu_subtitle']),
+            'lgu_title' => trim($validated['lgu_title']),
+            'lgu_barangays' => collect($validated['lgu_barangays'])
+                ->values()
+                ->map(fn (array $barangay, int $index) => [
+                    'id' => $barangay['id'] ?? ($index + 1),
+                    'title' => trim($barangay['title']),
+                    'reference' => trim($barangay['reference']),
+                    'population' => (int) $barangay['population'],
+                    'captain_image' => $barangay['captain_image'] ?? null,
+                    'officials' => [
+                        'captain' => trim($barangay['officials']['captain']),
+                        'secretary' => trim($barangay['officials']['secretary']),
+                        'treasurer' => trim($barangay['officials']['treasurer']),
+                        'skChairperson' => trim($barangay['officials']['skChairperson']),
+                        'kagawads' => array_values($barangay['officials']['kagawads']),
+                    ],
+                ])
+                ->all(),
+        ];
+
         if ($request->hasFile('lgu_logo')) {
             $storedPath = $request->file('lgu_logo')->storeAs(
                 'images/thumbnails',
@@ -173,9 +233,7 @@ class AboutAdminController extends Controller
             $payload['lgu_logo'] = basename($storedPath);
         }
 
-        $about->fill($payload)->save();
-
-        return to_route('admin.about.index');
+        return $payload;
     }
 
     private function buildFormData(?About $about): array
@@ -207,11 +265,20 @@ class AboutAdminController extends Controller
             'organization_vice_mayor_name' => $about?->organization_vice_mayor_name ?? 'Hon. Joval John B. Samonte',
             'organization_vice_mayor_role' => $about?->organization_vice_mayor_role ?? 'Municipal Vice Mayor',
             'organization_vice_mayor_image' => $about?->organization_vice_mayor_image,
-            'organization_council_members' => $about?->organization_council_members ?? [
+            'organization_council_members' => collect($about?->organization_council_members ?? [
                 ['id' => 'member-1', 'name' => 'Maria Pilar T. Adlaon', 'role' => 'Council Member', 'image' => null],
                 ['id' => 'member-2', 'name' => 'Majin V. Andak Sr.', 'role' => 'Council Member', 'image' => null],
                 ['id' => 'member-3', 'name' => 'Alvarez H. Dammang', 'role' => 'Council Member', 'image' => null],
-            ],
+            ])
+                ->map(fn (array $member, int $index) => [
+                    'id' => $member['id'] ?? 'member-' . ($index + 1),
+                    'name' => $member['name'] ?? '',
+                    'role' => $member['role'] ?? 'Council Member',
+                    'image' => null,
+                    'current_image' => $member['image'] ?? null,
+                ])
+                ->values()
+                ->all(),
             'lgu_badge' => $about?->lgu_badge ?? 'Barangay Reference Collection',
             'lgu_subtitle' => $about?->lgu_subtitle ?? 'Municipal Directory Layout Preview',
             'lgu_title' => $about?->lgu_title ?? 'Municipality of Mabuhay',

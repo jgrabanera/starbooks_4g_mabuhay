@@ -6,401 +6,19 @@ import {
 } from "react-icons/io5";
 import Modal from "@/Components/Modal";
 
-const defaultBarangays = [
-    {
-        id: 1,
-        title: "Abunda",
-        reference: "BRGY-001",
-        population: 893,
-        officials: {
-            captain: "Juan Dela Cruz",
-            secretary: "Maria Santos",
-            treasurer: "Pedro Reyes",
-            skChairperson: "Angela Flores",
-            kagawads: [
-                "Ramon Garcia",
-                "Liza Mendoza",
-                "Joel Ramos",
-                "Catherine Cruz",
-                "Dennis Torres",
-                "Marvin Lopez",
-                "Jenny Villanueva",
-            ],
-        },
-    },
-    {
-        id: 2,
-        title: "Bagong Silang (Tumalog)",
-        reference: "BRGY-002",
-        population: 1596,
-        officials: {
-            captain: "Michael Fernandez",
-            secretary: "Rose Ann Diaz",
-            treasurer: "Edgar Castillo",
-            skChairperson: "Kristine Bautista",
-            kagawads: [
-                "Leo Ramos",
-                "Allan Flores",
-                "Grace Mendoza",
-                "Joseph Cruz",
-                "Paul Garcia",
-                "Emily Santos",
-                "Rico Navarro",
-            ],
-        },
-    },
-    {
-        id: 3,
-        title: "Bangkaw-bangkaw",
-        reference: "BRGY-003",
-        population: 1750,
-        officials: {
-            captain: "Mark Anthony Torres",
-            secretary: "Jennifer Lopez",
-            treasurer: "Antonio Rivera",
-            skChairperson: "Kate Fernandez",
-            kagawads: [
-                "Ryan Mendoza",
-                "Erwin Garcia",
-                "Patrick Cruz",
-                "Jessa Ramos",
-                "Arnold Diaz",
-                "Michelle Reyes",
-                "Carlo Flores",
-            ],
-        },
-    },
-    {
-        id: 4,
-        title: "Caliran (Turko)",
-        reference: "BRGY-004",
-        population: 2828,
-        officials: {
-            captain: "Roberto Mendoza",
-            secretary: "Janice Torres",
-            treasurer: "Noel Santos",
-            skChairperson: "Camille Ramos",
-            kagawads: [
-                "Vincent Cruz",
-                "Leo Bautista",
-                "James Navarro",
-                "Rose Garcia",
-                "Alvin Reyes",
-                "Gerald Flores",
-                "Karen Diaz",
-            ],
-        },
-    },
-    {
-        id: 5,
-        title: "Catipan",
-        reference: "BRGY-005",
-        population: 1486,
-        officials: {
-            captain: "Richard Garcia",
-            secretary: "Melissa Cruz",
-            treasurer: "Victor Santos",
-            skChairperson: "Alyssa Mendoza",
-            kagawads: [
-                "Jordan Flores",
-                "Jerome Torres",
-                "Paolo Diaz",
-                "Rhea Navarro",
-                "Joel Reyes",
-                "Monica Garcia",
-                "Daniel Ramos",
-            ],
-        },
-    },
-    {
-        id: 6,
-        title: "Kauswagan",
-        reference: "BRGY-006",
-        population: 1600,
-        officials: {
-            captain: "Edwin Morales",
-            secretary: "Sheila Gonzales",
-            treasurer: "Rommel Fernandez",
-            skChairperson: "Jasmine Aquino",
-            kagawads: [
-                "Mario Santos",
-                "Kevin Cruz",
-                "Jonathan Flores",
-                "Ricky Ramos",
-                "Ana Garcia",
-                "Carla Mendoza",
-                "Julius Reyes",
-            ],
-        },
-    },
-    {
-        id: 7,
-        title: "Ligaya",
-        reference: "BRGY-007",
-        population: 1799,
-        officials: {
-            captain: "Fernando Castillo",
-            secretary: "Leah Torres",
-            treasurer: "Jerome Garcia",
-            skChairperson: "Nicole Perez",
-            kagawads: [
-                "Marvin Santos",
-                "Lester Cruz",
-                "Jayson Reyes",
-                "April Mendoza",
-                "Maricel Flores",
-                "Brian Ramos",
-                "Joan Diaz",
-            ],
-        },
-    },
-    {
-        id: 8,
-        title: "Looc-Barlak",
-        reference: "BRGY-008",
-        population: 2297,
-        officials: {
-            captain: "Victor Navarro",
-            secretary: "Elaine Santos",
-            treasurer: "Ronald Mendoza",
-            skChairperson: "Aira Lopez",
-            kagawads: [
-                "John Garcia",
-                "Richard Cruz",
-                "Francis Ramos",
-                "Hazel Flores",
-                "Ruben Diaz",
-                "Carlo Mendoza",
-                "Liza Reyes",
-            ],
-        },
-    },
-    {
-        id: 9,
-        title: "Malinao (Sagasa)",
-        reference: "BRGY-009",
-        population: 3788,
-        officials: {
-            captain: "Danilo Bautista",
-            secretary: "Karen Cruz",
-            treasurer: "Rolando Garcia",
-            skChairperson: "Patricia Mendoza",
-            kagawads: [
-                "Edgar Ramos",
-                "Michael Flores",
-                "Jerwin Diaz",
-                "Shane Reyes",
-                "Arnold Navarro",
-                "Dennis Santos",
-                "Mae Torres",
-            ],
-        },
-    },
-    {
-        id: 10,
-        title: "Pamansaan",
-        reference: "BRGY-010",
-        population: 1155,
-        officials: {
-            captain: "Rogelio Ramos",
-            secretary: "Sarah Garcia",
-            treasurer: "Emmanuel Cruz",
-            skChairperson: "Kimberly Torres",
-            kagawads: [
-                "Leo Fernandez",
-                "Albert Mendoza",
-                "Marvin Reyes",
-                "Grace Flores",
-                "Joel Santos",
-                "Erica Diaz",
-                "Nathan Lopez",
-            ],
-        },
-    },
-    {
-        id: 11,
-        title: "Pinalim (San Roque)",
-        reference: "BRGY-011",
-        population: 1573,
-        officials: {
-            captain: "Benjamin Flores",
-            secretary: "Angelica Ramos",
-            treasurer: "Joseph Navarro",
-            skChairperson: "Christine Garcia",
-            kagawads: [
-                "Allan Cruz",
-                "Richard Santos",
-                "Patrick Mendoza",
-                "Michelle Reyes",
-                "Harold Diaz",
-                "Rhea Torres",
-                "Dennis Bautista",
-            ],
-        },
-    },
-    {
-        id: 12,
-        title: "Poblacion (Mabuhay)",
-        reference: "BRGY-012",
-        population: 4765,
-        officials: {
-            captain: "Alexander Mendoza",
-            secretary: "Joy Santos",
-            treasurer: "Carlos Fernandez",
-            skChairperson: "Angela Cruz",
-            kagawads: [
-                "Robert Garcia",
-                "Michael Ramos",
-                "Leo Flores",
-                "Paula Reyes",
-                "John Diaz",
-                "Ryan Torres",
-                "Kevin Navarro",
-            ],
-        },
-    },
-    {
-        id: 13,
-        title: "Punawan",
-        reference: "BRGY-013",
-        population: 1466,
-        officials: {
-            captain: "Nestor Garcia",
-            secretary: "Diane Mendoza",
-            treasurer: "Ramon Santos",
-            skChairperson: "Princess Flores",
-            kagawads: [
-                "Joel Cruz",
-                "Arnold Ramos",
-                "Victor Reyes",
-                "Jessa Torres",
-                "Rico Diaz",
-                "Lester Navarro",
-                "April Garcia",
-            ],
-        },
-    },
-    {
-        id: 14,
-        title: "Santo Nino (Caliran)",
-        reference: "BRGY-014",
-        population: 1321,
-        officials: {
-            captain: "Oscar Reyes",
-            secretary: "Janine Cruz",
-            treasurer: "Anthony Garcia",
-            skChairperson: "Faith Ramos",
-            kagawads: [
-                "Paul Flores",
-                "Harold Mendoza",
-                "Ruben Santos",
-                "Monica Diaz",
-                "John Navarro",
-                "Marvin Torres",
-                "Kim Lopez",
-            ],
-        },
-    },
-    {
-        id: 15,
-        title: "Sawa",
-        reference: "BRGY-015",
-        population: 3027,
-        officials: {
-            captain: "Ricardo Torres",
-            secretary: "Michelle Garcia",
-            treasurer: "Arnold Reyes",
-            skChairperson: "Bea Santos",
-            kagawads: [
-                "Noel Mendoza",
-                "Ryan Cruz",
-                "Dennis Flores",
-                "Karen Diaz",
-                "Joel Ramos",
-                "Patrick Navarro",
-                "Leo Garcia",
-            ],
-        },
-    },
-    {
-        id: 16,
-        title: "Sioton",
-        reference: "BRGY-016",
-        population: 842,
-        officials: {
-            captain: "Gerardo Santos",
-            secretary: "Camille Flores",
-            treasurer: "Edwin Garcia",
-            skChairperson: "Angel Mendoza",
-            kagawads: [
-                "Joseph Cruz",
-                "Allan Ramos",
-                "Carlo Diaz",
-                "Liza Reyes",
-                "Jerome Torres",
-                "Rhea Navarro",
-                "Patrick Garcia",
-            ],
-        },
-    },
-    {
-        id: 17,
-        title: "Taguisian",
-        reference: "BRGY-017",
-        population: 3778,
-        officials: {
-            captain: "Alfredo Cruz",
-            secretary: "Mary Ann Santos",
-            treasurer: "Benjamin Torres",
-            skChairperson: "Kate Flores",
-            kagawads: [
-                "Ricky Mendoza",
-                "Marvin Garcia",
-                "Paul Reyes",
-                "Sheila Diaz",
-                "Kevin Ramos",
-                "Arnold Navarro",
-                "Grace Cruz",
-            ],
-        },
-    },
-    {
-        id: 18,
-        title: "Tandu-Comot (Katipunan)",
-        reference: "BRGY-018",
-        population: 1426,
-        officials: {
-            captain: "Wilfredo Garcia",
-            secretary: "Jean Ramos",
-            treasurer: "Richard Flores",
-            skChairperson: "Lovely Santos",
-            kagawads: [
-                "John Mendoza",
-                "Leo Reyes",
-                "Dennis Cruz",
-                "Michelle Navarro",
-                "Brian Diaz",
-                "April Torres",
-                "Ryan Garcia",
-            ],
-        },
-    },
-];
-
 const LGU = ({ lguData = null }) => {
-    const barangays =
-        Array.isArray(lguData?.barangays) && lguData.barangays.length > 0
-            ? lguData.barangays
-            : defaultBarangays;
-    const logo = lguData?.logo || "/assets/images/logos/lgu-mabuhay.png";
-    const badge = lguData?.badge || "Barangay Reference Collection";
-    const subtitle =
-        lguData?.subtitle || "Municipal Directory Layout Preview";
-    const title = lguData?.title || "Municipality of Mabuhay";
+    const barangays = Array.isArray(lguData?.barangays)
+        ? lguData.barangays
+        : [];
+    const logo = lguData?.logo || null;
+    const badge = lguData?.badge || "";
+    const subtitle = lguData?.subtitle || "";
+    const title = lguData?.title || "";
     const [searchTerm, setSearchTerm] = useState("");
     const [currentPage, setCurrentPage] = useState(1);
     const [selectedBarangay, setSelectedBarangay] = useState(null);
     const itemsPerPage = 10;
+    const hasContent = logo || badge || subtitle || title || barangays.length > 0;
 
     const filteredBarangays = barangays.filter((barangay) => {
         const searchableContent = [
@@ -439,24 +57,45 @@ const LGU = ({ lguData = null }) => {
         }
     }, [currentPage, totalPages]);
 
+    if (!hasContent) {
+        return (
+            <div className="rounded-[1.75rem] border border-dashed border-emerald-200 bg-white/60 px-6 py-12 text-center shadow-lg backdrop-blur-md">
+                <p className="text-base font-bold text-emerald-950">
+                    No LGU content available yet.
+                </p>
+                <p className="mt-2 text-sm text-slate-600">
+                    This section will appear once LGU content is added from the CMS.
+                </p>
+            </div>
+        );
+    }
+
     return (
         <div className="rounded-[1.75rem] border border-white/80 bg-white/55 p-4 shadow-lg backdrop-blur-md md:p-6 md:[@media(orientation:portrait)]:max-h-[82vh] md:[@media(orientation:portrait)]:min-h-[82vh]">
             <div className="mx-auto flex min-h-[78vh] max-w-5xl flex-col">
                 <div className="text-center">
-                    <img
-                        src={logo}
-                        alt="LGU Mabuhay"
-                        className="mx-auto h-20 w-auto"
-                    />
-                    <p className="mt-4 text-[0.6rem] font-bold uppercase tracking-[0.24em] text-emerald-800 md:text-xs">
-                        {badge}
-                    </p>
-                    <p className="mt-1 text-[0.55rem] font-semibold uppercase tracking-[0.28em] text-emerald-700/80 md:text-[0.65rem]">
-                        {subtitle}
-                    </p>
-                    <h1 className="mt-3 text-3xl font-black uppercase tracking-[0.06em] text-emerald-950 md:text-4xl">
-                        {title}
-                    </h1>
+                    {logo ? (
+                        <img
+                            src={logo}
+                            alt="LGU Mabuhay"
+                            className="mx-auto h-20 w-auto"
+                        />
+                    ) : null}
+                    {badge ? (
+                        <p className="mt-4 text-[0.6rem] font-bold uppercase tracking-[0.24em] text-emerald-800 md:text-xs">
+                            {badge}
+                        </p>
+                    ) : null}
+                    {subtitle ? (
+                        <p className="mt-1 text-[0.55rem] font-semibold uppercase tracking-[0.28em] text-emerald-700/80 md:text-[0.65rem]">
+                            {subtitle}
+                        </p>
+                    ) : null}
+                    {title ? (
+                        <h1 className="mt-3 text-3xl font-black uppercase tracking-[0.06em] text-emerald-950 md:text-4xl">
+                            {title}
+                        </h1>
+                    ) : null}
                 </div>
 
                 <div className="mx-auto mt-6 w-full md:max-w-xl">
@@ -644,8 +283,10 @@ const LGU = ({ lguData = null }) => {
                                             directory for community reference.
                                         </p>
 
-                                        <div className="mt-7 flex flex-col items-center text-center">
-                                            <div className="h-28 w-28 overflow-hidden rounded-full border-4 border-white bg-white shadow-lg shadow-emerald-100/80">
+                                        <div className="mt-7 flex w-full flex-col items-center text-center">
+                                            <div className="w-full max-w-xl rounded-[1.75rem] border border-emerald-200/80 bg-[linear-gradient(135deg,rgba(16,185,129,0.12),rgba(255,255,255,0.96),rgba(250,204,21,0.16))] px-5 py-6 shadow-[0_20px_60px_rgba(16,185,129,0.14)]">
+                                                <div className="mx-auto flex h-28 w-28 items-center justify-center rounded-full bg-[radial-gradient(circle,rgba(255,255,255,0.98),rgba(209,250,229,0.78))] ring-4 ring-white shadow-lg shadow-emerald-100/80">
+                                                    <div className="h-24 w-24 overflow-hidden rounded-full border-[3px] border-emerald-500/80 bg-white">
                                                 <img
                                                     src={
                                                         selectedBarangay.captain_image ||
@@ -654,13 +295,21 @@ const LGU = ({ lguData = null }) => {
                                                     alt={`${selectedBarangay.officials.captain} portrait`}
                                                     className="h-full w-full object-cover"
                                                 />
+                                                    </div>
+                                                </div>
+
+                                                <div className="mt-5">
+                                                    <p className="text-[0.68rem] font-bold uppercase tracking-[0.3em] text-emerald-700">
+                                                        Featured Official
+                                                    </p>
+                                                    <p className="mt-3 text-2xl font-black text-slate-900 sm:text-[1.7rem]">
+                                                        {selectedBarangay.officials.captain}
+                                                    </p>
+                                                    <div className="mx-auto mt-3 inline-flex items-center rounded-full bg-gradient-to-r from-emerald-600 via-teal-500 to-lime-500 px-4 py-2 text-xs font-bold uppercase tracking-[0.24em] text-white shadow-md">
+                                                        Barangay Captain
+                                                    </div>
+                                                </div>
                                             </div>
-                                            <p className="mt-4 text-lg font-bold text-slate-900">
-                                                {selectedBarangay.officials.captain}
-                                            </p>
-                                            <p className="text-sm font-medium uppercase tracking-[0.18em] text-emerald-700">
-                                                Barangay Captain
-                                            </p>
 
                                             <div className="mt-7 grid w-full gap-3 sm:grid-cols-3">
                                                 <div className="rounded-2xl border border-emerald-100 bg-emerald-50/80 px-4 py-3">
