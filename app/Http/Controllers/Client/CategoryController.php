@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Client;
 
 use App\Http\Controllers\Controller;
+use App\Models\About;
 use App\Models\Category;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -29,6 +30,17 @@ class CategoryController extends Controller
 
     public function show(string $slug): Response|RedirectResponse
     {
+        if ($slug === 'about-lgu-mabuhay') {
+            $about = About::query()
+                ->where('page_key', 'about-lgu-mabuhay')
+                ->first();
+
+            return Inertia::render('Client/Sub/AboutLguMabuhay', [
+                'aboutData' => $this->buildAboutData($about),
+                'organizationData' => null,
+            ]);
+        }
+
         $page = $this->categoryPages()[$slug] ?? null;
 
         if ($page === null) {
@@ -62,12 +74,53 @@ class CategoryController extends Controller
     private function categoryPages(): array
     {
         return [
-            'about-lgu-mabuhay' => 'Client/Sub/AboutLguMabuhay',
             'dost-services' => 'Client/Sub/DostServices',
             'lgu-mabuhay-projects' => 'Client/Sub/LguMabuhayProjects',
             'resources' => 'Client/Sub/Resources',
             'social-services' => 'Client/Sub/SocialServices',
             'tourism' => 'Client/Sub/Tourism',
+        ];
+    }
+
+    private function buildAboutData(?About $about): ?array
+    {
+        if ($about === null) {
+            return null;
+        }
+
+        return [
+            'hero' => [
+                'logo' => $about->hero_logo
+                    ? '/storage/images/thumbnails/' . $about->hero_logo
+                    : '/assets/images/logos/lgu-mabuhay.png',
+                'logoAlt' => $about->hero_logo_alt,
+                'title' => $about->hero_title,
+                'description' => $about->hero_description,
+            ],
+            'overview' => [
+                'badge' => $about->overview_badge,
+                'title' => $about->overview_title,
+                'paragraphs' => $about->overview_paragraphs ?? [],
+                'highlights' => $about->overview_highlights ?? [],
+            ],
+            'media' => [
+                'badge' => $about->media_badge,
+                'title' => $about->media_title,
+                'previewImage' => $about->media_preview_image
+                    ? '/storage/images/thumbnails/' . $about->media_preview_image
+                    : '/assets/images/lgu_mabuhay.jpg',
+                'videoUrl' => $about->media_video
+                    ? '/storage/videos/about/' . $about->media_video
+                    : null,
+                'overlayTitle' => $about->media_overlay_title,
+                'overlayDescription' => $about->media_overlay_description,
+                'footerLeft' => $about->media_footer_left,
+                'footerRight' => $about->media_footer_right,
+            ],
+            'priorities' => [
+                'title' => $about->priorities_title,
+                'items' => $about->priorities_items ?? [],
+            ],
         ];
     }
 

@@ -26,6 +26,7 @@ const defaultAboutData = {
         badge: "Media Feature",
         title: "Municipal Video Showcase",
         previewImage: "/assets/images/lgu_mabuhay.jpg",
+        videoUrl: null,
         overlayTitle: "Mabuhay Overview Video",
         overlayDescription:
             "Replace this showcase with the official LGU Mabuhay video presentation, tourism reel, or public service introduction when media is ready.",
@@ -168,25 +169,40 @@ const About = ({ aboutData = null }) => {
                     </div>
 
                     <div className="mt-6 overflow-hidden rounded-[1.5rem] border border-slate-200 bg-slate-950 shadow-lg">
-                        <div
-                            className="relative aspect-video bg-cover bg-center"
-                            style={{
-                                backgroundImage: `url('${media.previewImage}')`,
-                            }}
-                        >
-                            <div className="absolute inset-0 bg-slate-950/45" />
-                            <div className="absolute inset-0 flex flex-col items-center justify-center px-6 text-center text-white">
-                                <div className="flex h-20 w-20 items-center justify-center rounded-full border border-white/20 bg-white/15 backdrop-blur">
-                                    <IoPlay className="ml-1 h-8 w-8" />
-                                </div>
-                                <h3 className="mt-5 text-xl font-black md:text-2xl">
-                                    {media.overlayTitle}
-                                </h3>
-                                <p className="mt-2 max-w-xl text-sm leading-6 text-slate-100 md:text-base">
-                                    {media.overlayDescription}
-                                </p>
+                        {media.videoUrl ? (
+                            <div className="bg-slate-950">
+                                <video
+                                    controls
+                                    preload="metadata"
+                                    poster={media.previewImage}
+                                    src={media.videoUrl}
+                                    className="aspect-video w-full bg-black"
+                                >
+                                    Your browser does not support the video
+                                    tag.
+                                </video>
                             </div>
-                        </div>
+                        ) : (
+                            <div
+                                className="relative aspect-video bg-cover bg-center"
+                                style={{
+                                    backgroundImage: `url('${media.previewImage}')`,
+                                }}
+                            >
+                                <div className="absolute inset-0 bg-slate-950/45" />
+                                <div className="absolute inset-0 flex flex-col items-center justify-center px-6 text-center text-white">
+                                    <div className="flex h-20 w-20 items-center justify-center rounded-full border border-white/20 bg-white/15 backdrop-blur">
+                                        <IoPlay className="ml-1 h-8 w-8" />
+                                    </div>
+                                    <h3 className="mt-5 text-xl font-black md:text-2xl">
+                                        {media.overlayTitle}
+                                    </h3>
+                                    <p className="mt-2 max-w-xl text-sm leading-6 text-slate-100 md:text-base">
+                                        {media.overlayDescription}
+                                    </p>
+                                </div>
+                            </div>
+                        )}
                         <div className="flex items-center justify-between border-t border-white/10 bg-slate-950/95 px-4 py-3 text-xs uppercase tracking-[0.16em] text-slate-300 md:px-5">
                             <span>{media.footerLeft}</span>
                             <span>{media.footerRight}</span>

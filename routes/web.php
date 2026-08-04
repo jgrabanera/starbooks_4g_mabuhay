@@ -66,6 +66,9 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('/admin/categories/{category}', [App\Http\Controllers\Admin\CategoryController::class, 'destroy'])
         ->name('admin.categories.destroy');
 
+    Route::post('/admin/about', [App\Http\Controllers\Admin\AboutAdminController::class, 'update'])
+        ->name('admin.about.update');
+
     Route::post('/admin/projects', [App\Http\Controllers\Admin\ProjectsAdminController::class, 'store'])
         ->name('admin.projects.store');
     Route::post('/admin/projects/{project}', [App\Http\Controllers\Admin\ProjectsAdminController::class, 'update'])
