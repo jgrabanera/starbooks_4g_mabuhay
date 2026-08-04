@@ -1,52 +1,80 @@
 const fallbackPortrait = "/assets/images/lgu_mabuhay.jpg";
 
-const councilMembers = [
-    {
-        id: "member-1",
-        name: "Maria Pilar T. Adlaon",
-        role: "Council Member",
+const defaultOrganizationData = {
+    mayor: {
+        name: 'Hon. Edrelusa "Lulu" Calonge',
+        role: "Municipal Mayor",
         image: fallbackPortrait,
     },
-    {
-        id: "member-2",
-        name: "Majin V. Andak Sr.",
-        role: "Council Member",
+    viceMayor: {
+        name: "Hon. Joval John B. Samonte",
+        role: "Municipal Vice Mayor",
         image: fallbackPortrait,
     },
-    {
-        id: "member-3",
-        name: "Alvarez H. Dammang",
-        role: "Council Member",
-        image: fallbackPortrait,
-    },
-    {
-        id: "member-4",
-        name: "Nelson L. Mallen",
-        role: "Council Member",
-        image: fallbackPortrait,
-    },
-    {
-        id: "member-5",
-        name: "Baltazar A. Alcala Sr.",
-        role: "Council Member",
-        image: fallbackPortrait,
-    },
-    {
-        id: "member-6",
-        name: "Jermalyn M. Dammang",
-        role: "Council Member",
-        image: fallbackPortrait,
-    },
-    {
-        id: "member-7",
-        name: "Abubakhar S. Anjawan",
-        role: "Council Member",
-        image: fallbackPortrait,
-    },
-];
+    councilMembers: [
+        {
+            id: "member-1",
+            name: "Maria Pilar T. Adlaon",
+            role: "Council Member",
+            image: fallbackPortrait,
+        },
+        {
+            id: "member-2",
+            name: "Majin V. Andak Sr.",
+            role: "Council Member",
+            image: fallbackPortrait,
+        },
+        {
+            id: "member-3",
+            name: "Alvarez H. Dammang",
+            role: "Council Member",
+            image: fallbackPortrait,
+        },
+        {
+            id: "member-4",
+            name: "Nelson L. Mallen",
+            role: "Council Member",
+            image: fallbackPortrait,
+        },
+        {
+            id: "member-5",
+            name: "Baltazar A. Alcala Sr.",
+            role: "Council Member",
+            image: fallbackPortrait,
+        },
+        {
+            id: "member-6",
+            name: "Jermalyn M. Dammang",
+            role: "Council Member",
+            image: fallbackPortrait,
+        },
+        {
+            id: "member-7",
+            name: "Abubakhar S. Anjawan",
+            role: "Council Member",
+            image: fallbackPortrait,
+        },
+    ],
+};
 
-const desktopFirstRow = councilMembers.slice(0, 4);
-const desktopSecondRow = councilMembers.slice(4);
+const mergeOfficial = (defaultOfficial, official) => ({
+    ...defaultOfficial,
+    ...(official ?? {}),
+    image: official?.image || defaultOfficial.image,
+});
+
+const normalizeCouncilMembers = (members = []) => {
+    if (!Array.isArray(members) || members.length === 0) {
+        return defaultOrganizationData.councilMembers;
+    }
+
+    return members.map((member, index) => ({
+        id: member?.id || `member-${index + 1}`,
+        name: member?.name || `Council Member ${index + 1}`,
+        role: member?.role || "Council Member",
+        image: member?.image || fallbackPortrait,
+    }));
+};
 
 const MemberCard = ({ member }) => {
     return (
@@ -73,7 +101,21 @@ const MemberCard = ({ member }) => {
     );
 };
 
-const Organization = () => {
+const Organization = ({ organizationData = null }) => {
+    const mayor = mergeOfficial(
+        defaultOrganizationData.mayor,
+        organizationData?.mayor,
+    );
+    const viceMayor = mergeOfficial(
+        defaultOrganizationData.viceMayor,
+        organizationData?.viceMayor,
+    );
+    const councilMembers = normalizeCouncilMembers(
+        organizationData?.councilMembers,
+    );
+    const desktopFirstRow = councilMembers.slice(0, 4);
+    const desktopSecondRow = councilMembers.slice(4);
+
     return (
         <div className="space-y-6">
             {/* Landscape */}
@@ -83,9 +125,8 @@ const Organization = () => {
                         <div className="absolute left-1/2 -top-6 h-60 w-60 -translate-x-1/2 -translate-y-3/4 rounded-full  shadow-lg">
                             <div className="h-full w-full overflow-hidden rounded-full border-4 border-white bg-white">
                                 <img
-                                    src={fallbackPortrait}
-                                    alt=""
-                                    aria-hidden="true"
+                                    src={mayor.image}
+                                    alt={mayor.name}
                                     className="h-full w-full object-cover"
                                 />
                             </div>
@@ -93,12 +134,12 @@ const Organization = () => {
                         {/* <div className="absolute inset-x-10 top-0 h-12 -translate-y-[8%] rounded-b-full border-[5px] border-t-0 border-sky-900/80" /> */}
                         <div className=" bg-white ">
                             <p className="text-md text-center  text-slate-900 font-semibold uppercase tracking-[0.04em] leading-8">
-                                Hon. Edrelusa "Lulu" Calonge
+                                {mayor.name}
                             </p>
                         </div>
                         <div className=" py-1 text-center mx-auto rounded-full bg-gradient-to-r from-amber-400 to-orange-500">
                             <p className="text-xs font-bold uppercase tracking-[0.22em] text-white">
-                                Municipal Mayor
+                                {mayor.role}
                             </p>
                         </div>
                     </article>
@@ -108,20 +149,19 @@ const Organization = () => {
                     <article className=" mx-auto w-full max-w-[22rem]  overflow-visible rounded-[1.2rem] ">
                         <div className="mx-auto flex h-48 w-48 items-center justify-center overflow-hidden rounded-full border-4 border-white bg-white shadow-lg">
                             <img
-                                src={fallbackPortrait}
-                                alt=""
-                                aria-hidden="true"
+                                src={viceMayor.image}
+                                alt={viceMayor.name}
                                 className="h-full w-full object-cover"
                             />
                         </div>
 
                         <div className=" bg-white p-5 rounded-xl -mt-5">
                             <p className="text-md text-center  text-slate-900 font-semibold uppercase tracking-[0.04em] leading-8">
-                                Hon. Joval John B. Samonte
+                                {viceMayor.name}
                             </p>
                             <div className=" py-1 text-center mx-auto rounded-full bg-gradient-to-r from-amber-400 to-orange-500">
                                 <p className="text-xs font-bold uppercase tracking-[0.22em] text-white">
-                                    Municipal Vice Mayor
+                                    {viceMayor.role}
                                 </p>
                             </div>
                         </div>
@@ -163,9 +203,8 @@ const Organization = () => {
                     <div className="absolute left-1/2 -top-6 h-60 w-60 -translate-x-1/2 -translate-y-3/4 rounded-full  shadow-lg">
                         <div className="h-full w-full overflow-hidden rounded-full border-4 border-white bg-white">
                             <img
-                                src={fallbackPortrait}
-                                alt=""
-                                aria-hidden="true"
+                                src={mayor.image}
+                                alt={mayor.name}
                                 className="h-full w-full object-cover"
                             />
                         </div>
@@ -173,12 +212,12 @@ const Organization = () => {
                     {/* <div className="absolute inset-x-10 top-0 h-12 -translate-y-[8%] rounded-b-full border-[5px] border-t-0 border-sky-900/80" /> */}
                     <div className=" bg-white ">
                         <p className="text-md text-center  text-slate-900 font-semibold uppercase tracking-[0.04em] leading-8">
-                            Hon. Edrelusa "Lulu" Calonge
+                            {mayor.name}
                         </p>
                     </div>
                     <div className=" py-1 text-center mx-auto rounded-full bg-gradient-to-r from-amber-400 to-orange-500">
                         <p className="text-xs font-bold uppercase tracking-[0.22em] text-white">
-                            Municipal Mayor
+                            {mayor.role}
                         </p>
                     </div>
                 </article>
@@ -188,20 +227,19 @@ const Organization = () => {
                 <article className=" mx-auto w-full max-w-[22rem]  overflow-visible rounded-[1.2rem] mt-48">
                     <div className="mx-auto flex h-48 w-48 items-center justify-center overflow-hidden rounded-full border-4 border-white bg-white shadow-lg">
                         <img
-                            src={fallbackPortrait}
-                            alt=""
-                            aria-hidden="true"
+                            src={viceMayor.image}
+                            alt={viceMayor.name}
                             className="h-full w-full object-cover"
                         />
                     </div>
 
                     <div className=" bg-white p-5 rounded-xl -mt-5">
                         <p className="text-md text-center  text-slate-900 font-semibold uppercase tracking-[0.04em] leading-8">
-                            Hon. Joval John B. Samonte
+                            {viceMayor.name}
                         </p>
                         <div className=" py-1 text-center mx-auto rounded-full bg-gradient-to-r from-amber-400 to-orange-500">
                             <p className="text-xs font-bold uppercase tracking-[0.22em] text-white">
-                                Municipal Vice Mayor
+                                {viceMayor.role}
                             </p>
                         </div>
                     </div>
