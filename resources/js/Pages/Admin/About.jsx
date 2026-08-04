@@ -337,6 +337,7 @@ export default function About({ aboutContent }) {
                     ? "Save Member"
                     : "Add Member",
             onConfirm: () => {
+                let nextMembers = [...data.organization_council_members];
                 const memberPayload = {
                     name: councilMemberDraft.name.trim(),
                     role: councilMemberDraft.role.trim(),
@@ -344,7 +345,6 @@ export default function About({ aboutContent }) {
                 };
 
                 if (editingCouncilMemberIndex !== null) {
-                    const nextMembers = [...data.organization_council_members];
                     nextMembers[editingCouncilMemberIndex] = {
                         ...nextMembers[editingCouncilMemberIndex],
                         ...memberPayload,
@@ -352,28 +352,35 @@ export default function About({ aboutContent }) {
                             nextMembers[editingCouncilMemberIndex]
                                 ?.current_image ?? null,
                     };
-                    setData("organization_council_members", nextMembers);
-                    closeCouncilMemberModal();
-                    showNotification(
-                        "success",
-                        "Council member details were updated successfully.",
-                    );
-
-                    return;
+                } else {
+                    nextMembers = [
+                        ...data.organization_council_members,
+                        {
+                            id: `member-${Date.now()}`,
+                            ...memberPayload,
+                            current_image: null,
+                        },
+                    ];
                 }
 
-                setData("organization_council_members", [
-                    ...data.organization_council_members,
-                    {
-                        id: `member-${Date.now()}`,
-                        ...memberPayload,
-                        current_image: null,
-                    },
-                ]);
+                setData("organization_council_members", nextMembers);
                 closeCouncilMemberModal();
-                showNotification(
-                    "success",
-                    "New council member entry was added successfully.",
+
+                saveSection(
+                    "organization",
+                    {
+                        organization_council_members: nextMembers,
+                    },
+                    {
+                        successMessage:
+                            editingCouncilMemberIndex !== null
+                                ? "Council member details were saved successfully."
+                                : "New council member entry was added successfully.",
+                        errorMessage:
+                            editingCouncilMemberIndex !== null
+                                ? "The council member image or details could not be saved. Please try again."
+                                : "The new council member entry could not be saved. Please try again.",
+                    },
                 );
             },
         });
@@ -507,62 +514,63 @@ export default function About({ aboutContent }) {
         );
     };
 
+    const saveSection = (
+        section,
+        overrides = {},
+        notificationOverrides = {},
+    ) => {
+        const sectionLabel =
+            section === "about"
+                ? "About"
+                : section === "organization"
+                  ? "Organization"
+                  : "LGU";
+
+        transform((currentData) => ({
+            ...currentData,
+            ...overrides,
+            section,
+        }));
+
+        post(route("admin.about.update"), {
+            forceFormData: true,
+            preserveScroll: true,
+            onSuccess: () => {
+                showNotification(
+                    "success",
+                    notificationOverrides.successMessage ??
+                        `${sectionLabel} tab changes were saved successfully.`,
+                );
+            },
+            onError: () => {
+                showNotification(
+                    "error",
+                    notificationOverrides.errorMessage ??
+                        `The ${sectionLabel} tab could not be saved. Please review the form and try again.`,
+                );
+            },
+            onFinish: () => {
+                transform((currentData) => currentData);
+            },
+        });
+    };
+
     const submit = (event, section = activeTab) => {
         event.preventDefault();
 
+        const sectionLabel =
+            section === "about"
+                ? "About"
+                : section === "organization"
+                  ? "Organization"
+                  : "LGU";
+
         openConfirmation({
-            title: `Save ${
-                section === "about"
-                    ? "About"
-                    : section === "organization"
-                      ? "Organization"
-                      : "LGU"
-            } tab?`,
-            message: `Are you sure you want to save the latest changes for the ${
-                section === "about"
-                    ? "About"
-                    : section === "organization"
-                      ? "Organization"
-                      : "LGU"
-            } tab?`,
+            title: `Save ${sectionLabel} tab?`,
+            message: `Are you sure you want to save the latest changes for the ${sectionLabel} tab?`,
             confirmLabel: "Save Changes",
             onConfirm: () => {
-                transform((currentData) => ({
-                    ...currentData,
-                    section,
-                }));
-
-                post(route("admin.about.update"), {
-                    forceFormData: true,
-                    preserveScroll: true,
-                    onSuccess: () => {
-                        showNotification(
-                            "success",
-                            `${
-                                section === "about"
-                                    ? "About"
-                                    : section === "organization"
-                                      ? "Organization"
-                                      : "LGU"
-                            } tab changes were saved successfully.`,
-                        );
-                    },
-                    onError: () => {
-                        showNotification(
-                            "error",
-                            `The ${
-                                section === "about"
-                                    ? "About"
-                                    : section === "organization"
-                                      ? "Organization"
-                                      : "LGU"
-                            } tab could not be saved. Please review the form and try again.`,
-                        );
-                    },
-                    onFinish: () => {
-                        transform((currentData) => currentData);
-                    },
-                });
+                saveSection(section);
             },
         });
     };

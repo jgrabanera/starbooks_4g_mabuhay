@@ -190,6 +190,63 @@ class AdminAboutPageTest extends TestCase
         );
     }
 
+    public function test_admin_about_page_can_replace_existing_council_member_image(): void
+    {
+        Storage::fake('public');
+
+        $user = User::factory()->create();
+
+        $about = About::factory()->create([
+            'page_key' => 'about-lgu-mabuhay',
+            'organization_council_members' => [
+                [
+                    'id' => '1',
+                    'name' => 'Maria Pilar T. Adlaon',
+                    'role' => 'Council Member',
+                    'image' => 'old-member-image.png',
+                ],
+            ],
+        ]);
+
+        $member = $about->councilMembers()->first();
+        $member->update([
+            'image' => 'old-member-image.png',
+        ]);
+
+        Storage::disk('public')->put(
+            'images/thumbnails/old-member-image.png',
+            'old-image',
+        );
+
+        $payload = [
+            'section' => 'organization',
+            'organization_mayor_name' => $about->organization_mayor_name,
+            'organization_mayor_role' => $about->organization_mayor_role,
+            'organization_vice_mayor_name' => $about->organization_vice_mayor_name,
+            'organization_vice_mayor_role' => $about->organization_vice_mayor_role,
+            'organization_council_members' => [
+                [
+                    'id' => (string) $member->id,
+                    'name' => 'Maria Pilar T. Adlaon',
+                    'role' => 'Council Member',
+                    'image' => UploadedFile::fake()->image('replacement-member.png'),
+                ],
+            ],
+        ];
+
+        $this->actingAs($user)
+            ->post(route('admin.about.update'), $payload)
+            ->assertRedirect(route('admin.about.index'));
+
+        $about->refresh();
+        $member->refresh();
+
+        $this->assertNotSame('old-member-image.png', $member->image);
+        $this->assertSame($member->image, $about->organization_council_members[0]['image']);
+        Storage::disk('public')->assertMissing('images/thumbnails/old-member-image.png');
+        Storage::disk('public')->assertExists('images/thumbnails/' . $member->image);
+    }
+
     public function test_admin_about_page_can_save_a_newly_added_council_member_without_placeholder_rows(): void
     {
         $user = User::factory()->create();

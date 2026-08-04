@@ -41,13 +41,14 @@ class AboutSeeder extends Seeder
                 'organization_vice_mayor_role' => 'Municipal Vice Mayor',
                 'organization_vice_mayor_image' => '1785837572_organization-vice-mayor.png',
                 'organization_council_members' => [
-                    ['id' => '1', 'name' => 'Maria Pilar T. Adlaon', 'role' => 'Council Member', 'image' => null],
-                    ['id' => '2', 'name' => 'Majin V. Andak Sr.', 'role' => 'Council Member', 'image' => null],
-                    ['id' => '3', 'name' => 'Alvarez H. Dammang', 'role' => 'Council Member', 'image' => null],
-                    ['id' => '4', 'name' => 'Nelson L. Mallen', 'role' => 'Council Member', 'image' => null],
-                    ['id' => '5', 'name' => 'Baltazar A. Alcala Sr.', 'role' => 'Council Member', 'image' => null],
-                    ['id' => '6', 'name' => 'Jermalyn M. Dammang', 'role' => 'Council Member', 'image' => null],
-                    ['id' => '7', 'name' => 'Abubakhar S. Anjawan', 'role' => 'Council Member', 'image' => null],
+                    ['id' => '1', 'name' => 'Maria Pilar T. Adlaon', 'role' => 'Council Member', 'image' => '1785840758_organization-council-member-1.png'],
+                    ['id' => '2', 'name' => 'Hon. Majin V. Andak', 'role' => 'Council Member', 'image' => '1785840758_organization-council-member-2.png'],
+                    ['id' => '3', 'name' => 'Alvarez H. Dammang', 'role' => 'Council Member', 'image' => '1785840758_organization-council-member-3.png'],
+                    ['id' => '4', 'name' => 'Hon. Alvin D. Hassan', 'role' => 'Council Member', 'image' => '1785840758_organization-council-member-4.png'],
+                    ['id' => '5', 'name' => 'Hon. Rey T. Omamalin', 'role' => 'Council Member', 'image' => '1785840758_organization-council-member-5.png'],
+                    ['id' => '6', 'name' => 'Hon. Julhisan "Isan" H. Buhali', 'role' => 'Council Member', 'image' => null],
+                    ['id' => '7', 'name' => 'Hon. Bhong Anjawang', 'role' => 'Council Member', 'image' => null],
+                    ['id' => '15', 'name' => 'Hon. Dario S. Alforque', 'role' => 'Council Member', 'image' => '1785840758_organization-council-member-8.png'],
                 ],
                 'lgu_badge' => 'Barangay Reference Collection',
                 'lgu_subtitle' => 'Municipal Directory Layout Preview',
@@ -67,27 +68,6 @@ class AboutSeeder extends Seeder
 
         if (Schema::hasTable('about_priorities')) {
             $about->priorities()->delete();
-        }
-
-        if (Schema::hasTable('about_council_members')) {
-            $about->councilMembers()->delete();
-
-            foreach ([
-                ['name' => 'Maria Pilar T. Adlaon', 'role' => 'Council Member'],
-                ['name' => 'Majin V. Andak Sr.', 'role' => 'Council Member'],
-                ['name' => 'Alvarez H. Dammang', 'role' => 'Council Member'],
-                ['name' => 'Nelson L. Mallen', 'role' => 'Council Member'],
-                ['name' => 'Baltazar A. Alcala Sr.', 'role' => 'Council Member'],
-                ['name' => 'Jermalyn M. Dammang', 'role' => 'Council Member'],
-                ['name' => 'Abubakhar S. Anjawan', 'role' => 'Council Member'],
-            ] as $index => $member) {
-                $about->councilMembers()->create([
-                    'name' => $member['name'],
-                    'role' => $member['role'],
-                    'image' => null,
-                    'display_order' => $index,
-                ]);
-            }
         }
 
         if (Schema::hasTable('about_barangays') && Schema::hasTable('about_barangay_kagawads')) {
