@@ -47,6 +47,13 @@ const getCouncilMemberImageStatus = (member) => {
     };
 };
 
+const createCouncilMemberDraft = () => ({
+    name: "",
+    role: "Council Member",
+    image: null,
+    current_image: null,
+});
+
 const createEmptyBarangayDraft = (id = null) => ({
     id,
     title: "",
@@ -95,12 +102,9 @@ export default function About({ aboutContent }) {
         useState(false);
     const [editingCouncilMemberIndex, setEditingCouncilMemberIndex] =
         useState(null);
-    const [councilMemberDraft, setCouncilMemberDraft] = useState({
-        name: "",
-        role: "Council Member",
-        image: null,
-        current_image: null,
-    });
+    const [councilMemberDraft, setCouncilMemberDraft] = useState(
+        createCouncilMemberDraft(),
+    );
     const [isBarangayModalOpen, setIsBarangayModalOpen] = useState(false);
     const [editingBarangayIndex, setEditingBarangayIndex] = useState(null);
     const [barangayDraft, setBarangayDraft] = useState(
@@ -150,7 +154,7 @@ export default function About({ aboutContent }) {
         organization_vice_mayor_image: null,
         organization_council_members: normalizeArray(
             aboutContent?.organization_council_members,
-            [{ id: "member-1", name: "", role: "Council Member", image: null }],
+            [],
         ),
         lgu_badge: aboutContent?.lgu_badge ?? "",
         lgu_subtitle: aboutContent?.lgu_subtitle ?? "",
@@ -278,22 +282,12 @@ export default function About({ aboutContent }) {
     const closeCouncilMemberModal = () => {
         setIsCouncilMemberModalOpen(false);
         setEditingCouncilMemberIndex(null);
-        setCouncilMemberDraft({
-            name: "",
-            role: "Council Member",
-            image: null,
-            current_image: null,
-        });
+        setCouncilMemberDraft(createCouncilMemberDraft());
     };
 
     const openCreateCouncilMemberModal = () => {
         setEditingCouncilMemberIndex(null);
-        setCouncilMemberDraft({
-            name: "",
-            role: "Council Member",
-            image: null,
-            current_image: null,
-        });
+        setCouncilMemberDraft(createCouncilMemberDraft());
         setIsCouncilMemberModalOpen(true);
     };
 
@@ -311,6 +305,24 @@ export default function About({ aboutContent }) {
     const submitCouncilMemberModal = (event) => {
         event.preventDefault();
 
+        if (!councilMemberDraft.name.trim()) {
+            showNotification(
+                "error",
+                "Please enter the council member name before saving.",
+            );
+
+            return;
+        }
+
+        if (!councilMemberDraft.role.trim()) {
+            showNotification(
+                "error",
+                "Please enter the council member role before saving.",
+            );
+
+            return;
+        }
+
         openConfirmation({
             title:
                 editingCouncilMemberIndex !== null
@@ -325,13 +337,17 @@ export default function About({ aboutContent }) {
                     ? "Save Member"
                     : "Add Member",
             onConfirm: () => {
+                const memberPayload = {
+                    name: councilMemberDraft.name.trim(),
+                    role: councilMemberDraft.role.trim(),
+                    image: councilMemberDraft.image,
+                };
+
                 if (editingCouncilMemberIndex !== null) {
                     const nextMembers = [...data.organization_council_members];
                     nextMembers[editingCouncilMemberIndex] = {
                         ...nextMembers[editingCouncilMemberIndex],
-                        name: councilMemberDraft.name,
-                        role: councilMemberDraft.role,
-                        image: councilMemberDraft.image,
+                        ...memberPayload,
                         current_image:
                             nextMembers[editingCouncilMemberIndex]
                                 ?.current_image ?? null,
@@ -349,10 +365,8 @@ export default function About({ aboutContent }) {
                 setData("organization_council_members", [
                     ...data.organization_council_members,
                     {
-                        id: `member-${data.organization_council_members.length + 1}`,
-                        name: councilMemberDraft.name,
-                        role: councilMemberDraft.role,
-                        image: councilMemberDraft.image,
+                        id: `member-${Date.now()}`,
+                        ...memberPayload,
                         current_image: null,
                     },
                 ]);

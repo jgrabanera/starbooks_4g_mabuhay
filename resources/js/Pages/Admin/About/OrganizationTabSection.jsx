@@ -44,7 +44,7 @@ export default function OrganizationTabSection({
             </div>
 
             <div className="mt-5 grid gap-5 xl:grid-cols-2">
-                <div className="overflow-hidden rounded-[1.75rem] border border-emerald-200 bg-[linear-gradient(135deg,rgba(255,255,255,1),rgba(236,253,245,0.96),rgba(209,250,229,0.82))] shadow-sm">
+                <div className="overflow-hidden rounded-lg border border-emerald-200 bg-green-50 shadow-sm">
                     <div className="h-2 w-full bg-gradient-to-r from-emerald-600 via-teal-500 to-lime-400" />
                     <div className="p-5">
                         <div className="mb-5">
@@ -111,7 +111,7 @@ export default function OrganizationTabSection({
                     </div>
                 </div>
 
-                <div className="overflow-hidden rounded-[1.75rem] border border-amber-200 bg-[linear-gradient(135deg,rgba(255,255,255,1),rgba(255,251,235,0.96),rgba(254,243,199,0.8))] shadow-sm">
+                <div className="overflow-hidden rounded-lg border border-amber-200 bg-amber-50 shadow-sm">
                     <div className="h-2 w-full bg-gradient-to-r from-amber-400 via-orange-400 to-yellow-400" />
                     <div className="p-5">
                         <div className="mb-5">
@@ -220,8 +220,8 @@ export default function OrganizationTabSection({
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-slate-100 bg-white">
-                            {visibleMembers.map(
-                                (member, index) => {
+                            {visibleMembers.length > 0 ? (
+                                visibleMembers.map((member, index) => {
                                     const imageStatus =
                                         getCouncilMemberImageStatus(member);
                                     const itemNumber = startIndex + index + 1;
@@ -280,78 +280,94 @@ export default function OrganizationTabSection({
                                             </td>
                                         </tr>
                                     );
-                                },
+                                })
+                            ) : (
+                                <tr>
+                                    <td
+                                        colSpan="5"
+                                        className="px-4 py-10 text-center text-sm text-slate-500"
+                                    >
+                                        No council members added yet.
+                                    </td>
+                                </tr>
                             )}
                         </tbody>
                     </table>
                 </div>
 
                 <div className="space-y-3 md:hidden">
-                    {visibleMembers.map((member, index) => {
-                        const imageStatus =
-                            getCouncilMemberImageStatus(member);
-                        const itemNumber = startIndex + index + 1;
+                    {visibleMembers.length > 0 ? (
+                        visibleMembers.map((member, index) => {
+                            const imageStatus =
+                                getCouncilMemberImageStatus(member);
+                            const itemNumber = startIndex + index + 1;
 
-                        return (
-                            <article
-                                key={member.id || index}
-                                className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm"
-                            >
-                                <div className="flex items-start justify-between gap-3">
-                                    <div>
-                                        <p className="text-xs font-bold uppercase tracking-[0.18em] text-emerald-700">
-                                            Council Member {itemNumber}
-                                        </p>
-                                        <p className="mt-2 text-base font-semibold text-slate-900">
-                                            {member.name ||
-                                                "Untitled member"}
-                                        </p>
-                                        <p
-                                            className={`mt-2 inline-flex rounded-full px-2.5 py-1 text-[0.65rem] font-semibold uppercase tracking-[0.16em] ${imageStatus.className}`}
-                                        >
-                                            {imageStatus.label}
-                                        </p>
-                                        <p className="mt-2 text-sm text-slate-500">
-                                            {member.role || "Council Member"}
-                                        </p>
+                            return (
+                                <article
+                                    key={member.id || index}
+                                    className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm"
+                                >
+                                    <div className="flex items-start justify-between gap-3">
+                                        <div>
+                                            <p className="text-xs font-bold uppercase tracking-[0.18em] text-emerald-700">
+                                                Council Member {itemNumber}
+                                            </p>
+                                            <p className="mt-2 text-base font-semibold text-slate-900">
+                                                {member.name ||
+                                                    "Untitled member"}
+                                            </p>
+                                            <p
+                                                className={`mt-2 inline-flex rounded-full px-2.5 py-1 text-[0.65rem] font-semibold uppercase tracking-[0.16em] ${imageStatus.className}`}
+                                            >
+                                                {imageStatus.label}
+                                            </p>
+                                            <p className="mt-2 text-sm text-slate-500">
+                                                {member.role ||
+                                                    "Council Member"}
+                                            </p>
+                                        </div>
+                                        <div className="flex gap-3">
+                                            <button
+                                                type="button"
+                                                onClick={() =>
+                                                    openEditCouncilMemberModal(
+                                                        member,
+                                                        startIndex + index,
+                                                    )
+                                                }
+                                                className="text-sm font-semibold text-indigo-600"
+                                            >
+                                                Edit
+                                            </button>
+                                            <button
+                                                type="button"
+                                                onClick={() =>
+                                                    removeCouncilMember(
+                                                        startIndex + index,
+                                                    )
+                                                }
+                                                className="text-sm font-semibold text-rose-600"
+                                            >
+                                                Remove
+                                            </button>
+                                        </div>
                                     </div>
-                                    <div className="flex gap-3">
-                                        <button
-                                            type="button"
-                                            onClick={() =>
-                                                openEditCouncilMemberModal(
-                                                    member,
-                                                    startIndex + index,
-                                                )
-                                            }
-                                            className="text-sm font-semibold text-indigo-600"
-                                        >
-                                            Edit
-                                        </button>
-                                        <button
-                                            type="button"
-                                            onClick={() =>
-                                                removeCouncilMember(
-                                                    startIndex + index,
-                                                )
-                                            }
-                                            className="text-sm font-semibold text-rose-600"
-                                        >
-                                            Remove
-                                        </button>
-                                    </div>
-                                </div>
-                            </article>
-                        );
-                    })}
+                                </article>
+                            );
+                        })
+                    ) : (
+                        <div className="rounded-2xl border border-dashed border-slate-300 bg-white px-4 py-10 text-center text-sm text-slate-500">
+                            No council members added yet.
+                        </div>
+                    )}
                 </div>
 
                 {totalMembers > itemsPerPage ? (
                     <div className="mt-4 flex flex-col gap-3 border-t border-slate-200 pt-4 sm:flex-row sm:items-center sm:justify-between">
                         <p className="text-sm text-slate-500">
                             Showing {startIndex + 1}-
-                            {Math.min(endIndex, totalMembers)} of{" "}
-                            {totalMembers} members
+                            {Math.min(endIndex, totalMembers)} of {totalMembers}{" "}
+                            members
                         </p>
                         <div className="flex items-center justify-end gap-2">
                             <SecondaryButton

@@ -187,6 +187,47 @@ class AdminAboutPageTest extends TestCase
         );
     }
 
+    public function test_admin_about_page_can_save_a_newly_added_council_member_without_placeholder_rows(): void
+    {
+        $user = User::factory()->create();
+
+        $about = About::factory()->create([
+            'page_key' => 'about-lgu-mabuhay',
+            'organization_council_members' => [],
+        ]);
+
+        $payload = [
+            'section' => 'organization',
+            'organization_mayor_name' => 'Hon. Updated Mayor',
+            'organization_mayor_role' => 'Municipal Mayor',
+            'organization_vice_mayor_name' => 'Hon. Updated Vice Mayor',
+            'organization_vice_mayor_role' => 'Municipal Vice Mayor',
+            'organization_council_members' => [
+                [
+                    'id' => 'member-1722768000',
+                    'name' => 'New Council Member',
+                    'role' => 'Council Member',
+                ],
+            ],
+        ];
+
+        $this->actingAs($user)
+            ->post(route('admin.about.update'), $payload)
+            ->assertRedirect(route('admin.about.index'));
+
+        $about->refresh();
+
+        $this->assertCount(1, $about->organization_council_members);
+        $this->assertSame(
+            'New Council Member',
+            $about->organization_council_members[0]['name'],
+        );
+        $this->assertSame(
+            'Council Member',
+            $about->organization_council_members[0]['role'],
+        );
+    }
+
     public function test_admin_about_page_can_save_lgu_tab_independently_with_logo(): void
     {
         Storage::fake('public');
