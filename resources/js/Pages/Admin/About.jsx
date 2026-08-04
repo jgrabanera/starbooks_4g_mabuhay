@@ -21,7 +21,7 @@ const normalizeArray = (items, fallback) =>
     Array.isArray(items) && items.length > 0 ? items : fallback;
 
 const contentCardClassName =
-    "rounded-[24px] border border-slate-200 bg-white p-5 shadow-sm sm:p-6";
+    "rounded-lg border border-slate-200 bg-white p-5 shadow-sm sm:p-6";
 
 const getCouncilMemberImageStatus = (member) => {
     if (member?.image) {
@@ -588,14 +588,14 @@ export default function About({ aboutContent }) {
             <div className="space-y-6">
                 <ActionStatusAlert notification={notification} />
 
-                <section className="overflow-hidden rounded-[24px] border border-slate-200 bg-white shadow-sm">
+                <section className="overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm">
                     <div className="border-b border-slate-100 bg-gradient-to-r from-emerald-50 via-white to-white px-5 py-5 sm:px-6">
                         <div className="space-y-1">
                             <p className="text-xs font-bold uppercase tracking-[0.24em] text-emerald-700">
                                 Fixed Page CMS
                             </p>
                             <h2 className="text-2xl font-bold text-slate-900">
-                                About LGU Mabuhay CMS
+                                About LGU Mabuhay
                             </h2>
                             <p className="max-w-3xl text-sm leading-6 text-slate-600">
                                 Manage the About, Organization, and LGU tabs
@@ -615,7 +615,7 @@ export default function About({ aboutContent }) {
                                         key={tab.id}
                                         type="button"
                                         onClick={() => setActiveTab(tab.id)}
-                                        className={`rounded-2xl border px-4 py-4 text-left transition ${
+                                        className={`rounded-lg border px-4 py-4 text-left transition ${
                                             isActive
                                                 ? "border-emerald-700 bg-emerald-700 text-white shadow-md"
                                                 : "border-slate-200 bg-white text-slate-700 hover:border-emerald-200 hover:bg-emerald-50/70"
@@ -702,7 +702,9 @@ export default function About({ aboutContent }) {
                                 aboutContent={aboutContent}
                                 errors={errors}
                                 contentCardClassName={contentCardClassName}
-                                openCreateBarangayModal={openCreateBarangayModal}
+                                openCreateBarangayModal={
+                                    openCreateBarangayModal
+                                }
                                 openEditBarangayModal={openEditBarangayModal}
                                 removeBarangay={removeBarangay}
                                 getBarangayImageStatus={getBarangayImageStatus}
@@ -861,7 +863,9 @@ export default function About({ aboutContent }) {
                             <div className="md:col-span-2">
                                 <InputLabel value="SK Chairperson" />
                                 <TextInput
-                                    value={barangayDraft.officials.skChairperson}
+                                    value={
+                                        barangayDraft.officials.skChairperson
+                                    }
                                     onChange={(event) =>
                                         setBarangayDraft((currentState) => ({
                                             ...currentState,

@@ -19,7 +19,9 @@ export default function AboutTabSection({
 }) {
     return (
         <>
-            <section className={contentCardClassName}>
+            <section
+                className={`${contentCardClassName} border-sky-200 bg-sky-50/80`}
+            >
                 <div className="flex items-center justify-between gap-4">
                     <div>
                         <p className="text-xs font-bold uppercase tracking-[0.22em] text-emerald-700">
@@ -104,7 +106,9 @@ export default function AboutTabSection({
                 </div>
             </section>
 
-            <section className={contentCardClassName}>
+            <section
+                className={`${contentCardClassName} border-slate-200 bg-white`}
+            >
                 <div className="grid gap-5 xl:grid-cols-2">
                     <div className="space-y-4">
                         <div className="flex items-center justify-between">
@@ -130,7 +134,7 @@ export default function AboutTabSection({
                         {data.overview_paragraphs.map((item, index) => (
                             <div
                                 key={`paragraph-${index}`}
-                                className="rounded-2xl border border-slate-200 bg-slate-50 p-4"
+                                className="rounded-lg border border-slate-200 bg-slate-50 p-4"
                             >
                                 <div className="mb-3 flex items-center justify-between">
                                     <p className="text-sm font-semibold text-slate-700">
@@ -225,9 +229,11 @@ export default function AboutTabSection({
                 </div>
             </section>
 
-            <section className={contentCardClassName}>
+            <section
+                className={`${contentCardClassName} border-sky-200 bg-sky-50/80`}
+            >
                 <div>
-                    <p className="text-xs font-bold uppercase tracking-[0.22em] text-emerald-700">
+                    <p className="text-xs font-bold uppercase tracking-[0.22em] text-sky-700">
                         Media And Priorities
                     </p>
                     <h3 className="mt-1 text-xl font-bold text-slate-900">
