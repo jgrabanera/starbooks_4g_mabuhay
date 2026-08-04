@@ -4,15 +4,17 @@ namespace Database\Seeders;
 
 use App\Models\About;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Schema;
 
 class AboutSeeder extends Seeder
 {
     public function run(): void
     {
-        About::query()->updateOrCreate(
-            ['page_key' => 'about-lgu-mabuhay'],
+        $about = About::query()->updateOrCreate(
+            ['id' => 1],
             [
-                'hero_logo' => '1783932516_about.png',
+                'page_key' => 'about-lgu-mabuhay',
+                'hero_logo' => '1785834798_about-lgu-mabuhay.png',
                 'hero_logo_alt' => 'LGU Mabuhay',
                 'hero_title' => 'Municipality of Mabuhay',
                 'hero_description' => 'A progressive local government unit committed to transparent, efficient, and citizen-centered governance.',
@@ -34,84 +36,62 @@ class AboutSeeder extends Seeder
                 'media_video' => null,
                 'organization_mayor_name' => 'Hon. Edrelusa "Lulu" Calonge',
                 'organization_mayor_role' => 'Municipal Mayor',
-                'organization_mayor_image' => null,
+                'organization_mayor_image' => '1785837572_organization-mayor.png',
                 'organization_vice_mayor_name' => 'Hon. Joval John B. Samonte',
                 'organization_vice_mayor_role' => 'Municipal Vice Mayor',
-                'organization_vice_mayor_image' => null,
+                'organization_vice_mayor_image' => '1785837572_organization-vice-mayor.png',
                 'organization_council_members' => [
-                    ['id' => 'member-1', 'name' => 'Maria Pilar T. Adlaon', 'role' => 'Council Member', 'image' => null],
-                    ['id' => 'member-2', 'name' => 'Majin V. Andak Sr.', 'role' => 'Council Member', 'image' => null],
-                    ['id' => 'member-3', 'name' => 'Alvarez H. Dammang', 'role' => 'Council Member', 'image' => null],
-                    ['id' => 'member-4', 'name' => 'Nelson L. Mallen', 'role' => 'Council Member', 'image' => null],
-                    ['id' => 'member-5', 'name' => 'Baltazar A. Alcala Sr.', 'role' => 'Council Member', 'image' => null],
-                    ['id' => 'member-6', 'name' => 'Jermalyn M. Dammang', 'role' => 'Council Member', 'image' => null],
-                    ['id' => 'member-7', 'name' => 'Abubakhar S. Anjawan', 'role' => 'Council Member', 'image' => null],
+                    ['id' => '1', 'name' => 'Maria Pilar T. Adlaon', 'role' => 'Council Member', 'image' => null],
+                    ['id' => '2', 'name' => 'Majin V. Andak Sr.', 'role' => 'Council Member', 'image' => null],
+                    ['id' => '3', 'name' => 'Alvarez H. Dammang', 'role' => 'Council Member', 'image' => null],
+                    ['id' => '4', 'name' => 'Nelson L. Mallen', 'role' => 'Council Member', 'image' => null],
+                    ['id' => '5', 'name' => 'Baltazar A. Alcala Sr.', 'role' => 'Council Member', 'image' => null],
+                    ['id' => '6', 'name' => 'Jermalyn M. Dammang', 'role' => 'Council Member', 'image' => null],
+                    ['id' => '7', 'name' => 'Abubakhar S. Anjawan', 'role' => 'Council Member', 'image' => null],
                 ],
                 'lgu_badge' => 'Barangay Reference Collection',
                 'lgu_subtitle' => 'Municipal Directory Layout Preview',
                 'lgu_title' => 'Municipality of Mabuhay',
                 'lgu_logo' => null,
-                'lgu_barangays' => [
-                    [
-                        'id' => 1,
-                        'title' => 'Abunda',
-                        'reference' => 'BRGY-001',
-                        'population' => 893,
-                        'captain_image' => null,
-                        'officials' => [
-                            'captain' => 'Juan Dela Cruz',
-                            'secretary' => 'Maria Santos',
-                            'treasurer' => 'Pedro Reyes',
-                            'skChairperson' => 'Angela Flores',
-                            'kagawads' => [
-                                'Ramon Garcia',
-                                'Liza Mendoza',
-                                'Joel Ramos',
-                            ],
-                        ],
-                    ],
-                    [
-                        'id' => 2,
-                        'title' => 'Bagong Silang (Tumalog)',
-                        'reference' => 'BRGY-002',
-                        'population' => 1596,
-                        'captain_image' => null,
-                        'officials' => [
-                            'captain' => 'Michael Fernandez',
-                            'secretary' => 'Rose Ann Diaz',
-                            'treasurer' => 'Edgar Castillo',
-                            'skChairperson' => 'Kristine Bautista',
-                            'kagawads' => [
-                                'Leo Ramos',
-                                'Allan Flores',
-                                'Grace Mendoza',
-                            ],
-                        ],
-                    ],
-                ],
+                'lgu_barangays' => [],
                 'media_overlay_title' => 'Mabuhay Overview Video',
                 'media_overlay_description' => 'Replace this showcase with the official LGU Mabuhay video presentation, tourism reel, or public service introduction when media is ready.',
                 'media_footer_left' => 'Video Player Placeholder',
                 'media_footer_right' => '16:9 Presentation Area',
                 'priorities_title' => 'Governance Priorities',
-                'priorities_items' => [
-                    [
-                        'id' => 'priority-1',
-                        'title' => 'Good Governance',
-                        'description' => 'Transparent decision-making and accountable public service systems.',
-                    ],
-                    [
-                        'id' => 'priority-2',
-                        'title' => 'Inclusive Growth',
-                        'description' => 'Community development through agriculture, education, health, and livelihood support.',
-                    ],
-                    [
-                        'id' => 'priority-3',
-                        'title' => 'Digital Access',
-                        'description' => 'Improved citizen access to information and municipal programs through digital tools.',
-                    ],
-                ],
+                'priorities_items' => [],
+                'created_at' => '2026-08-04 01:33:24',
+                'updated_at' => '2026-08-04 01:59:32',
             ],
         );
+
+        if (Schema::hasTable('about_priorities')) {
+            $about->priorities()->delete();
+        }
+
+        if (Schema::hasTable('about_council_members')) {
+            $about->councilMembers()->delete();
+
+            foreach ([
+                ['name' => 'Maria Pilar T. Adlaon', 'role' => 'Council Member'],
+                ['name' => 'Majin V. Andak Sr.', 'role' => 'Council Member'],
+                ['name' => 'Alvarez H. Dammang', 'role' => 'Council Member'],
+                ['name' => 'Nelson L. Mallen', 'role' => 'Council Member'],
+                ['name' => 'Baltazar A. Alcala Sr.', 'role' => 'Council Member'],
+                ['name' => 'Jermalyn M. Dammang', 'role' => 'Council Member'],
+                ['name' => 'Abubakhar S. Anjawan', 'role' => 'Council Member'],
+            ] as $index => $member) {
+                $about->councilMembers()->create([
+                    'name' => $member['name'],
+                    'role' => $member['role'],
+                    'image' => null,
+                    'display_order' => $index,
+                ]);
+            }
+        }
+
+        if (Schema::hasTable('about_barangays') && Schema::hasTable('about_barangay_kagawads')) {
+            $about->barangays()->delete();
+        }
     }
 }
