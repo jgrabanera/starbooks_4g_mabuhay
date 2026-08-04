@@ -1,4 +1,5 @@
 import SecondaryButton from "@/Components/SecondaryButton";
+import { useEffect, useState } from "react";
 
 export default function OrganizationTabSection({
     data,
@@ -10,27 +11,36 @@ export default function OrganizationTabSection({
     getCouncilMemberImageStatus,
     renderTabSaveButton,
 }) {
+    const itemsPerPage = 10;
+    const [currentPage, setCurrentPage] = useState(1);
+    const totalMembers = data.organization_council_members.length;
+    const totalPages = Math.max(1, Math.ceil(totalMembers / itemsPerPage));
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    const visibleMembers = data.organization_council_members.slice(
+        startIndex,
+        endIndex,
+    );
+
+    useEffect(() => {
+        if (currentPage > totalPages) {
+            setCurrentPage(totalPages);
+        }
+    }, [currentPage, totalPages]);
+
     return (
         <section className={contentCardClassName}>
-            <div className="flex items-center justify-between">
-                <div>
-                    <p className="text-xs font-bold uppercase tracking-[0.22em] text-emerald-700">
-                        Organization Tab
-                    </p>
-                    <h3 className="mt-1 text-xl font-bold text-slate-900">
-                        Leadership And Council Members
-                    </h3>
-                    <p className="mt-1 text-sm text-slate-600">
-                        Update the mayor, vice mayor, and council members shown
-                        in the organizational layout.
-                    </p>
-                </div>
-                <SecondaryButton
-                    type="button"
-                    onClick={openCreateCouncilMemberModal}
-                >
-                    Add Member
-                </SecondaryButton>
+            <div>
+                <p className="text-xs font-bold uppercase tracking-[0.22em] text-emerald-700">
+                    Organization Tab
+                </p>
+                <h3 className="mt-1 text-xl font-bold text-slate-900">
+                    Leadership And Council Members
+                </h3>
+                <p className="mt-1 text-sm text-slate-600">
+                    Update the mayor, vice mayor, and council members shown in
+                    the organizational layout.
+                </p>
             </div>
 
             <div className="mt-5 grid gap-5 xl:grid-cols-2">
@@ -180,6 +190,12 @@ export default function OrganizationTabSection({
                             public organization layout.
                         </p>
                     </div>
+                    <SecondaryButton
+                        type="button"
+                        onClick={openCreateCouncilMemberModal}
+                    >
+                        Add Member
+                    </SecondaryButton>
                 </div>
 
                 <div className="hidden overflow-x-auto rounded-2xl border border-slate-200 bg-white shadow-sm md:block">
@@ -204,10 +220,11 @@ export default function OrganizationTabSection({
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-slate-100 bg-white">
-                            {data.organization_council_members.map(
+                            {visibleMembers.map(
                                 (member, index) => {
                                     const imageStatus =
                                         getCouncilMemberImageStatus(member);
+                                    const itemNumber = startIndex + index + 1;
 
                                     return (
                                         <tr
@@ -215,7 +232,7 @@ export default function OrganizationTabSection({
                                             className="transition hover:bg-slate-50/80"
                                         >
                                             <td className="px-4 py-4 text-sm font-semibold text-slate-700">
-                                                {index + 1}
+                                                {itemNumber}
                                             </td>
                                             <td className="px-4 py-4 text-sm text-slate-600">
                                                 <span
@@ -239,7 +256,8 @@ export default function OrganizationTabSection({
                                                         onClick={() =>
                                                             openEditCouncilMemberModal(
                                                                 member,
-                                                                index,
+                                                                startIndex +
+                                                                    index,
                                                             )
                                                         }
                                                         className="text-sm font-semibold text-indigo-600 transition hover:text-indigo-800"
@@ -250,7 +268,8 @@ export default function OrganizationTabSection({
                                                         type="button"
                                                         onClick={() =>
                                                             removeCouncilMember(
-                                                                index,
+                                                                startIndex +
+                                                                    index,
                                                             )
                                                         }
                                                         className="text-sm font-semibold text-rose-600 transition hover:text-rose-800"
@@ -268,9 +287,10 @@ export default function OrganizationTabSection({
                 </div>
 
                 <div className="space-y-3 md:hidden">
-                    {data.organization_council_members.map((member, index) => {
+                    {visibleMembers.map((member, index) => {
                         const imageStatus =
                             getCouncilMemberImageStatus(member);
+                        const itemNumber = startIndex + index + 1;
 
                         return (
                             <article
@@ -280,7 +300,7 @@ export default function OrganizationTabSection({
                                 <div className="flex items-start justify-between gap-3">
                                     <div>
                                         <p className="text-xs font-bold uppercase tracking-[0.18em] text-emerald-700">
-                                            Council Member {index + 1}
+                                            Council Member {itemNumber}
                                         </p>
                                         <p className="mt-2 text-base font-semibold text-slate-900">
                                             {member.name ||
@@ -301,7 +321,7 @@ export default function OrganizationTabSection({
                                             onClick={() =>
                                                 openEditCouncilMemberModal(
                                                     member,
-                                                    index,
+                                                    startIndex + index,
                                                 )
                                             }
                                             className="text-sm font-semibold text-indigo-600"
@@ -311,7 +331,9 @@ export default function OrganizationTabSection({
                                         <button
                                             type="button"
                                             onClick={() =>
-                                                removeCouncilMember(index)
+                                                removeCouncilMember(
+                                                    startIndex + index,
+                                                )
                                             }
                                             className="text-sm font-semibold text-rose-600"
                                         >
@@ -323,6 +345,43 @@ export default function OrganizationTabSection({
                         );
                     })}
                 </div>
+
+                {totalMembers > itemsPerPage ? (
+                    <div className="mt-4 flex flex-col gap-3 border-t border-slate-200 pt-4 sm:flex-row sm:items-center sm:justify-between">
+                        <p className="text-sm text-slate-500">
+                            Showing {startIndex + 1}-
+                            {Math.min(endIndex, totalMembers)} of{" "}
+                            {totalMembers} members
+                        </p>
+                        <div className="flex items-center justify-end gap-2">
+                            <SecondaryButton
+                                type="button"
+                                onClick={() =>
+                                    setCurrentPage((page) =>
+                                        Math.max(1, page - 1),
+                                    )
+                                }
+                                disabled={currentPage === 1}
+                            >
+                                Previous
+                            </SecondaryButton>
+                            <span className="text-sm font-semibold text-slate-700">
+                                Page {currentPage} of {totalPages}
+                            </span>
+                            <SecondaryButton
+                                type="button"
+                                onClick={() =>
+                                    setCurrentPage((page) =>
+                                        Math.min(totalPages, page + 1),
+                                    )
+                                }
+                                disabled={currentPage === totalPages}
+                            >
+                                Next
+                            </SecondaryButton>
+                        </div>
+                    </div>
+                ) : null}
             </div>
 
             {renderTabSaveButton("organization")}
