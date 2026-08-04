@@ -617,51 +617,35 @@ const LGU = ({ lguData = null }) => {
                 maxWidth="4xl"
             >
                 {selectedBarangay ? (
-                    <div className="relative overflow-hidden rounded-lg bg-slate-50">
-                        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(250,204,21,0.14),transparent_30%),radial-gradient(circle_at_bottom_right,rgba(16,185,129,0.12),transparent_28%)]" />
+                    <div className="relative overflow-hidden rounded-[1.75rem] bg-slate-50 shadow-2xl">
+                        <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(135deg,rgba(255,248,235,0.97),rgba(255,255,255,0.98),rgba(236,253,245,0.92))]" />
+                        <div className="pointer-events-none absolute inset-x-0 top-0 h-44 bg-[radial-gradient(circle_at_top,rgba(16,185,129,0.16),transparent_68%)]" />
                         <button
                             type="button"
                             onClick={() => setSelectedBarangay(null)}
-                            className="absolute right-4 top-4 z-20 inline-flex h-10 w-10 items-center justify-center rounded-full border border-emerald-100 bg-white text-slate-500 shadow-sm transition hover:border-emerald-200 hover:text-emerald-800 focus:outline-none focus:ring-4 focus:ring-emerald-200"
+                            className="absolute right-4 top-4 z-20 inline-flex h-10 w-10 items-center justify-center rounded-full border border-emerald-100 bg-white/95 text-slate-500 shadow-sm transition hover:border-emerald-200 hover:text-emerald-800 focus:outline-none focus:ring-4 focus:ring-emerald-200"
                         >
                             <span className="sr-only">Close modal</span>
                             <IoCloseOutline className="h-6 w-6" />
                         </button>
 
                         <div className="relative z-10 max-h-[calc(100vh-5rem)] overflow-y-auto">
-                            <div className="border-b border-emerald-100 bg-white px-6 pb-6 pt-10 sm:px-8">
-                                <p className="text-xs font-bold uppercase tracking-[0.3em] text-emerald-700">
-                                    Municipality of Mabuhay
-                                </p>
-                                <div className="mt-3 flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
-                                    <div>
-                                        <h2 className="text-3xl font-black text-slate-900 sm:text-4xl">
+                            <div className="px-5 pb-8 pt-10 sm:px-8 sm:pb-10">
+                                <div className="mx-auto max-w-4xl">
+                                    <div className="rounded-[1.75rem] border border-white/80 bg-white/85 px-5 py-8 text-center shadow-[0_18px_60px_rgba(15,23,42,0.08)] backdrop-blur-sm sm:px-8">
+                                        <p className="text-[0.62rem] font-bold uppercase tracking-[0.32em] text-emerald-700">
+                                            Municipality of Mabuhay
+                                        </p>
+                                        <h2 className="mt-3 text-3xl font-black uppercase tracking-[0.06em] text-slate-900 sm:text-4xl">
                                             {selectedBarangay.title}
                                         </h2>
-                                        <p className="mt-3 max-w-2xl text-sm leading-7 text-slate-600">
-                                            Barangay leadership profile with a
-                                            cleaner officer directory and quick
-                                            reference details.
+                                        <p className="mx-auto mt-3 max-w-2xl text-sm leading-7 text-slate-600 sm:text-base">
+                                            Barangay profile and leadership
+                                            directory for community reference.
                                         </p>
-                                    </div>
-                                    <div className="flex flex-wrap gap-3">
-                                        <span className="rounded-full border border-emerald-200 bg-emerald-50 px-4 py-2 text-sm font-bold text-emerald-800">
-                                            {selectedBarangay.reference}
-                                        </span>
-                                        <span className="inline-flex items-center gap-2 rounded-full border border-yellow-200 bg-yellow-50 px-4 py-2 text-sm font-bold text-slate-800">
-                                            <IoPeopleOutline className="h-4 w-4 text-emerald-700" />
-                                            {selectedBarangay.population.toLocaleString()}{" "}
-                                            population
-                                        </span>
-                                    </div>
-                                </div>
-                            </div>
 
-                            <div className="space-y-5 px-6 py-6 sm:px-8">
-                                <section className="overflow-hidden rounded-[1.9rem] border border-emerald-100 bg-white shadow-[0_18px_40px_rgba(15,23,42,0.08)]">
-                                    <div className="bg-[linear-gradient(135deg,rgba(5,150,105,0.95),rgba(16,185,129,0.84),rgba(250,204,21,0.7))] px-5 pb-6 pt-8 sm:px-6">
-                                        <div className="flex flex-col items-center gap-4 text-center sm:flex-row sm:items-end sm:text-left">
-                                            <div className="h-28 w-28 overflow-hidden rounded-[1.6rem] border-4 border-white bg-emerald-50 shadow-lg">
+                                        <div className="mt-7 flex flex-col items-center text-center">
+                                            <div className="h-28 w-28 overflow-hidden rounded-full border-4 border-white bg-white shadow-lg shadow-emerald-100/80">
                                                 <img
                                                     src={
                                                         selectedBarangay.captain_image ||
@@ -671,120 +655,194 @@ const LGU = ({ lguData = null }) => {
                                                     className="h-full w-full object-cover"
                                                 />
                                             </div>
-                                            <div className="text-white">
-                                                <p className="text-xs font-bold uppercase tracking-[0.22em] text-emerald-50/90">
-                                                    Barangay Captain
-                                                </p>
-                                                <h3 className="mt-2 text-2xl font-black sm:text-3xl">
-                                                    {
-                                                        selectedBarangay
-                                                            .officials.captain
-                                                    }
-                                                </h3>
-                                                <p className="mt-1 text-sm text-emerald-50/90">
-                                                    Leading{" "}
-                                                    {selectedBarangay.title}
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </div>
+                                            <p className="mt-4 text-lg font-bold text-slate-900">
+                                                {selectedBarangay.officials.captain}
+                                            </p>
+                                            <p className="text-sm font-medium uppercase tracking-[0.18em] text-emerald-700">
+                                                Barangay Captain
+                                            </p>
 
-                                    <div className="grid gap-3 px-5 py-5 sm:grid-cols-3 sm:px-6">
-                                        <div className="rounded-2xl bg-slate-50 px-4 py-3">
-                                            <p className="text-xs font-bold uppercase tracking-[0.18em] text-slate-500">
-                                                Barangay ID
-                                            </p>
-                                            <p className="mt-1 text-sm font-semibold text-slate-900">
-                                                {selectedBarangay.reference}
-                                            </p>
-                                        </div>
-                                        <div className="rounded-2xl bg-slate-50 px-4 py-3">
-                                            <p className="text-xs font-bold uppercase tracking-[0.18em] text-slate-500">
-                                                Population
-                                            </p>
-                                            <p className="mt-1 text-sm font-semibold text-slate-900">
-                                                {selectedBarangay.population.toLocaleString()}
-                                            </p>
-                                        </div>
-                                        <div className="rounded-2xl bg-emerald-50 px-4 py-3 text-sm leading-6 text-slate-700">
-                                            Barangay profile, officials, and key
-                                            reference details in one focused
-                                            view.
-                                        </div>
-                                    </div>
-                                </section>
-
-                                <section className="rounded-[1.75rem] border border-emerald-100 bg-white p-5 shadow-[0_18px_40px_rgba(15,23,42,0.08)]">
-                                    <p className="text-xs font-bold uppercase tracking-[0.22em] text-emerald-700">
-                                        Officials Directory
-                                    </p>
-                                    <h3 className="mt-2 text-2xl font-black text-slate-900">
-                                        Barangay Officers
-                                    </h3>
-                                    <div className="mt-5 space-y-3">
-                                        {[
-                                            [
-                                                "Barangay Captain",
-                                                selectedBarangay.officials
-                                                    .captain,
-                                            ],
-                                            [
-                                                "Secretary",
-                                                selectedBarangay.officials
-                                                    .secretary,
-                                            ],
-                                            [
-                                                "Treasurer",
-                                                selectedBarangay.officials
-                                                    .treasurer,
-                                            ],
-                                            [
-                                                "SK Chairperson",
-                                                selectedBarangay.officials
-                                                    .skChairperson,
-                                            ],
-                                        ].map(([label, value]) => (
-                                            <div
-                                                key={label}
-                                                className="rounded-[1.35rem] border border-slate-100 bg-slate-50 px-4 py-4"
-                                            >
-                                                <p className="text-xs font-bold uppercase tracking-[0.18em] text-emerald-700">
-                                                    {label}
-                                                </p>
-                                                <p className="mt-2 text-base font-semibold text-slate-900">
-                                                    {value}
-                                                </p>
-                                            </div>
-                                        ))}
-                                    </div>
-                                </section>
-
-                                <section className="rounded-[1.75rem] border border-emerald-100 bg-white p-5 shadow-[0_18px_40px_rgba(15,23,42,0.08)]">
-                                    <p className="text-xs font-bold uppercase tracking-[0.22em] text-emerald-700">
-                                        Sangguniang Barangay
-                                    </p>
-                                    <h3 className="mt-2 text-2xl font-black text-slate-900">
-                                        Kagawads
-                                    </h3>
-                                    <div className="mt-5 grid gap-3 sm:grid-cols-2">
-                                        {selectedBarangay.officials.kagawads.map(
-                                            (kagawad, kagawadIndex) => (
-                                                <div
-                                                    key={kagawad}
-                                                    className="rounded-[1.25rem] border border-emerald-100 bg-[linear-gradient(135deg,rgba(255,255,255,1),rgba(236,253,245,0.68))] px-4 py-3"
-                                                >
-                                                    <p className="text-[0.65rem] font-bold uppercase tracking-[0.18em] text-emerald-700">
-                                                        Kagawad{" "}
-                                                        {kagawadIndex + 1}
+                                            <div className="mt-7 grid w-full gap-3 sm:grid-cols-3">
+                                                <div className="rounded-2xl border border-emerald-100 bg-emerald-50/80 px-4 py-3">
+                                                    <p className="text-[0.62rem] font-bold uppercase tracking-[0.24em] text-emerald-700">
+                                                        Reference
                                                     </p>
                                                     <p className="mt-2 text-sm font-semibold text-slate-900">
-                                                        {kagawad}
+                                                        {selectedBarangay.reference}
                                                     </p>
                                                 </div>
-                                            ),
-                                        )}
+                                                <div className="rounded-2xl border border-amber-100 bg-amber-50/80 px-4 py-3">
+                                                    <p className="text-[0.62rem] font-bold uppercase tracking-[0.24em] text-amber-700">
+                                                        Population
+                                                    </p>
+                                                    <p className="mt-2 text-sm font-semibold text-slate-900">
+                                                        {selectedBarangay.population.toLocaleString()}
+                                                    </p>
+                                                </div>
+                                                <div className="rounded-2xl border border-sky-100 bg-sky-50/80 px-4 py-3">
+                                                    <p className="text-[0.62rem] font-bold uppercase tracking-[0.24em] text-sky-700">
+                                                        SK Chairperson
+                                                    </p>
+                                                    <p className="mt-2 text-sm font-semibold text-slate-900">
+                                                        {
+                                                            selectedBarangay
+                                                                .officials
+                                                                .skChairperson
+                                                        }
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
-                                </section>
+
+                                    <div className="mt-6 grid gap-6 lg:grid-cols-[1.05fr_0.95fr]">
+                                        <section>
+                                            <p className="text-sm font-bold text-slate-900">
+                                                Barangay Officials
+                                            </p>
+                                            <div className="mt-4 space-y-2 text-sm leading-7 text-slate-700">
+                                                <p>
+                                                    Barangay Captain:{" "}
+                                                    <span className="font-semibold text-slate-900">
+                                                        {
+                                                            selectedBarangay
+                                                                .officials
+                                                                .captain
+                                                        }
+                                                    </span>
+                                                </p>
+                                                <p>
+                                                    Secretary:{" "}
+                                                    <span className="font-semibold text-slate-900">
+                                                        {
+                                                            selectedBarangay
+                                                                .officials
+                                                                .secretary
+                                                        }
+                                                    </span>
+                                                </p>
+                                                <p>
+                                                    Treasurer:{" "}
+                                                    <span className="font-semibold text-slate-900">
+                                                        {
+                                                            selectedBarangay
+                                                                .officials
+                                                                .treasurer
+                                                        }
+                                                    </span>
+                                                </p>
+                                                <p>
+                                                    SK Chairperson:{" "}
+                                                    <span className="font-semibold text-slate-900">
+                                                        {
+                                                            selectedBarangay
+                                                                .officials
+                                                                .skChairperson
+                                                        }
+                                                    </span>
+                                                </p>
+                                                <p>
+                                                    Reference:{" "}
+                                                    <span className="font-semibold text-slate-900">
+                                                        {
+                                                            selectedBarangay.reference
+                                                        }
+                                                    </span>
+                                                </p>
+                                                <p>
+                                                    Population:{" "}
+                                                    <span className="font-semibold text-slate-900">
+                                                        {selectedBarangay.population.toLocaleString()}
+                                                    </span>
+                                                </p>
+                                            </div>
+
+                                            <div className="mt-6">
+                                                <p className="text-sm font-bold text-slate-900">
+                                                    Municipal Councilors
+                                                </p>
+                                                <ul className="mt-3 list-disc space-y-1 pl-5 text-sm leading-7 text-slate-700 marker:text-emerald-600">
+                                                    {selectedBarangay.officials.kagawads.map(
+                                                        (kagawad) => (
+                                                            <li
+                                                                key={kagawad}
+                                                            >
+                                                                {kagawad}
+                                                            </li>
+                                                        ),
+                                                    )}
+                                                </ul>
+                                            </div>
+                                        </section>
+
+                                        <section>
+                                            <p className="text-sm font-bold text-slate-900">
+                                                Barangay Overview
+                                            </p>
+                                            <div className="mt-4 rounded-2xl border border-emerald-100 bg-white/80 px-4 py-4 text-sm leading-7 text-slate-700">
+                                                <p>
+                                                    This barangay profile shows
+                                                    the current leadership and
+                                                    quick directory details for{" "}
+                                                    <span className="font-semibold text-slate-900">
+                                                        {selectedBarangay.title}
+                                                    </span>
+                                                    .
+                                                </p>
+                                            </div>
+
+                                            <div className="mt-6">
+                                                <p className="text-sm font-bold text-slate-900">
+                                                    Key Details
+                                                </p>
+                                                <ul className="mt-3 list-disc space-y-1 pl-5 text-sm leading-7 text-slate-700 marker:text-emerald-600">
+                                                    <li>
+                                                        Reference Code:{" "}
+                                                        {
+                                                            selectedBarangay.reference
+                                                        }
+                                                    </li>
+                                                    <li>
+                                                        Population:{" "}
+                                                        {selectedBarangay.population.toLocaleString()}
+                                                    </li>
+                                                    <li>
+                                                        Captain:{" "}
+                                                        {
+                                                            selectedBarangay
+                                                                .officials
+                                                                .captain
+                                                        }
+                                                    </li>
+                                                    <li>
+                                                        Secretary:{" "}
+                                                        {
+                                                            selectedBarangay
+                                                                .officials
+                                                                .secretary
+                                                        }
+                                                    </li>
+                                                    <li>
+                                                        Treasurer:{" "}
+                                                        {
+                                                            selectedBarangay
+                                                                .officials
+                                                                .treasurer
+                                                        }
+                                                    </li>
+                                                    <li>
+                                                        SK Chairperson:{" "}
+                                                        {
+                                                            selectedBarangay
+                                                                .officials
+                                                                .skChairperson
+                                                        }
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </section>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -795,3 +853,6 @@ const LGU = ({ lguData = null }) => {
 };
 
 export default LGU;
+
+
+
