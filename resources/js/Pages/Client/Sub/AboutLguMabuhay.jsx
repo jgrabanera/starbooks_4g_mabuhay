@@ -10,7 +10,10 @@ import Organization from "./AboutComponents/Organization";
 import LGU from "./AboutComponents/LGU";
 import About from "./AboutComponents/About";
 
-const AboutLguMabuhay = ({ organizationData = null }) => {
+const AboutLguMabuhay = ({
+    aboutData = null,
+    organizationData = null,
+}) => {
     const tabs = [
         {
             id: "about",
@@ -56,7 +59,9 @@ const AboutLguMabuhay = ({ organizationData = null }) => {
             <Head title="About LGU Mabuhay" />
             <div className="w-full text-emerald-950">
                 <section className="mx-auto flex w-full max-w-7xl flex-col gap-6 px-4 py-2 pb-36 md:px-6 md:pb-40 [@media(orientation:landscape)]:pl-28 [@media(orientation:landscape)]:pb-8">
-                    {activeTab === "about" ? <About /> : null}
+                    {activeTab === "about" ? (
+                        <About aboutData={aboutData} />
+                    ) : null}
 
                     {activeTab === "organization" ? (
                         <Organization organizationData={organizationData} />
