@@ -216,26 +216,53 @@ class CategoryController extends Controller
     private function buildBarangays(About $about): array
     {
         if ($this->barangaysTablesExist() && $about->relationLoaded('barangays') && $about->barangays->isNotEmpty()) {
+            $legacyBarangays = collect($about->lgu_barangays ?? []);
+
             return $about->barangays
-                ->map(fn (AboutBarangay $barangay) => [
-                    'id' => $barangay->id,
-                    'title' => $barangay->title,
-                    'reference' => $barangay->reference,
-                    'population' => $barangay->population,
-                    'captain_image' => $barangay->captain_image,
-                    'officials' => [
-                        'captain' => $barangay->captain_name,
-                        'secretary' => $barangay->secretary_name,
-                        'treasurer' => $barangay->treasurer_name,
-                        'skChairperson' => $barangay->sk_chairperson_name,
-                        'kagawads' => $barangay->kagawads->pluck('name')->values()->all(),
-                    ],
-                ])
+                ->map(function (AboutBarangay $barangay) use ($legacyBarangays) {
+                    $matchedLegacyBarangay = $this->findMatchingLegacyBarangay(
+                        $legacyBarangays,
+                        [
+                            'id' => $barangay->id,
+                            'reference' => $barangay->reference,
+                            'title' => $barangay->title,
+                        ],
+                    );
+
+                    return array_merge(
+                        $matchedLegacyBarangay ?? [],
+                        [
+                            'id' => $barangay->id,
+                            'title' => $barangay->title,
+                            'reference' => $barangay->reference,
+                            'population' => $barangay->population,
+                            'captain_image' => $barangay->captain_image,
+                            'officials' => [
+                                'captain' => $barangay->captain_name,
+                                'secretary' => $barangay->secretary_name,
+                                'treasurer' => $barangay->treasurer_name,
+                                'skChairperson' => $barangay->sk_chairperson_name,
+                                'kagawads' => $barangay->kagawads->pluck('name')->values()->all(),
+                            ],
+                        ],
+                    );
+                })
                 ->values()
                 ->all();
         }
 
         return $about->lgu_barangays ?? [];
+    }
+
+    private function findMatchingLegacyBarangay($legacyBarangays, array $match): ?array
+    {
+        $matchedBarangay = $legacyBarangays->first(function ($barangay) use ($match) {
+            return (string) ($barangay['id'] ?? '') === (string) ($match['id'] ?? '')
+                || (! empty($match['reference']) && ($barangay['reference'] ?? null) === $match['reference'])
+                || (! empty($match['title']) && ($barangay['title'] ?? null) === $match['title']);
+        });
+
+        return is_array($matchedBarangay) ? $matchedBarangay : null;
     }
 
     private function loadAboutRecord(): ?About

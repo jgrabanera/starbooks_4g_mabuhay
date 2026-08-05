@@ -227,26 +227,42 @@ class AboutAdminController extends Controller
 
     private function buildLguPayload(AboutContentRequest $request, About $about, array $validated): array
     {
+        $existingBarangays = collect($about->lgu_barangays ?? []);
+
         $payload = [
             'lgu_badge' => trim($validated['lgu_badge']),
             'lgu_subtitle' => trim($validated['lgu_subtitle']),
             'lgu_title' => trim($validated['lgu_title']),
             'lgu_barangays' => collect($validated['lgu_barangays'])
                 ->values()
-                ->map(fn (array $barangay, int $index) => [
-                    'id' => $barangay['id'] ?? ($index + 1),
-                    'title' => trim($barangay['title']),
-                    'reference' => trim($barangay['reference']),
-                    'population' => (int) $barangay['population'],
-                    'captain_image' => $barangay['captain_image'] ?? null,
-                    'officials' => [
-                        'captain' => trim($barangay['officials']['captain']),
-                        'secretary' => trim($barangay['officials']['secretary']),
-                        'treasurer' => trim($barangay['officials']['treasurer']),
-                        'skChairperson' => trim($barangay['officials']['skChairperson']),
-                        'kagawads' => array_values($barangay['officials']['kagawads']),
-                    ],
-                ])
+                ->map(function (array $barangay, int $index) use ($existingBarangays) {
+                    $matchedBarangay = $this->findMatchingLegacyBarangay(
+                        $existingBarangays,
+                        [
+                            'id' => $barangay['id'] ?? ($index + 1),
+                            'reference' => trim($barangay['reference']),
+                            'title' => trim($barangay['title']),
+                        ],
+                    );
+
+                    return array_merge(
+                        $matchedBarangay ?? [],
+                        [
+                            'id' => $barangay['id'] ?? ($index + 1),
+                            'title' => trim($barangay['title']),
+                            'reference' => trim($barangay['reference']),
+                            'population' => (int) $barangay['population'],
+                            'captain_image' => $barangay['captain_image'] ?? null,
+                            'officials' => [
+                                'captain' => trim($barangay['officials']['captain']),
+                                'secretary' => trim($barangay['officials']['secretary']),
+                                'treasurer' => trim($barangay['officials']['treasurer']),
+                                'skChairperson' => trim($barangay['officials']['skChairperson']),
+                                'kagawads' => array_values($barangay['officials']['kagawads']),
+                            ],
+                        ],
+                    );
+                })
                 ->all(),
         ];
 
@@ -379,21 +395,37 @@ class AboutAdminController extends Controller
     private function buildBarangaysForForm(?About $about): array
     {
         if ($about !== null && $this->barangaysTablesExist() && $about->relationLoaded('barangays') && $about->barangays->isNotEmpty()) {
+            $legacyBarangays = collect($about->lgu_barangays ?? []);
+
             return $about->barangays
-                ->map(fn (AboutBarangay $barangay) => [
-                    'id' => $barangay->id,
-                    'title' => $barangay->title,
-                    'reference' => $barangay->reference,
-                    'population' => $barangay->population,
-                    'captain_image' => $barangay->captain_image,
-                    'officials' => [
-                        'captain' => $barangay->captain_name,
-                        'secretary' => $barangay->secretary_name,
-                        'treasurer' => $barangay->treasurer_name,
-                        'skChairperson' => $barangay->sk_chairperson_name,
-                        'kagawads' => $barangay->kagawads->pluck('name')->values()->all(),
-                    ],
-                ])
+                ->map(function (AboutBarangay $barangay) use ($legacyBarangays) {
+                    $matchedBarangay = $this->findMatchingLegacyBarangay(
+                        $legacyBarangays,
+                        [
+                            'id' => $barangay->id,
+                            'reference' => $barangay->reference,
+                            'title' => $barangay->title,
+                        ],
+                    );
+
+                    return array_merge(
+                        $matchedBarangay ?? [],
+                        [
+                            'id' => $barangay->id,
+                            'title' => $barangay->title,
+                            'reference' => $barangay->reference,
+                            'population' => $barangay->population,
+                            'captain_image' => $barangay->captain_image,
+                            'officials' => [
+                                'captain' => $barangay->captain_name,
+                                'secretary' => $barangay->secretary_name,
+                                'treasurer' => $barangay->treasurer_name,
+                                'skChairperson' => $barangay->sk_chairperson_name,
+                                'kagawads' => $barangay->kagawads->pluck('name')->values()->all(),
+                            ],
+                        ],
+                    );
+                })
                 ->all();
         }
 
@@ -587,23 +619,50 @@ class AboutAdminController extends Controller
 
     private function buildBarangaysFromRelations(About $about): array
     {
+        $legacyBarangays = collect($about->lgu_barangays ?? []);
+
         return $about->barangays
-            ->map(fn (AboutBarangay $barangay) => [
-                'id' => $barangay->id,
-                'title' => $barangay->title,
-                'reference' => $barangay->reference,
-                'population' => $barangay->population,
-                'captain_image' => $barangay->captain_image,
-                'officials' => [
-                    'captain' => $barangay->captain_name,
-                    'secretary' => $barangay->secretary_name,
-                    'treasurer' => $barangay->treasurer_name,
-                    'skChairperson' => $barangay->sk_chairperson_name,
-                    'kagawads' => $barangay->kagawads->pluck('name')->values()->all(),
-                ],
-            ])
+            ->map(function (AboutBarangay $barangay) use ($legacyBarangays) {
+                $matchedBarangay = $this->findMatchingLegacyBarangay(
+                    $legacyBarangays,
+                    [
+                        'id' => $barangay->id,
+                        'reference' => $barangay->reference,
+                        'title' => $barangay->title,
+                    ],
+                );
+
+                return array_merge(
+                    $matchedBarangay ?? [],
+                    [
+                        'id' => $barangay->id,
+                        'title' => $barangay->title,
+                        'reference' => $barangay->reference,
+                        'population' => $barangay->population,
+                        'captain_image' => $barangay->captain_image,
+                        'officials' => [
+                            'captain' => $barangay->captain_name,
+                            'secretary' => $barangay->secretary_name,
+                            'treasurer' => $barangay->treasurer_name,
+                            'skChairperson' => $barangay->sk_chairperson_name,
+                            'kagawads' => $barangay->kagawads->pluck('name')->values()->all(),
+                        ],
+                    ],
+                );
+            })
             ->values()
             ->all();
+    }
+
+    private function findMatchingLegacyBarangay(Collection $legacyBarangays, array $match): ?array
+    {
+        $matchedBarangay = $legacyBarangays->first(function ($barangay) use ($match) {
+            return (string) ($barangay['id'] ?? '') === (string) ($match['id'] ?? '')
+                || (! empty($match['reference']) && ($barangay['reference'] ?? null) === $match['reference'])
+                || (! empty($match['title']) && ($barangay['title'] ?? null) === $match['title']);
+        });
+
+        return is_array($matchedBarangay) ? $matchedBarangay : null;
     }
 
     private function loadAboutRecord(): ?About

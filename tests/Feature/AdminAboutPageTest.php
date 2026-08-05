@@ -398,4 +398,73 @@ class AdminAboutPageTest extends TestCase
                 ->where('organizationData.councilMembers.0.name', 'Member From Table')
                 ->where('lguData.barangays.0.title', 'Barangay From Table'));
     }
+
+    public function test_public_about_page_merges_extended_lgu_barangay_details_from_legacy_json(): void
+    {
+        $about = About::factory()->create([
+            'page_key' => 'about-lgu-mabuhay',
+            'organization_council_members' => [],
+            'priorities_items' => [],
+            'lgu_barangays' => [
+                [
+                    'id' => 1,
+                    'title' => 'Barangay From Table',
+                    'reference' => 'BRGY-099',
+                    'population' => 1500,
+                    'barangayCaptain' => 'Captain Legacy',
+                    'contact' => [
+                        'mobile' => '09170000000',
+                        'telephone' => '(062) 555-1099',
+                        'email' => 'barangay@example.gov.ph',
+                    ],
+                    'address' => 'Barangay Hall, Barangay From Table, Mabuhay',
+                    'officeHours' => 'Monday-Friday, 8:00 AM - 5:00 PM',
+                    'puroks' => ['Purok 1', 'Purok 2'],
+                    'facilities' => ['Barangay Hall', 'Covered Court'],
+                    'schools' => ['Elementary School'],
+                    'healthFacilities' => ['Barangay Health Station'],
+                    'evacuationCenters' => ['Covered Court'],
+                    'emergency' => [
+                        'police' => '911',
+                        'fire' => '911',
+                        'ambulance' => '911',
+                    ],
+                    'coordinates' => [
+                        'latitude' => 7.9,
+                        'longitude' => 122.1,
+                    ],
+                    'description' => 'Legacy barangay details.',
+                ],
+            ],
+        ]);
+
+        $about->barangays()->delete();
+
+        $barangay = $about->barangays()->create([
+            'id' => 1,
+            'title' => 'Barangay From Table',
+            'reference' => 'BRGY-099',
+            'population' => 1500,
+            'captain_name' => 'Captain From Table',
+            'secretary_name' => 'Secretary From Table',
+            'treasurer_name' => 'Treasurer From Table',
+            'sk_chairperson_name' => 'SK From Table',
+            'display_order' => 0,
+        ]);
+
+        $barangay->kagawads()->createMany([
+            ['name' => 'Kagawad One', 'display_order' => 0],
+            ['name' => 'Kagawad Two', 'display_order' => 1],
+        ]);
+
+        $this->get(route('client.category.show', [
+            'slug' => 'about-lgu-mabuhay',
+        ]))
+            ->assertOk()
+            ->assertInertia(fn (Assert $page) => $page
+                ->where('lguData.barangays.0.address', 'Barangay Hall, Barangay From Table, Mabuhay')
+                ->where('lguData.barangays.0.contact.mobile', '09170000000')
+                ->where('lguData.barangays.0.officials.captain', 'Captain From Table')
+                ->where('lguData.barangays.0.officials.kagawads.0', 'Kagawad One'));
+    }
 }

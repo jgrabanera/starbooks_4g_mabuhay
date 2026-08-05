@@ -20,6 +20,7 @@ class DatabaseSeeder extends Seeder
             CategorySeeder::class,
             AboutSeeder::class,
             AboutCouncilMemberSeeder::class,
+            AboutLguBarangaySeeder::class,
         ]);
     }
 }
