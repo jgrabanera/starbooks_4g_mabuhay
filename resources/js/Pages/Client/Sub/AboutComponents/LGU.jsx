@@ -18,7 +18,8 @@ const LGU = ({ lguData = null }) => {
     const [currentPage, setCurrentPage] = useState(1);
     const [selectedBarangay, setSelectedBarangay] = useState(null);
     const itemsPerPage = 10;
-    const hasContent = logo || badge || subtitle || title || barangays.length > 0;
+    const hasContent =
+        logo || badge || subtitle || title || barangays.length > 0;
 
     const filteredBarangays = barangays.filter((barangay) => {
         const searchableContent = [
@@ -64,7 +65,8 @@ const LGU = ({ lguData = null }) => {
                     No LGU content available yet.
                 </p>
                 <p className="mt-2 text-sm text-slate-600">
-                    This section will appear once LGU content is added from the CMS.
+                    This section will appear once LGU content is added from the
+                    CMS.
                 </p>
             </div>
         );
@@ -257,12 +259,12 @@ const LGU = ({ lguData = null }) => {
             >
                 {selectedBarangay ? (
                     <div className="relative overflow-hidden rounded-[1.75rem] bg-slate-50 shadow-2xl">
-                        <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(135deg,rgba(255,248,235,0.97),rgba(255,255,255,0.98),rgba(236,253,245,0.92))]" />
-                        <div className="pointer-events-none absolute inset-x-0 top-0 h-44 bg-[radial-gradient(circle_at_top,rgba(16,185,129,0.16),transparent_68%)]" />
+                        <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(135deg,rgba(255,248,235,0.98),rgba(255,255,255,0.98),rgba(255,251,235,0.94))]" />
+                        <div className="pointer-events-none absolute inset-x-0 top-0 h-44 bg-[radial-gradient(circle_at_top,rgba(245,158,11,0.18),transparent_68%)]" />
                         <button
                             type="button"
                             onClick={() => setSelectedBarangay(null)}
-                            className="absolute right-4 top-4 z-20 inline-flex h-10 w-10 items-center justify-center rounded-full border border-emerald-100 bg-white/95 text-slate-500 shadow-sm transition hover:border-emerald-200 hover:text-emerald-800 focus:outline-none focus:ring-4 focus:ring-emerald-200"
+                            className="absolute right-4 top-4 z-20 inline-flex h-10 w-10 items-center justify-center rounded-full border border-amber-100 bg-white/95 text-slate-500 shadow-sm transition hover:border-amber-200 hover:text-amber-800 focus:outline-none focus:ring-4 focus:ring-amber-200"
                         >
                             <span className="sr-only">Close modal</span>
                             <IoCloseOutline className="h-6 w-6" />
@@ -272,52 +274,58 @@ const LGU = ({ lguData = null }) => {
                             <div className="px-5 pb-8 pt-10 sm:px-8 sm:pb-10">
                                 <div className="mx-auto max-w-4xl">
                                     <div className="rounded-[1.75rem] border border-white/80 bg-white/85 px-5 py-8 text-center shadow-[0_18px_60px_rgba(15,23,42,0.08)] backdrop-blur-sm sm:px-8">
-                                        <p className="text-[0.62rem] font-bold uppercase tracking-[0.32em] text-emerald-700">
+                                        <p className="text-[0.62rem] font-bold uppercase tracking-[0.32em] text-amber-700">
                                             Municipality of Mabuhay
                                         </p>
                                         <h2 className="mt-3 text-3xl font-black uppercase tracking-[0.06em] text-slate-900 sm:text-4xl">
                                             {selectedBarangay.title}
                                         </h2>
-                                        <p className="mx-auto mt-3 max-w-2xl text-sm leading-7 text-slate-600 sm:text-base">
+                                        {/* <p className="mx-auto mt-3 max-w-2xl text-sm leading-7 text-slate-600 sm:text-base">
                                             Barangay profile and leadership
                                             directory for community reference.
-                                        </p>
+                                        </p> */}
 
                                         <div className="mt-7 flex w-full flex-col items-center text-center">
-                                            <div className="w-full max-w-xl rounded-[1.75rem] border border-emerald-200/80 bg-[linear-gradient(135deg,rgba(16,185,129,0.12),rgba(255,255,255,0.96),rgba(250,204,21,0.16))] px-5 py-6 shadow-[0_20px_60px_rgba(16,185,129,0.14)]">
-                                                <div className="mx-auto flex h-28 w-28 items-center justify-center rounded-full bg-[radial-gradient(circle,rgba(255,255,255,0.98),rgba(209,250,229,0.78))] ring-4 ring-white shadow-lg shadow-emerald-100/80">
-                                                    <div className="h-24 w-24 overflow-hidden rounded-full border-[3px] border-emerald-500/80 bg-white">
-                                                <img
-                                                    src={
-                                                        selectedBarangay.captain_image ||
-                                                        "/assets/images/lgu_mabuhay.jpg"
-                                                    }
-                                                    alt={`${selectedBarangay.officials.captain} portrait`}
-                                                    className="h-full w-full object-cover"
-                                                />
+                                            <div className="w-full max-w-xl rounded-[1.75rem] border border-amber-200/80 bg-[linear-gradient(135deg,rgba(251,191,36,0.16),rgba(255,255,255,0.97),rgba(249,115,22,0.12))] px-5 py-6 shadow-[0_20px_60px_rgba(245,158,11,0.16)]">
+                                                <div className="mx-auto flex h-28 w-28 items-center justify-center rounded-full bg-[radial-gradient(circle,rgba(255,255,255,0.98),rgba(253,230,138,0.52))] ring-4 ring-white shadow-lg shadow-amber-100/80">
+                                                    <div className="h-24 w-24 overflow-hidden rounded-full border-[3px] border-amber-500/80 bg-white">
+                                                        <img
+                                                            src={
+                                                                selectedBarangay.captain_image ||
+                                                                "/assets/images/lgu_mabuhay.jpg"
+                                                            }
+                                                            alt={`${selectedBarangay.officials.captain} portrait`}
+                                                            className="h-full w-full object-cover"
+                                                        />
                                                     </div>
                                                 </div>
 
                                                 <div className="mt-5">
-                                                    <p className="text-[0.68rem] font-bold uppercase tracking-[0.3em] text-emerald-700">
+                                                    <p className="text-[0.68rem] font-bold uppercase tracking-[0.3em] text-amber-700">
                                                         Featured Official
                                                     </p>
                                                     <p className="mt-3 text-2xl font-black text-slate-900 sm:text-[1.7rem]">
-                                                        {selectedBarangay.officials.captain}
+                                                        {
+                                                            selectedBarangay
+                                                                .officials
+                                                                .captain
+                                                        }
                                                     </p>
-                                                    <div className="mx-auto mt-3 inline-flex items-center rounded-full bg-gradient-to-r from-emerald-600 via-teal-500 to-lime-500 px-4 py-2 text-xs font-bold uppercase tracking-[0.24em] text-white shadow-md">
+                                                    <div className="mx-auto mt-3 inline-flex items-center rounded-full bg-gradient-to-r from-amber-600 via-orange-500 to-yellow-500 px-4 py-2 text-xs font-bold uppercase tracking-[0.24em] text-white shadow-md">
                                                         Barangay Captain
                                                     </div>
                                                 </div>
                                             </div>
 
                                             <div className="mt-7 grid w-full gap-3 sm:grid-cols-3">
-                                                <div className="rounded-2xl border border-emerald-100 bg-emerald-50/80 px-4 py-3">
-                                                    <p className="text-[0.62rem] font-bold uppercase tracking-[0.24em] text-emerald-700">
+                                                <div className="rounded-2xl border border-amber-100 bg-amber-50/80 px-4 py-3">
+                                                    <p className="text-[0.62rem] font-bold uppercase tracking-[0.24em] text-amber-700">
                                                         Reference
                                                     </p>
                                                     <p className="mt-2 text-sm font-semibold text-slate-900">
-                                                        {selectedBarangay.reference}
+                                                        {
+                                                            selectedBarangay.reference
+                                                        }
                                                     </p>
                                                 </div>
                                                 <div className="rounded-2xl border border-amber-100 bg-amber-50/80 px-4 py-3">
@@ -344,7 +352,7 @@ const LGU = ({ lguData = null }) => {
                                         </div>
                                     </div>
 
-                                    <div className="mt-6 grid gap-6 lg:grid-cols-[1.05fr_0.95fr]">
+                                    <div className="mt-6 grid gap-6 lg:grid-cols-[1.05fr_0.95fr] px-5">
                                         <section>
                                             <p className="text-sm font-bold text-slate-900">
                                                 Barangay Officials
@@ -410,12 +418,10 @@ const LGU = ({ lguData = null }) => {
                                                 <p className="text-sm font-bold text-slate-900">
                                                     Municipal Councilors
                                                 </p>
-                                                <ul className="mt-3 list-disc space-y-1 pl-5 text-sm leading-7 text-slate-700 marker:text-emerald-600">
+                                                <ul className="mt-3 list-disc space-y-1 pl-5 text-sm leading-7 text-slate-700 marker:text-amber-600">
                                                     {selectedBarangay.officials.kagawads.map(
                                                         (kagawad) => (
-                                                            <li
-                                                                key={kagawad}
-                                                            >
+                                                            <li key={kagawad}>
                                                                 {kagawad}
                                                             </li>
                                                         ),
@@ -428,7 +434,7 @@ const LGU = ({ lguData = null }) => {
                                             <p className="text-sm font-bold text-slate-900">
                                                 Barangay Overview
                                             </p>
-                                            <div className="mt-4 rounded-2xl border border-emerald-100 bg-white/80 px-4 py-4 text-sm leading-7 text-slate-700">
+                                            <div className="mt-4 rounded-2xl border border-amber-100 bg-white/80 px-4 py-4 text-sm leading-7 text-slate-700">
                                                 <p>
                                                     This barangay profile shows
                                                     the current leadership and
@@ -444,7 +450,7 @@ const LGU = ({ lguData = null }) => {
                                                 <p className="text-sm font-bold text-slate-900">
                                                     Key Details
                                                 </p>
-                                                <ul className="mt-3 list-disc space-y-1 pl-5 text-sm leading-7 text-slate-700 marker:text-emerald-600">
+                                                <ul className="mt-3 list-disc space-y-1 pl-5 text-sm leading-7 text-slate-700 marker:text-amber-600">
                                                     <li>
                                                         Reference Code:{" "}
                                                         {
@@ -502,6 +508,3 @@ const LGU = ({ lguData = null }) => {
 };
 
 export default LGU;
-
-
-
