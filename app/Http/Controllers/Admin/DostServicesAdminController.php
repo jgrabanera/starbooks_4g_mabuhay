@@ -32,6 +32,7 @@ class DostServicesAdminController extends Controller
                     'description',
                     'image',
                     'pdf',
+                    'video',
                     'is_active',
                 ]),
         ]);
@@ -56,6 +57,14 @@ class DostServicesAdminController extends Controller
             )
             : null;
 
+        $videoName = $request->hasFile('video')
+            ? $request->file('video')->storeAs(
+                'videos/dost-services',
+                $this->buildStoredFileName($slug, $request->file('video')->extension()),
+                'public',
+            )
+            : null;
+
         DostServiceContent::create([
             'tab_id' => $validated['tab_id'],
             'title' => trim($validated['title']),
@@ -63,6 +72,7 @@ class DostServicesAdminController extends Controller
             'description' => $validated['description'] ?? null,
             'image' => basename($imageName),
             'pdf' => $pdfName ? basename($pdfName) : null,
+            'video' => $videoName ? basename($videoName) : null,
             'is_active' => (bool) ($validated['is_active'] ?? false),
         ]);
 
@@ -109,6 +119,20 @@ class DostServicesAdminController extends Controller
             $payload['pdf'] = basename($pdfName);
         }
 
+        if ($request->hasFile('video')) {
+            $videoName = $request->file('video')->storeAs(
+                'videos/dost-services',
+                $this->buildStoredFileName($slug, $request->file('video')->extension()),
+                'public',
+            );
+
+            if (!empty($dostService->video)) {
+                Storage::disk('public')->delete('videos/dost-services/' . $dostService->video);
+            }
+
+            $payload['video'] = basename($videoName);
+        }
+
         $dostService->update($payload);
 
         return to_route('admin.dost-services.index');
@@ -122,6 +146,10 @@ class DostServicesAdminController extends Controller
 
         if (!empty($dostService->pdf)) {
             Storage::disk('public')->delete('documents/pdfs/' . $dostService->pdf);
+        }
+
+        if (!empty($dostService->video)) {
+            Storage::disk('public')->delete('videos/dost-services/' . $dostService->video);
         }
 
         $dostService->delete();

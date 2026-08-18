@@ -1,12 +1,22 @@
 import AdminLayout from "@/Layouts/AdminLayout";
 import AdminFixedSectionPage from "@/Components/AdminFixedSectionPage";
 import { fixedSectionConfigs } from "./fixedSectionConfigs.jsx";
+import DostIxTabSection from "@/Pages/Admin/DostServices/DostIxTabSection";
+import ProgramsServicesTabSection from "@/Pages/Admin/DostServices/ProgramsServicesTabSection";
+import FacebookPostsTabSection from "@/Pages/Admin/DostServices/FacebookPostsTabSection";
+
+const tabSections = {
+    "Dost-ix": DostIxTabSection,
+    ProgramsServices: ProgramsServicesTabSection,
+    FacebookPosts: FacebookPostsTabSection,
+};
 
 const DostServices = ({ sectionCategory = null, contents = [] }) => (
     <AdminFixedSectionPage
         sectionCategory={sectionCategory}
         contents={contents}
         config={fixedSectionConfigs.dostServices}
+        tabSections={tabSections}
     />
 );
 

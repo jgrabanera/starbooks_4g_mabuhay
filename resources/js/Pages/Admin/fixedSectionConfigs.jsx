@@ -172,6 +172,8 @@ export const fixedSectionConfigs = {
             "Manage the fixed DOST service tabs for DOST IX, programs and services, and Facebook posts shown on the public page.",
         publicPageLabel: "DOST Services",
         entityLabel: "DOST Service",
+        addButtonLabel: "Add Services",
+        supportsVideo: true,
         formIdPrefix: "dost-services",
         searchKey: "admin-dost-services-search",
         tabGridClassName: "md:grid-cols-3",

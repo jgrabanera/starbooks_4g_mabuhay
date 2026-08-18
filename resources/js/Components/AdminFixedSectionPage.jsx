@@ -9,11 +9,13 @@ import Modal from "@/Components/Modal";
 import PrimaryButton from "@/Components/PrimaryButton";
 import SecondaryButton from "@/Components/SecondaryButton";
 import TextInput from "@/Components/TextInput";
+import AdminFixedSectionTabSection from "@/Components/AdminFixedSectionTabSection";
 
 const emptyContent = {
     title: "",
     image: null,
     pdf: null,
+    video: null,
     description: "",
     is_active: true,
 };
@@ -22,6 +24,7 @@ export default function AdminFixedSectionPage({
     sectionCategory = null,
     contents: contentItems = [],
     config,
+    tabSections = {},
 }) {
     const tabMatches = (tab, tabId) => {
         const aliases = tab.aliases ?? [tab.id];
@@ -101,6 +104,8 @@ export default function AdminFixedSectionPage({
     }, [activeTab, contents, search]);
 
     const currentTab = findTabById(activeTab);
+    const ActiveTabSection =
+        tabSections[activeTab] ?? AdminFixedSectionTabSection;
 
     const resetForm = (tabId = activeTab) => {
         setEditingContent(null);
@@ -130,6 +135,7 @@ export default function AdminFixedSectionPage({
             title: content.title ?? "",
             image: null,
             pdf: null,
+            video: null,
             description: content.description ?? "",
             is_active: Boolean(content.is_active),
         });
@@ -352,7 +358,8 @@ export default function AdminFixedSectionPage({
                                     disabled={processing || !canManageSection}
                                     className="inline-flex h-12 w-full items-center justify-center rounded-lg bg-emerald-600 px-5 text-sm font-semibold text-white shadow-sm transition hover:bg-emerald-700 disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto sm:px-6"
                                 >
-                                    Add {currentTab?.label ?? config.entityLabel}
+                                    {config.addButtonLabel ??
+                                        `Add ${currentTab?.label ?? config.entityLabel}`}
                                 </button>
                             </div>
                         </div>
@@ -425,6 +432,17 @@ export default function AdminFixedSectionPage({
                         </div>
                     </div>
 
+                    {tabSections[activeTab] ? (
+                        <ActiveTabSection
+                            contents={filteredContents}
+                            currentTab={currentTab}
+                            config={config}
+                            tabMatches={tabMatches}
+                            onEdit={openEditModal}
+                            onDelete={openDeleteModal}
+                        />
+                    ) : (
+                        <>
                     <div className="hidden overflow-x-auto md:block">
                         <table className="min-w-full divide-y divide-gray-200">
                             <thead className="bg-gray-50">
@@ -599,6 +617,8 @@ export default function AdminFixedSectionPage({
                             </div>
                         )}
                     </div>
+                        </>
+                    )}
                 </section>
             </div>
 
@@ -780,6 +800,42 @@ export default function AdminFixedSectionPage({
                                 className="mt-2"
                             />
                         </div>
+
+                        {config.supportsVideo ? (
+                            <div>
+                                <InputLabel
+                                    htmlFor={`${config.formIdPrefix}-video`}
+                                    value="Video File"
+                                />
+                                <input
+                                    id={`${config.formIdPrefix}-video`}
+                                    type="file"
+                                    accept=".mp4,.webm,.mov,video/mp4,video/webm,video/quicktime"
+                                    onChange={(event) =>
+                                        setData(
+                                            "video",
+                                            event.target.files?.[0] ?? null,
+                                        )
+                                    }
+                                    className="mt-1 block w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm file:mr-4 file:rounded-md file:border-0 file:bg-emerald-50 file:px-3 file:py-2 file:font-semibold file:text-emerald-700 hover:file:bg-emerald-100"
+                                    disabled={processing}
+                                />
+                                {editingContent?.video ? (
+                                    <p className="mt-2 text-xs text-gray-500">
+                                        Current video: {editingContent.video}
+                                    </p>
+                                ) : (
+                                    <p className="mt-2 text-xs text-gray-500">
+                                        Optional. Upload an MP4, WebM, or MOV
+                                        video up to 50 MB.
+                                    </p>
+                                )}
+                                <InputError
+                                    message={errors.video}
+                                    className="mt-2"
+                                />
+                            </div>
+                        ) : null}
 
                         <div>
                             <InputLabel

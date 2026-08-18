@@ -16,6 +16,7 @@ class DostServiceContent extends Model
         'description',
         'image',
         'pdf',
+        'video',
         'is_active',
     ];
 

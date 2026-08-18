@@ -15,6 +15,7 @@ class FixedSectionContentRequest extends FormRequest
     {
         $imageRules = ['nullable', 'image', 'max:5048', 'mimes:png,jpg,jpeg,webp'];
         $pdfRules = ['nullable', 'file', 'mimes:pdf', 'max:10240'];
+        $videoRules = ['nullable', 'file', 'mimes:mp4,webm,mov', 'max:51200'];
 
         if ($this->routeIs(
             'admin.projects.store',
@@ -32,6 +33,7 @@ class FixedSectionContentRequest extends FormRequest
             'description' => ['nullable', 'string'],
             'image' => $imageRules,
             'pdf' => $pdfRules,
+            'video' => $videoRules,
             'is_active' => ['boolean'],
         ];
     }

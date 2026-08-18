@@ -1,5 +1,10 @@
 import { useEffect, useMemo, useState } from "react";
-import { IoCalendarOutline, IoDocumentOutline, IoSearchOutline } from "react-icons/io5";
+import {
+    IoCalendarOutline,
+    IoDocumentOutline,
+    IoPlayCircleOutline,
+    IoSearchOutline,
+} from "react-icons/io5";
 
 const DEFAULT_ITEMS_PER_PAGE = 10;
 
@@ -165,6 +170,20 @@ export default function ContentCollectionPanel({
                                                     >
                                                         <IoDocumentOutline className="h-3.5 w-3.5" />
                                                         View PDF
+                                                    </a>
+                                                </div>
+                                            ) : null}
+
+                                            {item.video_url ? (
+                                                <div className="pt-4">
+                                                    <a
+                                                        href={item.video_url}
+                                                        target="_blank"
+                                                        rel="noreferrer"
+                                                        className="inline-flex items-center gap-2 rounded-full bg-sky-700 px-4 py-2 text-xs font-semibold uppercase tracking-[0.12em] text-white transition hover:bg-sky-800"
+                                                    >
+                                                        <IoPlayCircleOutline className="h-3.5 w-3.5" />
+                                                        View Video
                                                     </a>
                                                 </div>
                                             ) : null}
