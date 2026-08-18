@@ -236,7 +236,7 @@ class CategoryController extends Controller
                             'title' => $barangay->title,
                             'reference' => $barangay->reference,
                             'population' => $barangay->population,
-                            'captain_image' => $barangay->captain_image,
+                            'captain_image' => $this->captainImageUrl($barangay->captain_image),
                             'officials' => [
                                 'captain' => $barangay->captain_name,
                                 'secretary' => $barangay->secretary_name,
@@ -251,7 +251,26 @@ class CategoryController extends Controller
                 ->all();
         }
 
-        return $about->lgu_barangays ?? [];
+        return collect($about->lgu_barangays ?? [])
+            ->map(function (array $barangay): array {
+                $barangay['captain_image'] = $this->captainImageUrl($barangay['captain_image'] ?? null);
+
+                return $barangay;
+            })
+            ->all();
+    }
+
+    private function captainImageUrl(?string $image): ?string
+    {
+        if (empty($image)) {
+            return null;
+        }
+
+        if (str_starts_with($image, '/') || str_starts_with($image, 'http://') || str_starts_with($image, 'https://')) {
+            return $image;
+        }
+
+        return '/storage/images/thumbnails/' . $image;
     }
 
     private function findMatchingLegacyBarangay($legacyBarangays, array $match): ?array

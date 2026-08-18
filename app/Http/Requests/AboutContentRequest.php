@@ -129,6 +129,7 @@ class AboutContentRequest extends FormRequest
             'lgu_barangays.*.reference' => ['required', 'string', 'max:255'],
             'lgu_barangays.*.population' => ['required', 'integer', 'min:0'],
             'lgu_barangays.*.captain_image' => ['nullable', 'string', 'max:255'],
+            'lgu_barangays.*.captain_image_file' => ['nullable', 'file', 'mimes:jpg,jpeg,png,webp', 'max:5120'],
             'lgu_barangays.*.officials.captain' => ['required', 'string', 'max:255'],
             'lgu_barangays.*.officials.secretary' => ['required', 'string', 'max:255'],
             'lgu_barangays.*.officials.treasurer' => ['required', 'string', 'max:255'],

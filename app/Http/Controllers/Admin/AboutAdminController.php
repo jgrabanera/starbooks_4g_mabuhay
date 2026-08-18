@@ -34,6 +34,14 @@ class AboutAdminController extends Controller
         $payload = ['page_key' => 'about-lgu-mabuhay'];
         $section = $validated['section'] ?? null;
 
+        if ($section === 'lgu' || $section === null) {
+            $validated['lgu_barangays'] = $this->storeBarangayCaptainImages(
+                $request,
+                $about,
+                $validated['lgu_barangays'],
+            );
+        }
+
         if ($section === 'about' || $section === null) {
             $payload = array_merge($payload, $this->buildAboutPayload($request, $about, $validated));
         }
@@ -281,6 +289,45 @@ class AboutAdminController extends Controller
         }
 
         return $payload;
+    }
+
+    private function storeBarangayCaptainImages(AboutContentRequest $request, About $about, array $barangays): array
+    {
+        $existingBarangays = collect($about->lgu_barangays ?? []);
+
+        return collect(array_values($barangays))
+            ->map(function (array $barangay, int $index) use ($request, $existingBarangays): array {
+                $matchedBarangay = $this->findMatchingLegacyBarangay(
+                    $existingBarangays,
+                    [
+                        'id' => $barangay['id'] ?? ($index + 1),
+                        'reference' => trim($barangay['reference']),
+                        'title' => trim($barangay['title']),
+                    ],
+                );
+                $storedImage = $matchedBarangay['captain_image'] ?? ($barangay['captain_image'] ?? null);
+
+                if ($request->hasFile("lgu_barangays.$index.captain_image_file")) {
+                    $uploadedImage = $request->file("lgu_barangays.$index.captain_image_file");
+                    $storedPath = $uploadedImage->storeAs(
+                        'images/thumbnails',
+                        $this->buildStoredFileName('barangay-captain-' . ($index + 1), $uploadedImage->extension()),
+                        'public',
+                    );
+
+                    if (! empty($storedImage)) {
+                        Storage::disk('public')->delete('images/thumbnails/' . $storedImage);
+                    }
+
+                    $storedImage = basename($storedPath);
+                }
+
+                $barangay['captain_image'] = $storedImage;
+                unset($barangay['captain_image_file']);
+
+                return $barangay;
+            })
+            ->all();
     }
 
     private function buildFormData(?About $about): array

@@ -264,20 +264,20 @@ const LGU = ({ lguData = null }) => {
                         <button
                             type="button"
                             onClick={() => setSelectedBarangay(null)}
-                            className="absolute right-4 top-4 z-20 inline-flex h-10 w-10 items-center justify-center rounded-full border border-amber-100 bg-white/95 text-slate-500 shadow-sm transition hover:border-amber-200 hover:text-amber-800 focus:outline-none focus:ring-4 focus:ring-amber-200"
+                            className="absolute right-3 top-3 z-20 inline-flex h-10 w-10 items-center justify-center rounded-xl border border-amber-200 bg-white text-slate-500 shadow-sm transition hover:bg-amber-50 hover:text-amber-800 focus:outline-none focus:ring-4 focus:ring-amber-200 sm:right-5 sm:top-5"
                         >
                             <span className="sr-only">Close modal</span>
                             <IoCloseOutline className="h-6 w-6" />
                         </button>
 
                         <div className="relative z-10 max-h-[calc(100vh-5rem)] overflow-y-auto">
-                            <div className="px-5 pb-8 pt-10 sm:px-8 sm:pb-10">
+                            <div className="px-4 pb-6 pt-5 sm:px-6 sm:pb-8 sm:pt-6">
                                 <div className="mx-auto max-w-4xl">
-                                    <div className="rounded-[1.75rem] border border-white/80 bg-white/85 px-5 py-8 text-center shadow-[0_18px_60px_rgba(15,23,42,0.08)] backdrop-blur-sm sm:px-8">
+                                    <div className="rounded-[1.5rem] border border-white/80 bg-white/90 px-4 py-5 text-center shadow-[0_18px_60px_rgba(15,23,42,0.08)] backdrop-blur-sm sm:px-7 sm:py-6">
                                         <p className="text-[0.62rem] font-bold uppercase tracking-[0.32em] text-amber-700">
                                             Municipality of Mabuhay
                                         </p>
-                                        <h2 className="mt-3 text-3xl font-black uppercase tracking-[0.06em] text-slate-900 sm:text-4xl">
+                                        <h2 className="mt-2 pr-10 text-2xl font-black uppercase tracking-[0.04em] text-slate-900 sm:pr-0 sm:text-3xl">
                                             {selectedBarangay.title}
                                         </h2>
                                         {/* <p className="mx-auto mt-3 max-w-2xl text-sm leading-7 text-slate-600 sm:text-base">
@@ -285,39 +285,44 @@ const LGU = ({ lguData = null }) => {
                                             directory for community reference.
                                         </p> */}
 
-                                        <div className="mt-7 flex w-full flex-col items-center text-center">
-                                            <div className="w-full max-w-xl rounded-[1.75rem] border border-amber-200/80 bg-[linear-gradient(135deg,rgba(251,191,36,0.16),rgba(255,255,255,0.97),rgba(249,115,22,0.12))] px-5 py-6 shadow-[0_20px_60px_rgba(245,158,11,0.16)]">
-                                                <div className="mx-auto flex h-28 w-28 items-center justify-center rounded-full bg-[radial-gradient(circle,rgba(255,255,255,0.98),rgba(253,230,138,0.52))] ring-4 ring-white shadow-lg shadow-amber-100/80">
-                                                    <div className="h-24 w-24 overflow-hidden rounded-full border-[3px] border-amber-500/80 bg-white">
-                                                        <img
-                                                            src={
-                                                                selectedBarangay.captain_image ||
-                                                                "/assets/images/lgu_mabuhay.jpg"
-                                                            }
-                                                            alt={`${selectedBarangay.officials.captain} portrait`}
-                                                            className="h-full w-full object-cover"
-                                                        />
+                                        <div className="mt-5 flex w-full flex-col items-center text-center">
+                                            <div className="w-full max-w-lg rounded-2xl border border-amber-200/80 bg-[linear-gradient(135deg,rgba(251,191,36,0.14),rgba(255,255,255,0.97),rgba(249,115,22,0.1))] px-4 py-4 shadow-[0_14px_40px_rgba(245,158,11,0.12)] sm:px-5">
+                                                <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-amber-50 ring-4 ring-white shadow-md">
+                                                    <div className="h-16 w-16 overflow-hidden rounded-full border-2 border-amber-400 bg-white">
+                                                        {selectedBarangay.captain_image ? (
+                                                            <img
+                                                                src={selectedBarangay.captain_image}
+                                                                alt={`${selectedBarangay.officials.captain} portrait`}
+                                                                className="h-full w-full object-cover"
+                                                            />
+                                                        ) : (
+                                                            <div className="flex h-full w-full items-center justify-center bg-amber-100 text-lg font-black text-amber-800">
+                                                                {selectedBarangay.officials.captain
+                                                                    ?.charAt(0)
+                                                                    .toUpperCase() || "C"}
+                                                            </div>
+                                                        )}
                                                     </div>
                                                 </div>
 
-                                                <div className="mt-5">
+                                                <div className="mt-3">
                                                     <p className="text-[0.68rem] font-bold uppercase tracking-[0.3em] text-amber-700">
                                                         Featured Official
                                                     </p>
-                                                    <p className="mt-3 text-2xl font-black text-slate-900 sm:text-[1.7rem]">
+                                                    <p className="mt-1.5 text-xl font-black text-slate-900 sm:text-2xl">
                                                         {
                                                             selectedBarangay
                                                                 .officials
                                                                 .captain
                                                         }
                                                     </p>
-                                                    <div className="mx-auto mt-3 inline-flex items-center rounded-full bg-gradient-to-r from-amber-600 via-orange-500 to-yellow-500 px-4 py-2 text-xs font-bold uppercase tracking-[0.24em] text-white shadow-md">
+                                                    <div className="mx-auto mt-2 inline-flex items-center rounded-full bg-gradient-to-r from-amber-600 via-orange-500 to-yellow-500 px-4 py-1.5 text-[0.65rem] font-bold uppercase tracking-[0.2em] text-white shadow-md">
                                                         Barangay Captain
                                                     </div>
                                                 </div>
                                             </div>
 
-                                            <div className="mt-7 grid w-full gap-3 sm:grid-cols-3">
+                                            <div className="mt-5 grid w-full gap-3 sm:grid-cols-3">
                                                 <div className="rounded-2xl border border-amber-100 bg-amber-50/80 px-4 py-3">
                                                     <p className="text-[0.62rem] font-bold uppercase tracking-[0.24em] text-amber-700">
                                                         Reference
@@ -352,12 +357,12 @@ const LGU = ({ lguData = null }) => {
                                         </div>
                                     </div>
 
-                                    <div className="mt-6 grid gap-6 lg:grid-cols-[1.05fr_0.95fr] px-5">
-                                        <section>
+                                    <div className="mt-5 px-1 sm:px-3">
+                                        <section className="rounded-2xl border border-amber-100 bg-white/80 p-5 shadow-sm sm:p-6">
                                             <p className="text-sm font-bold text-slate-900">
                                                 Barangay Officials
                                             </p>
-                                            <div className="mt-4 space-y-2 text-sm leading-7 text-slate-700">
+                                            <div className="mt-4 grid gap-2 text-sm leading-6 text-slate-700 sm:grid-cols-2 [&>p]:rounded-xl [&>p]:bg-amber-50/70 [&>p]:px-4 [&>p]:py-3">
                                                 <p>
                                                     Barangay Captain:{" "}
                                                     <span className="font-semibold text-slate-900">
@@ -398,27 +403,13 @@ const LGU = ({ lguData = null }) => {
                                                         }
                                                     </span>
                                                 </p>
-                                                <p>
-                                                    Reference:{" "}
-                                                    <span className="font-semibold text-slate-900">
-                                                        {
-                                                            selectedBarangay.reference
-                                                        }
-                                                    </span>
-                                                </p>
-                                                <p>
-                                                    Population:{" "}
-                                                    <span className="font-semibold text-slate-900">
-                                                        {selectedBarangay.population.toLocaleString()}
-                                                    </span>
-                                                </p>
                                             </div>
 
                                             <div className="mt-6">
                                                 <p className="text-sm font-bold text-slate-900">
-                                                    Municipal Councilors
+                                                    Barangay Kagawads
                                                 </p>
-                                                <ul className="mt-3 list-disc space-y-1 pl-5 text-sm leading-7 text-slate-700 marker:text-amber-600">
+                                                <ul className="mt-3 grid list-disc gap-x-8 gap-y-1 pl-5 text-sm leading-7 text-slate-700 marker:text-amber-600 sm:grid-cols-2">
                                                     {selectedBarangay.officials.kagawads.map(
                                                         (kagawad) => (
                                                             <li key={kagawad}>
@@ -430,7 +421,7 @@ const LGU = ({ lguData = null }) => {
                                             </div>
                                         </section>
 
-                                        <section>
+                                        <section className="hidden">
                                             <p className="text-sm font-bold text-slate-900">
                                                 Barangay Overview
                                             </p>

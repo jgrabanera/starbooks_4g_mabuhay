@@ -625,33 +625,34 @@ export default function AdminFixedSectionPage({
             <Modal
                 show={isFormModalOpen}
                 onClose={closeFormModal}
-                maxWidth="2xl"
+                maxWidth="3xl"
             >
-                <div className="p-6">
-                    <div className="flex items-start justify-between gap-4">
-                        <div>
-                            <p className="text-xs font-bold uppercase tracking-[0.22em] text-emerald-700">
+                <div className="flex max-h-[calc(100dvh-2rem)] flex-col overflow-hidden bg-white sm:max-h-[calc(100dvh-3rem)]">
+                    <div className="flex shrink-0 items-center justify-between gap-4 border-b border-emerald-100 bg-gradient-to-r from-emerald-50 via-white to-amber-50/40 px-5 py-3 sm:px-6">
+                        <div className="flex items-center gap-3">
+                            <span className="flex h-9 w-9 items-center justify-center rounded-xl border border-emerald-100 bg-white text-emerald-700 shadow-sm">
+                                <svg
+                                    className="h-4 w-4"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    strokeWidth="2"
+                                >
+                                    <path
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        d="M4 6h16M4 12h16M4 18h10"
+                                    />
+                                </svg>
+                            </span>
+                            <p className="text-xs font-bold uppercase tracking-[0.2em] text-emerald-700">
                                 {config.entityLabel} Content
-                            </p>
-                            <h2 className="mt-2 text-2xl font-bold text-gray-950">
-                                {editingContent
-                                    ? `Edit ${config.entityLabel} Item`
-                                    : `Add ${currentTab?.label ?? config.entityLabel} Item`}
-                            </h2>
-                            <p className="mt-1 text-sm text-gray-600">
-                                This record will appear under the fixed{" "}
-                                <span className="font-semibold">
-                                    {config.tabs.find(
-                                        (tab) => tab.id === data.tab_id,
-                                    )?.label ?? currentTab?.label}
-                                </span>{" "}
-                                tab on the public {config.publicPageLabel} page.
                             </p>
                         </div>
                         <button
                             type="button"
                             onClick={closeFormModal}
-                            className="rounded-full p-2 text-gray-400 transition hover:bg-gray-100 hover:text-gray-600"
+                            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-slate-200 bg-white text-gray-400 shadow-sm transition hover:border-emerald-200 hover:bg-emerald-50 hover:text-emerald-700 focus:outline-none focus:ring-4 focus:ring-emerald-100"
                         >
                             <span className="sr-only">Close modal</span>
                             <svg
@@ -670,7 +671,11 @@ export default function AdminFixedSectionPage({
                         </button>
                     </div>
 
-                    <form onSubmit={submitContent} className="mt-6 space-y-4">
+                    <form
+                        onSubmit={submitContent}
+                        className="flex min-h-0 flex-1 flex-col"
+                    >
+                        <div className="min-h-0 flex-1 space-y-5 overflow-y-auto px-5 py-5 sm:px-6">
                         <div className="grid gap-4 md:grid-cols-2">
                             <div>
                                 <InputLabel
@@ -858,7 +863,9 @@ export default function AdminFixedSectionPage({
                             />
                         </div>
 
-                        <div className="flex flex-wrap justify-between gap-3 border-t border-slate-100 pt-4">
+                        </div>
+
+                        <div className="flex shrink-0 flex-wrap items-center justify-between gap-3 border-t border-slate-200 bg-slate-50 px-5 py-4 shadow-[0_-8px_24px_rgba(15,23,42,0.06)] sm:px-6">
                             <div>
                                 {editingContent ? (
                                     <DangerButton

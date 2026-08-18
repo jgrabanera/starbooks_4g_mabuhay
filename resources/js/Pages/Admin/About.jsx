@@ -60,6 +60,7 @@ const createEmptyBarangayDraft = (id = null) => ({
     reference: "",
     population: 0,
     captain_image: null,
+    captain_image_file: null,
     officials: {
         captain: "",
         secretary: "",
@@ -439,6 +440,7 @@ export default function About({ aboutContent }) {
             reference: barangay?.reference ?? "",
             population: barangay?.population ?? 0,
             captain_image: barangay?.captain_image ?? null,
+            captain_image_file: null,
             officials: {
                 captain: barangay?.officials?.captain ?? "",
                 secretary: barangay?.officials?.secretary ?? "",
@@ -480,24 +482,47 @@ export default function About({ aboutContent }) {
                     },
                 };
 
-                if (editingBarangayIndex !== null) {
-                    const nextBarangays = [...data.lgu_barangays];
-                    nextBarangays[editingBarangayIndex] = nextBarangay;
-                    setData("lgu_barangays", nextBarangays);
-                    closeBarangayModal();
-                    showNotification(
-                        "success",
-                        "Barangay details were updated successfully.",
-                    );
+                const nextBarangays = [...data.lgu_barangays];
+                const savedBarangayIndex =
+                    editingBarangayIndex ?? nextBarangays.length;
 
-                    return;
+                if (editingBarangayIndex !== null) {
+                    nextBarangays[editingBarangayIndex] = nextBarangay;
+                } else {
+                    nextBarangays.push(nextBarangay);
                 }
 
-                setData("lgu_barangays", [...data.lgu_barangays, nextBarangay]);
-                closeBarangayModal();
-                showNotification(
-                    "success",
-                    "New barangay entry was added successfully.",
+                setData("lgu_barangays", nextBarangays);
+                saveSection(
+                    "lgu",
+                    { lgu_barangays: nextBarangays },
+                    {
+                        successMessage:
+                            editingBarangayIndex !== null
+                                ? "Barangay details were updated successfully."
+                                : "New barangay entry was added successfully.",
+                        errorMessage:
+                            "The barangay details or captain image could not be saved. Please review the form and try again.",
+                        onSuccess: (page) => {
+                            const savedBarangays =
+                                page.props.aboutContent?.lgu_barangays ??
+                                nextBarangays;
+                            const savedBarangay =
+                                savedBarangays.find(
+                                    (barangay) =>
+                                        barangay.reference ===
+                                        nextBarangay.reference,
+                                ) ?? savedBarangays[savedBarangayIndex];
+
+                            setData("lgu_barangays", savedBarangays);
+                            setEditingBarangayIndex(savedBarangayIndex);
+                            setBarangayDraft({
+                                ...nextBarangay,
+                                ...savedBarangay,
+                                captain_image_file: null,
+                            });
+                        },
+                    },
                 );
             },
         });
@@ -535,19 +560,21 @@ export default function About({ aboutContent }) {
         post(route("admin.about.update"), {
             forceFormData: true,
             preserveScroll: true,
-            onSuccess: () => {
+            onSuccess: (page) => {
                 showNotification(
                     "success",
                     notificationOverrides.successMessage ??
                         `${sectionLabel} tab changes were saved successfully.`,
                 );
+                notificationOverrides.onSuccess?.(page);
             },
-            onError: () => {
+            onError: (responseErrors) => {
                 showNotification(
                     "error",
                     notificationOverrides.errorMessage ??
                         `The ${sectionLabel} tab could not be saved. Please review the form and try again.`,
                 );
+                notificationOverrides.onError?.(responseErrors);
             },
             onFinish: () => {
                 transform((currentData) => currentData);
@@ -883,6 +910,28 @@ export default function About({ aboutContent }) {
                                 />
                             </div>
                             <div className="md:col-span-2">
+                                <InputLabel value="Barangay Captain Image" />
+                                <input
+                                    type="file"
+                                    accept=".png,.jpg,.jpeg,.webp"
+                                    onChange={(event) =>
+                                        setBarangayDraft((currentState) => ({
+                                            ...currentState,
+                                            captain_image_file:
+                                                event.target.files?.[0] ?? null,
+                                        }))
+                                    }
+                                    className="mt-1 block w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm file:mr-4 file:rounded-md file:border-0 file:bg-emerald-50 file:px-3 file:py-2 file:font-semibold file:text-emerald-700 hover:file:bg-emerald-100"
+                                />
+                                <p className="mt-2 text-xs text-slate-500">
+                                    {barangayDraft.captain_image_file
+                                        ? `Selected: ${barangayDraft.captain_image_file.name}`
+                                        : barangayDraft.captain_image
+                                          ? "A captain image is currently uploaded. Choose a file to replace it."
+                                          : "Optional. Upload a portrait in JPG, PNG, or WebP format."}
+                                </p>
+                            </div>
+                            <div className="md:col-span-2">
                                 <InputLabel value="SK Chairperson" />
                                 <TextInput
                                     value={
@@ -928,13 +977,43 @@ export default function About({ aboutContent }) {
                             <SecondaryButton
                                 type="button"
                                 onClick={closeBarangayModal}
+                                disabled={processing}
                             >
                                 Cancel
                             </SecondaryButton>
-                            <PrimaryButton type="submit">
-                                {editingBarangayIndex !== null
-                                    ? "Save Barangay"
-                                    : "Add Barangay"}
+                            <PrimaryButton
+                                type="submit"
+                                disabled={processing}
+                                className="gap-2"
+                            >
+                                {processing ? (
+                                    <>
+                                        <svg
+                                            className="h-4 w-4 animate-spin"
+                                            viewBox="0 0 24 24"
+                                            fill="none"
+                                        >
+                                            <circle
+                                                className="opacity-25"
+                                                cx="12"
+                                                cy="12"
+                                                r="10"
+                                                stroke="currentColor"
+                                                strokeWidth="4"
+                                            />
+                                            <path
+                                                className="opacity-75"
+                                                fill="currentColor"
+                                                d="M4 12a8 8 0 0 1 8-8v4a4 4 0 0 0-4 4H4Z"
+                                            />
+                                        </svg>
+                                        Saving...
+                                    </>
+                                ) : editingBarangayIndex !== null ? (
+                                    "Save Barangay"
+                                ) : (
+                                    "Add Barangay"
+                                )}
                             </PrimaryButton>
                         </div>
                     </form>

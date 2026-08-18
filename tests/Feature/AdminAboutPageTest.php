@@ -314,6 +314,7 @@ class AdminAboutPageTest extends TestCase
                     'title' => 'Abunda',
                     'reference' => 'BRGY-001',
                     'population' => 1500,
+                    'captain_image_file' => UploadedFile::fake()->image('captain-one.jpg'),
                     'officials' => [
                         'captain' => 'Captain One',
                         'secretary' => 'Secretary One',
@@ -340,8 +341,12 @@ class AdminAboutPageTest extends TestCase
         $this->assertNotNull($about->lgu_logo);
         $this->assertCount(1, $about->barangays()->get());
         $this->assertCount(2, $about->barangays()->first()->kagawads()->get());
+        $this->assertNotNull($about->barangays()->first()->captain_image);
 
         Storage::disk('public')->assertExists('images/thumbnails/' . $about->lgu_logo);
+        Storage::disk('public')->assertExists(
+            'images/thumbnails/' . $about->barangays()->first()->captain_image,
+        );
     }
 
     public function test_public_about_page_receives_about_cms_data(): void
