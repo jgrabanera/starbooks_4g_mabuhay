@@ -1,6 +1,8 @@
 import { useEffect, useMemo, useState } from "react";
+import Modal from "@/Components/Modal";
 import {
     IoCalendarOutline,
+    IoCloseOutline,
     IoDocumentOutline,
     IoPlayCircleOutline,
     IoSearchOutline,
@@ -22,9 +24,17 @@ export default function ContentCollectionPanel({
     items = [],
     loading = false,
     error = "",
+    useAttachmentModal = false,
 }) {
     const [searchTerm, setSearchTerm] = useState("");
     const [currentPage, setCurrentPage] = useState(1);
+    const [attachmentPreview, setAttachmentPreview] = useState(null);
+
+    const closeAttachmentPreview = () => setAttachmentPreview(null);
+
+    const openAttachmentPreview = (type, url, itemTitle) => {
+        setAttachmentPreview({ type, url, itemTitle });
+    };
 
     const filteredItems = useMemo(() => {
         const term = searchTerm.trim().toLowerCase();
@@ -162,29 +172,49 @@ export default function ContentCollectionPanel({
 
                                             {item.pdf_url ? (
                                                 <div className="pt-4">
-                                                    <a
-                                                        href={item.pdf_url}
-                                                        target="_blank"
-                                                        rel="noreferrer"
+                                                    <button
+                                                        type="button"
+                                                        onClick={() =>
+                                                            useAttachmentModal
+                                                                ? openAttachmentPreview(
+                                                                      "pdf",
+                                                                      item.pdf_url,
+                                                                      item.title,
+                                                                  )
+                                                                : window.open(
+                                                                      item.pdf_url,
+                                                                      "_blank",
+                                                                  )
+                                                        }
                                                         className="inline-flex items-center gap-2 rounded-full bg-emerald-700 px-4 py-2 text-xs font-semibold uppercase tracking-[0.12em] text-white transition hover:bg-emerald-800"
                                                     >
                                                         <IoDocumentOutline className="h-3.5 w-3.5" />
                                                         View PDF
-                                                    </a>
+                                                    </button>
                                                 </div>
                                             ) : null}
 
                                             {item.video_url ? (
                                                 <div className="pt-4">
-                                                    <a
-                                                        href={item.video_url}
-                                                        target="_blank"
-                                                        rel="noreferrer"
+                                                    <button
+                                                        type="button"
+                                                        onClick={() =>
+                                                            useAttachmentModal
+                                                                ? openAttachmentPreview(
+                                                                      "video",
+                                                                      item.video_url,
+                                                                      item.title,
+                                                                  )
+                                                                : window.open(
+                                                                      item.video_url,
+                                                                      "_blank",
+                                                                  )
+                                                        }
                                                         className="inline-flex items-center gap-2 rounded-full bg-sky-700 px-4 py-2 text-xs font-semibold uppercase tracking-[0.12em] text-white transition hover:bg-sky-800"
                                                     >
                                                         <IoPlayCircleOutline className="h-3.5 w-3.5" />
                                                         View Video
-                                                    </a>
+                                                    </button>
                                                 </div>
                                             ) : null}
                                         </div>
@@ -270,6 +300,71 @@ export default function ContentCollectionPanel({
                     </div>
                 ) : null}
             </div>
+            <Modal
+                show={Boolean(attachmentPreview)}
+                onClose={closeAttachmentPreview}
+                maxWidth="7xl"
+            >
+                <div className="flex max-h-[calc(100dvh-2rem)] flex-col overflow-hidden bg-white sm:max-h-[calc(100dvh-3rem)]">
+                    <div className="flex items-center justify-between gap-3 border-b border-emerald-100 bg-gradient-to-r from-emerald-50 via-white to-amber-50 px-4 py-3 text-emerald-950 sm:gap-5 sm:px-6 sm:py-4">
+                        <div className="flex min-w-0 items-center gap-3 sm:gap-4">
+                            <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-emerald-100 bg-white text-emerald-700 shadow-sm sm:h-12 sm:w-12">
+                                {attachmentPreview?.type === "pdf" ? (
+                                    <IoDocumentOutline className="h-5 w-5 sm:h-6 sm:w-6" />
+                                ) : (
+                                    <IoPlayCircleOutline className="h-5 w-5 sm:h-6 sm:w-6" />
+                                )}
+                            </span>
+                            <div className="min-w-0">
+                            <p className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-emerald-700 sm:text-xs">
+                                {attachmentPreview?.type === "pdf"
+                                    ? "PDF Preview"
+                                    : "Video Preview"}
+                            </p>
+                            <h2 className="mt-0.5 truncate text-sm font-bold sm:text-lg">
+                                {attachmentPreview?.itemTitle}
+                            </h2>
+                            </div>
+                        </div>
+                        <button
+                            type="button"
+                            onClick={closeAttachmentPreview}
+                            className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-emerald-100 bg-white text-emerald-800 shadow-sm transition hover:border-emerald-200 hover:bg-emerald-100 focus:outline-none focus:ring-4 focus:ring-emerald-100 sm:h-11 sm:w-11"
+                            aria-label="Close preview"
+                        >
+                            <IoCloseOutline className="h-6 w-6" />
+                        </button>
+                    </div>
+
+                    <div className="min-h-0 flex-1 bg-slate-100 p-1.5 sm:p-3 lg:p-4">
+                        {attachmentPreview?.type === "pdf" ? (
+                            <div className="overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm sm:rounded-xl">
+                                <iframe
+                                    src={attachmentPreview.url}
+                                    title={`${attachmentPreview.itemTitle} PDF`}
+                                    className="h-[68dvh] w-full bg-white sm:h-[72dvh] lg:h-[76dvh] [@media(orientation:landscape)]:h-[70dvh]"
+                                />
+                            </div>
+                        ) : null}
+
+                        {attachmentPreview?.type === "video" ? (
+                            <div className="flex items-center justify-center overflow-hidden rounded-lg border border-slate-200 bg-white p-2 shadow-sm sm:rounded-xl sm:p-4">
+                                <video
+                                    key={attachmentPreview.url}
+                                    src={attachmentPreview.url}
+                                    controls
+                                    autoPlay
+                                    playsInline
+                                    className="aspect-video max-h-[76dvh] w-full rounded-lg bg-slate-100 object-contain"
+                                >
+                                    Your browser does not support video
+                                    playback.
+                                </video>
+                            </div>
+                        ) : null}
+                    </div>
+                </div>
+            </Modal>
         </div>
     );
 }
