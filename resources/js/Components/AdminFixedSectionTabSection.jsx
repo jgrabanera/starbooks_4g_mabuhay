@@ -118,16 +118,16 @@ export default function AdminFixedSectionTabSection({
                         >
                             <div className="flex items-start justify-between gap-3">
                                 <div className="min-w-0 flex-1">
-                                    <p className="text-base font-bold text-slate-950">
+                                    <p className="break-words text-base font-bold text-slate-950">
                                         {content.title}
                                     </p>
                                     <p className="mt-1 text-sm text-slate-500">
                                         {getTabLabel(content)}
                                     </p>
-                                    <p className="mt-1 text-xs text-slate-500">
+                                    <p className="mt-1 break-all text-xs text-slate-500">
                                         PDF: {content.pdf || "No PDF"}
                                     </p>
-                                    <p className="mt-1 text-xs text-slate-500">
+                                    <p className="mt-1 break-all text-xs text-slate-500">
                                         Video: {content.video || "No video"}
                                     </p>
                                 </div>

@@ -294,13 +294,13 @@ export default function AdminFixedSectionPage({
 
     return (
         <>
-            <div className="space-y-6">
+            <div className="min-w-0 space-y-4 sm:space-y-6">
                 <ActionStatusAlert notification={notification} />
 
                 <section className="overflow-hidden rounded-[24px] border border-slate-200 bg-white shadow-sm">
-                    <div className="border-b border-slate-100 bg-gradient-to-r from-emerald-50 via-white to-white px-5 py-5 sm:px-6">
-                        <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
-                            <div className="space-y-3">
+                    <div className="border-b border-slate-100 bg-gradient-to-r from-emerald-50 via-white to-white px-4 py-4 sm:px-6 sm:py-5">
+                        <div className="flex min-w-0 flex-col gap-4 xl:flex-row xl:items-end xl:justify-between">
+                            <div className="min-w-0 space-y-3">
                                 <div className="space-y-1">
                                     <p className="text-xs font-bold uppercase tracking-[0.24em] text-emerald-700">
                                         Fixed-Tab Content Manager
@@ -325,8 +325,8 @@ export default function AdminFixedSectionPage({
                                 ) : null}
                             </div>
 
-                            <div className="flex w-full flex-col gap-3 sm:flex-row lg:w-auto lg:min-w-[28rem]">
-                                <div className="relative w-full sm:flex-1 lg:w-80 lg:flex-none">
+                            <div className="flex w-full min-w-0 flex-col gap-3 sm:flex-row xl:w-auto xl:min-w-[28rem]">
+                                <div className="relative min-w-0 w-full sm:flex-1 xl:w-80 xl:flex-none">
                                     <span className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4 text-slate-400">
                                         <svg
                                             className="h-4 w-4"
@@ -365,8 +365,8 @@ export default function AdminFixedSectionPage({
                         </div>
                     </div>
 
-                    <div className="border-b border-slate-100 bg-slate-50/80 px-5 py-4 sm:px-6">
-                        <div className={`grid gap-3 ${config.tabGridClassName}`}>
+                    <div className="border-b border-slate-100 bg-slate-50/80 px-4 py-3 sm:px-6">
+                        <div className={`grid min-w-0 gap-2 ${config.tabGridClassName}`}>
                             {config.tabs.map((tab) => {
                                 const isActive = activeTab === tab.id;
                                 const tabCount = contents.filter(
@@ -381,31 +381,30 @@ export default function AdminFixedSectionPage({
                                             setActiveTab(tab.id);
                                             setData("tab_id", tab.id);
                                         }}
-                                        className={`rounded-2xl border px-4 py-4 text-left transition ${
+                                        title={tab.helper}
+                                        className={`w-full min-w-0 overflow-hidden rounded-lg border px-3 py-3 text-left transition ${
                                             isActive
-                                                ? "border-emerald-700 bg-emerald-700 text-white shadow-md"
-                                                : "border-slate-200 bg-white text-slate-700 hover:border-emerald-200 hover:bg-emerald-50/70"
+                                                ? "border-emerald-700 bg-emerald-700 text-white shadow-sm"
+                                                : "border-emerald-200 bg-emerald-50/80 text-slate-700 hover:border-emerald-300 hover:bg-emerald-100/80"
                                         }`}
                                     >
-                                        <div className="flex items-start justify-between gap-4">
-                                            <div className="space-y-2">
+                                        <div className="flex min-w-0 items-center gap-2 sm:gap-3">
+                                            <div className="flex min-w-0 flex-1 items-center gap-3">
                                                 <span
-                                                    className={`inline-flex h-10 w-10 items-center justify-center rounded-full border ${
+                                                    className={`inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-md border ${
                                                         isActive
                                                             ? "border-white/20 bg-white/15"
                                                             : "border-emerald-100 bg-emerald-50"
                                                     }`}
                                                 >
-                                                    {tab.icon({
-                                                        isActive,
-                                                    })}
+                                                    {tab.icon({ isActive })}
                                                 </span>
-                                                <div>
-                                                    <p className="text-lg font-bold">
+                                                <div className="min-w-0">
+                                                    <p className="truncate text-sm font-bold sm:text-base">
                                                         {tab.label}
                                                     </p>
                                                     <p
-                                                        className={`text-sm leading-6 ${
+                                                        className={`mt-0.5 truncate text-xs sm:text-sm ${
                                                             isActive
                                                                 ? "text-emerald-50/95"
                                                                 : "text-slate-500"
@@ -416,7 +415,7 @@ export default function AdminFixedSectionPage({
                                                 </div>
                                             </div>
                                             <span
-                                                className={`rounded-full px-3 py-1 text-xs font-bold uppercase tracking-[0.18em] ${
+                                                className={`hidden shrink-0 rounded-full px-2 py-1 text-[10px] font-bold uppercase tracking-[0.12em] sm:inline-flex ${
                                                     isActive
                                                         ? "bg-white/15 text-white"
                                                         : "bg-emerald-100 text-emerald-700"

@@ -36,14 +36,14 @@ export default function AdminLayout({
                         </div>
                     </aside>
 
-                    <div className="flex min-h-screen flex-1 flex-col">
+                    <div className="flex min-h-screen min-w-0 flex-1 flex-col">
                         <header className="border-b border-slate-200 bg-white/90 px-4 py-4 backdrop-blur sm:px-6 lg:px-8">
                             <div className="flex items-center justify-between gap-4">
-                                <div className="flex flex-row items-center justify-between gap-3 w-full">
-                                    <div className="flex flex-col items-start justify-center">
+                                <div className="flex w-full min-w-0 flex-row items-center justify-between gap-3">
+                                    <div className="min-w-0">
                                         <nav
                                             aria-label="Breadcrumb"
-                                            className="flex flex-wrap items-center gap-2 text-sm font-google-sans-semibold uppercase tracking-[0.22em] text-slate-500"
+                                            className="flex min-w-0 flex-wrap items-center gap-1.5 text-xs font-google-sans-semibold uppercase tracking-[0.14em] text-slate-500 sm:gap-2 sm:text-sm sm:tracking-[0.22em]"
                                         >
                                             {breadcrumbItems.map(
                                                 (breadcrumb, index) => (
@@ -74,7 +74,7 @@ export default function AdminLayout({
                                     </div>
 
                                     <div>
-                                        <div className="md:flex items-center justify-between gap-4 hidden">
+                                        <div className="hidden items-center justify-between gap-4 lg:flex">
                                             <div className="flex items-center gap-3 ">
                                                 <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-amber-100 via-orange-100 to-rose-100 text-sm font-bold text-slate-700">
                                                     {userInitials}
@@ -97,7 +97,7 @@ export default function AdminLayout({
                                             onClick={() =>
                                                 setShowingSidebar(true)
                                             }
-                                            className="inline-flex h-11 w-11 items-center justify-center rounded-2xl border border-slate-200 bg-white text-slate-700 shadow-sm transition hover:border-slate-300 hover:text-slate-950 md:hidden"
+                                            className="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-700 shadow-sm transition hover:border-slate-300 hover:text-slate-950 lg:hidden sm:h-11 sm:w-11 sm:rounded-2xl"
                                         >
                                             <span className="sr-only">
                                                 Open navigation

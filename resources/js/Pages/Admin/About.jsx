@@ -634,7 +634,7 @@ export default function About({ aboutContent }) {
 
     return (
         <>
-            <div className="space-y-6">
+            <div className="min-w-0 space-y-4 sm:space-y-6">
                 <ActionStatusAlert notification={notification} />
 
                 <section className="overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm">
@@ -653,8 +653,8 @@ export default function About({ aboutContent }) {
                         </div>
                     </div>
 
-                    <div className="border-b border-slate-100 bg-slate-50/80 px-5 py-4 sm:px-6">
-                        <div className="grid gap-3 md:grid-cols-3">
+                    <div className="border-b border-slate-100 bg-slate-50/80 px-5 py-3 sm:px-6">
+                        <div className="grid min-w-0 gap-2 md:grid-cols-3">
                             {tabs.map((tab) => {
                                 const Icon = tab.icon;
                                 const isActive = activeTab === tab.id;
@@ -664,34 +664,35 @@ export default function About({ aboutContent }) {
                                         key={tab.id}
                                         type="button"
                                         onClick={() => setActiveTab(tab.id)}
-                                        className={`rounded-lg border px-4 py-4 text-left transition ${
+                                        title={tab.helper}
+                                        className={`w-full min-w-0 overflow-hidden rounded-lg border px-3 py-3 text-left transition ${
                                             isActive
-                                                ? "border-emerald-700 bg-emerald-700 text-white shadow-md"
-                                                : "border-slate-200 bg-white text-slate-700 hover:border-emerald-200 hover:bg-emerald-50/70"
+                                                ? "border-emerald-700 bg-emerald-700 text-white shadow-sm"
+                                                : "border-emerald-200 bg-emerald-50/80 text-slate-700 hover:border-emerald-300 hover:bg-emerald-100/80"
                                         }`}
                                     >
-                                        <div className="flex items-start gap-3">
+                                        <div className="flex min-w-0 items-center gap-3">
                                             <span
-                                                className={`inline-flex h-10 w-10 items-center justify-center rounded-full border ${
+                                                className={`inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-md border ${
                                                     isActive
                                                         ? "border-white/20 bg-white/15"
                                                         : "border-emerald-100 bg-emerald-50"
                                                 }`}
                                             >
                                                 <Icon
-                                                    className={`h-5 w-5 ${
+                                                    className={`h-4 w-4 ${
                                                         isActive
                                                             ? "text-white"
                                                             : "text-emerald-700"
                                                     }`}
                                                 />
                                             </span>
-                                            <div>
-                                                <p className="text-base font-bold">
+                                            <div className="min-w-0 flex-1">
+                                                <p className="truncate text-sm font-bold sm:text-base">
                                                     {tab.label}
                                                 </p>
                                                 <p
-                                                    className={`mt-1 text-sm leading-6 ${
+                                                    className={`mt-0.5 truncate text-xs sm:text-sm ${
                                                         isActive
                                                             ? "text-emerald-50/95"
                                                             : "text-slate-500"
