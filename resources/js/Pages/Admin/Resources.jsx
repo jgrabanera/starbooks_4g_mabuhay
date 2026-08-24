@@ -1,13 +1,17 @@
 import AdminFixedSectionPage from "@/Components/AdminFixedSectionPage";
 import AdminLayout from "@/Layouts/AdminLayout";
 import { fixedSectionConfigs } from "./fixedSectionConfigs.jsx";
+import { Head } from "@inertiajs/react";
 
 const Resources = ({ sectionCategory = null, contents = [] }) => (
+    <>
+    <Head title="Resources" />
     <AdminFixedSectionPage
         sectionCategory={sectionCategory}
         contents={contents}
         config={fixedSectionConfigs.resources}
     />
+    </>
 );
 
 export default Resources;

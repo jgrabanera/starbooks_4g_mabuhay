@@ -11,14 +11,21 @@ const tabSections = {
     FacebookPosts: FacebookPostsTabSection,
 };
 
-const DostServices = ({ sectionCategory = null, contents = [] }) => (
+import React from 'react'
+import { Head } from "@inertiajs/react";
+
+const DostServices = ({ sectionCategory = null, contents = [] }) => {
+  return (
+    <>
+    <Head title="DOST Services" />
     <AdminFixedSectionPage
         sectionCategory={sectionCategory}
         contents={contents}
         config={fixedSectionConfigs.dostServices}
         tabSections={tabSections}
-    />
-);
+    /></>
+  )
+}
 
 export default DostServices;
 DostServices.layout = (page) => (

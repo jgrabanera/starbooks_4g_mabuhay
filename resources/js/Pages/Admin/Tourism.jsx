@@ -1,13 +1,17 @@
 import AdminFixedSectionPage from "@/Components/AdminFixedSectionPage";
 import AdminLayout from "@/Layouts/AdminLayout";
 import { fixedSectionConfigs } from "./fixedSectionConfigs.jsx";
+import { Head } from "@inertiajs/react";
 
 const Tourism = ({ sectionCategory = null, contents = [] }) => (
+    <>
+    <Head title="Tourism" />
     <AdminFixedSectionPage
         sectionCategory={sectionCategory}
         contents={contents}
         config={fixedSectionConfigs.tourism}
     />
+    </>
 );
 
 export default Tourism;

@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { router, useForm, useRemember } from "@inertiajs/react";
+import { Head, router, useForm, useRemember } from "@inertiajs/react";
 import AdminLayout from "@/Layouts/AdminLayout";
 import InputError from "@/Components/InputError";
 import InputLabel from "@/Components/InputLabel";
@@ -99,6 +99,7 @@ export default function Categories({ categories: categoryItems = [] }) {
 
     return (
         <>
+        <Head title="Categories" />
             <div className="space-y-6">
                 <section className="overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm">
                     <div className="border-b border-slate-200 bg-gradient-to-r from-emerald-50 via-white to-white px-4 py-5 sm:px-6">

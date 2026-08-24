@@ -7,7 +7,7 @@ import PrimaryButton from "@/Components/PrimaryButton";
 import SecondaryButton from "@/Components/SecondaryButton";
 import TextInput from "@/Components/TextInput";
 import { useRef, useState } from "react";
-import { useForm } from "@inertiajs/react";
+import { Head, useForm } from "@inertiajs/react";
 import {
     IoGridOutline,
     IoInformationCircleOutline,
@@ -174,8 +174,8 @@ export default function About({ aboutContent }) {
         activeTab === "about"
             ? "About Tab"
             : activeTab === "organization"
-              ? "Organization Tab"
-              : "LGU Tab";
+                ? "Organization Tab"
+                : "LGU Tab";
 
     const renderTabSaveButton = (section) => (
         <div className="flex items-center justify-end gap-3 border-t border-slate-100 pt-5">
@@ -548,8 +548,8 @@ export default function About({ aboutContent }) {
             section === "about"
                 ? "About"
                 : section === "organization"
-                  ? "Organization"
-                  : "LGU";
+                    ? "Organization"
+                    : "LGU";
 
         transform((currentData) => ({
             ...currentData,
@@ -564,7 +564,7 @@ export default function About({ aboutContent }) {
                 showNotification(
                     "success",
                     notificationOverrides.successMessage ??
-                        `${sectionLabel} tab changes were saved successfully.`,
+                    `${sectionLabel} tab changes were saved successfully.`,
                 );
                 notificationOverrides.onSuccess?.(page);
             },
@@ -572,7 +572,7 @@ export default function About({ aboutContent }) {
                 showNotification(
                     "error",
                     notificationOverrides.errorMessage ??
-                        `The ${sectionLabel} tab could not be saved. Please review the form and try again.`,
+                    `The ${sectionLabel} tab could not be saved. Please review the form and try again.`,
                 );
                 notificationOverrides.onError?.(responseErrors);
             },
@@ -589,8 +589,8 @@ export default function About({ aboutContent }) {
             section === "about"
                 ? "About"
                 : section === "organization"
-                  ? "Organization"
-                  : "LGU";
+                    ? "Organization"
+                    : "LGU";
 
         openConfirmation({
             title: `Save ${sectionLabel} tab?`,
@@ -634,6 +634,7 @@ export default function About({ aboutContent }) {
 
     return (
         <>
+            <Head title="About" />
             <div className="min-w-0 space-y-4 sm:space-y-6">
                 <ActionStatusAlert notification={notification} />
 
@@ -665,26 +666,23 @@ export default function About({ aboutContent }) {
                                         type="button"
                                         onClick={() => setActiveTab(tab.id)}
                                         title={tab.helper}
-                                        className={`w-full min-w-0 overflow-hidden rounded-lg border px-3 py-3 text-left transition ${
-                                            isActive
+                                        className={`w-full min-w-0 overflow-hidden rounded-lg border px-3 py-3 text-left transition ${isActive
                                                 ? "border-emerald-700 bg-emerald-700 text-white shadow-sm"
                                                 : "border-emerald-200 bg-emerald-50/80 text-slate-700 hover:border-emerald-300 hover:bg-emerald-100/80"
-                                        }`}
+                                            }`}
                                     >
                                         <div className="flex min-w-0 items-center gap-3">
                                             <span
-                                                className={`inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-md border ${
-                                                    isActive
+                                                className={`inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-md border ${isActive
                                                         ? "border-white/20 bg-white/15"
                                                         : "border-emerald-100 bg-emerald-50"
-                                                }`}
+                                                    }`}
                                             >
                                                 <Icon
-                                                    className={`h-4 w-4 ${
-                                                        isActive
+                                                    className={`h-4 w-4 ${isActive
                                                             ? "text-white"
                                                             : "text-emerald-700"
-                                                    }`}
+                                                        }`}
                                                 />
                                             </span>
                                             <div className="min-w-0 flex-1">
@@ -692,11 +690,10 @@ export default function About({ aboutContent }) {
                                                     {tab.label}
                                                 </p>
                                                 <p
-                                                    className={`mt-0.5 truncate text-xs sm:text-sm ${
-                                                        isActive
+                                                    className={`mt-0.5 truncate text-xs sm:text-sm ${isActive
                                                             ? "text-emerald-50/95"
                                                             : "text-slate-500"
-                                                    }`}
+                                                        }`}
                                                 >
                                                     {tab.helper}
                                                 </p>
@@ -928,8 +925,8 @@ export default function About({ aboutContent }) {
                                     {barangayDraft.captain_image_file
                                         ? `Selected: ${barangayDraft.captain_image_file.name}`
                                         : barangayDraft.captain_image
-                                          ? "A captain image is currently uploaded. Choose a file to replace it."
-                                          : "Optional. Upload a portrait in JPG, PNG, or WebP format."}
+                                            ? "A captain image is currently uploaded. Choose a file to replace it."
+                                            : "Optional. Upload a portrait in JPG, PNG, or WebP format."}
                                 </p>
                             </div>
                             <div className="md:col-span-2">

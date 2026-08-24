@@ -1,6 +1,6 @@
 import AdminLayout from "@/Layouts/AdminLayout";
 import Modal from "@/Components/Modal";
-import { Link } from "@inertiajs/react";
+import { Head, Link } from "@inertiajs/react";
 import { useState } from "react";
 import {
     HiOutlineArrowRight,
@@ -113,6 +113,8 @@ export default function Dashboard({ categories = [] }) {
     };
     const hasInvalidDateCoverage = !reportStartDate || !reportEndDate || reportStartDate > reportEndDate;
     return (
+        <>
+        <Head title="Dashboard" />
         <div className="min-w-0 space-y-4 sm:space-y-5">
             {printCoverage ? (
                 <div className="hidden print:block">
@@ -339,6 +341,7 @@ export default function Dashboard({ categories = [] }) {
                 </div>
             </Modal>
         </div>
+        </>
     );
 }
 
