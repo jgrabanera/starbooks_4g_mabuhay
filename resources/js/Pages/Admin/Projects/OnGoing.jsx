@@ -1,9 +1,5 @@
-import React from 'react'
+import AdminFixedSectionTabSection from "@/Components/AdminFixedSectionTabSection";
 
-const OnGoing = () => {
-  return (
-    <div>OnGoing</div>
-  )
+export default function OnGoing(props) {
+    return <AdminFixedSectionTabSection {...props} />;
 }
-
-export default OnGoing

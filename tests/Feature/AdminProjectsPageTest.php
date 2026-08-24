@@ -44,14 +44,26 @@ class AdminProjectsPageTest extends TestCase
             'is_active' => true,
         ]);
 
+        ProjectContent::create([
+            'tab_id' => 'ongoing',
+            'title' => 'Municipal Hall Renovation',
+            'slug' => 'municipal-hall-renovation',
+            'description' => 'Ongoing project',
+            'image' => 'municipal-hall-renovation.png',
+            'pdf' => null,
+            'is_active' => true,
+        ]);
+
         $this->actingAs($user)
             ->get(route('admin.projects.index'))
             ->assertOk()
             ->assertInertia(fn (Assert $page) => $page
                 ->component('Admin/Projects')
                 ->where('sectionCategory.slug', 'lgu-mabuhay-projects')
-                ->has('contents', 1)
-                ->where('contents.0.title', 'Finished Road Project')
-                ->where('contents.0.tab_id', 'completed'));
+                ->has('contents', 2)
+                ->where('contents.0.title', 'Municipal Hall Renovation')
+                ->where('contents.0.tab_id', 'ongoing')
+                ->where('contents.1.title', 'Finished Road Project')
+                ->where('contents.1.tab_id', 'completed'));
     }
 }

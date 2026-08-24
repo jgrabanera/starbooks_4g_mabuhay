@@ -1,9 +1,5 @@
-import React from 'react'
+import AdminFixedSectionTabSection from "@/Components/AdminFixedSectionTabSection";
 
-const Completed = () => {
-  return (
-    <div>Completed</div>
-  )
+export default function Completed(props) {
+    return <AdminFixedSectionTabSection {...props} />;
 }
-
-export default Completed

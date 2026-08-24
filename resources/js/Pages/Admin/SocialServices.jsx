@@ -1,7 +1,18 @@
 import AdminFixedSectionPage from "@/Components/AdminFixedSectionPage";
 import AdminLayout from "@/Layouts/AdminLayout";
+import AwardPosting from "@/Pages/Admin/SocialServices/AwardPosting";
+import Budget from "@/Pages/Admin/SocialServices/Budget";
+import Memorandum from "@/Pages/Admin/SocialServices/Memorandum";
+import Ordinance from "@/Pages/Admin/SocialServices/Ordinance";
 import { fixedSectionConfigs } from "./fixedSectionConfigs.jsx";
 import { Head } from "@inertiajs/react";
+
+const tabSections = {
+    award: AwardPosting,
+    budget: Budget,
+    memorandum: Memorandum,
+    ordinance: Ordinance,
+};
 
 const SocialServices = ({ sectionCategory = null, contents = [] }) => {
   return (
@@ -11,6 +22,7 @@ const SocialServices = ({ sectionCategory = null, contents = [] }) => {
         sectionCategory={sectionCategory}
         contents={contents}
         config={fixedSectionConfigs.socialServices}
+        tabSections={tabSections}
     />
     </>
   )

@@ -1,7 +1,16 @@
 import AdminFixedSectionPage from "@/Components/AdminFixedSectionPage";
 import AdminLayout from "@/Layouts/AdminLayout";
+import Events from "@/Pages/Admin/Tourism/Events";
+import Festivities from "@/Pages/Admin/Tourism/Festivities";
+import TourismSites from "@/Pages/Admin/Tourism/TourismSites";
 import { fixedSectionConfigs } from "./fixedSectionConfigs.jsx";
 import { Head } from "@inertiajs/react";
+
+const tabSections = {
+    events: Events,
+    festivities: Festivities,
+    sites: TourismSites,
+};
 
 const Tourism = ({ sectionCategory = null, contents = [] }) => (
     <>
@@ -10,6 +19,7 @@ const Tourism = ({ sectionCategory = null, contents = [] }) => (
         sectionCategory={sectionCategory}
         contents={contents}
         config={fixedSectionConfigs.tourism}
+        tabSections={tabSections}
     />
     </>
 );
