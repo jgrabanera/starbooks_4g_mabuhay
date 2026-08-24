@@ -74,7 +74,7 @@ export default function AdminLayout({
                                     </div>
 
                                     <div>
-                                        <div className="hidden items-center justify-between gap-4 lg:flex">
+                                        {/* <div className="hidden items-center justify-between gap-4 lg:flex">
                                             <div className="flex items-center gap-3 ">
                                                 <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-amber-100 via-orange-100 to-rose-100 text-sm font-bold text-slate-700">
                                                     {userInitials}
@@ -91,7 +91,7 @@ export default function AdminLayout({
                                             >
                                                 <HiOutlineCog6Tooth className="h-5 w-5" />
                                             </Link>
-                                        </div>
+                                        </div> */}
                                         <button
                                             type="button"
                                             onClick={() =>
@@ -137,8 +137,8 @@ export default function AdminLayout({
                             <span className="sr-only">Close navigation</span>
                         </button>
                         <div className="w-full max-w-xs overflow-hidden border-l border-slate-200 bg-white shadow-2xl">
-                            <div className="flex h-full flex-col">
-                                <div className="flex justify-end border-b border-slate-200 bg-white px-4 pt-4">
+                            <div className="flex h-full min-h-0 flex-col">
+                                <div className="flex justify-end bg-white px-4 pt-4">
                                     <button
                                         type="button"
                                         onClick={() => setShowingSidebar(false)}

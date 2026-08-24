@@ -66,22 +66,34 @@ const navigationItems = [
 
 export default function SidebarNavigation({ user, onNavigate = null }) {
     return (
-        <div className="flex h-full flex-col border-r border-slate-200 bg-white text-slate-900">
-            <div className="flex items-center justify-center gap-3 border-b border-slate-200 px-4 py-4">
-                <ApplicationLogo className="h-14 md:flex hidden" />
+        <div className="flex h-full min-h-0 flex-col border-r border-slate-200 bg-gradient-to-b from-slate-50 via-white to-slate-100/80 text-slate-900">
+            <div className="border-b border-slate-200/80 px-5 py-6">
+                <div className="rounded-[28px] border border-slate-200 bg-white px-4 py-5 shadow-[0_18px_45px_rgba(15,23,42,0.08)]">
+                    <div className="flex items-center justify-center">
+                        <ApplicationLogo className="h-14" />
+                    </div>
+                </div>
             </div>
 
-            <div className="flex-1 px-3 pb-5">
-                <nav className="mt-3 flex flex-col gap-1.5">
+            <div className="flex-1 overflow-y-auto px-4 pb-5 pt-5">
+                <div className="mb-3 px-3">
+                    <p className="text-[11px] font-google-sans-semibold uppercase tracking-[0.24em] text-slate-400">
+                        Main Navigation
+                    </p>
+                </div>
+                <nav className="flex flex-col gap-2">
                     {navigationItems.map((item) => {
                         const active = item.isActive();
                         const Icon = item.icon;
                         const itemClasses = active
-                            ? "border-black bg-black text-white shadow-none"
-                            : "border-transparent text-slate-600 hover:border-black hover:bg-black hover:text-white hover:shadow-none";
+                            ? "border-black bg-black text-white"
+                            : "border-transparent bg-transparent text-slate-600 hover:border-black hover:bg-black hover:text-white";
                         const iconClasses = active
                             ? "bg-white/10 text-white"
-                            : "bg-transparent text-slate-400 group-hover:bg-white/10 group-hover:text-white";
+                            : "bg-slate-100 text-slate-500 group-hover:bg-white/10 group-hover:text-white";
+                        const labelClasses = active
+                            ? "text-white"
+                            : "text-slate-700 group-hover:text-white";
 
                         return (
                             <Link
@@ -89,15 +101,17 @@ export default function SidebarNavigation({ user, onNavigate = null }) {
                                 href={route(item.href)}
                                 onClick={onNavigate ?? undefined}
                                 aria-current={active ? "page" : undefined}
-                                className={`group rounded-2xl border px-3 py-2.5 transition-all duration-200 ease-out ${itemClasses}`}
+                                className={`group rounded-3xl border px-3 py-3 transition-colors duration-200 ease-out ${itemClasses}`}
                             >
                                 <div className="flex items-center gap-3">
                                     <span
-                                        className={`rounded-xl p-1.5 transition-colors duration-200 ${iconClasses}`}
+                                        className={`flex h-10 w-10 items-center justify-center rounded-2xl transition-colors duration-200 ${iconClasses}`}
                                     >
                                         <Icon className="h-[18px] w-[18px]" />
                                     </span>
-                                    <p className="text-sm font-google-sans-semibold">
+                                    <p
+                                        className={`text-sm font-google-sans-semibold transition-colors duration-200 ${labelClasses}`}
+                                    >
                                         {item.label}
                                     </p>
                                 </div>
@@ -107,38 +121,34 @@ export default function SidebarNavigation({ user, onNavigate = null }) {
                 </nav>
             </div>
 
-            <div className="border-t border-slate-200 px-3 py-4">
-                <div className="flex items-center justify-between gap-4 md:hidden p-5">
-                    <div className="flex flex-row items-center justify-between gap-3 ">
-                        <div>
-                            <p className="text-sm text-slate-500">
-                                Welcome back,
-                            </p>
-                            <p className="text-sm font-google-sans-semibold leading-tight text-slate-900">
-                                {user.name}
-                            </p>
+            <div className="border-t border-slate-200/80 bg-white/70 px-4 py-4 backdrop-blur">
+                <div className="flex items-center gap-3 rounded-2xl border border-slate-200 bg-slate-50 px-3 py-2.5">
+                        <div className="flex min-w-0 flex-1 items-center gap-3">
+                            <div className="min-w-0">
+                                <p className="text-xs text-slate-500">
+                                    Signed in as
+                                </p>
+                                <p className="truncate text-sm font-google-sans-semibold leading-tight text-slate-900">
+                                    {user.name}
+                                </p>
+                            </div>
                         </div>
-                    </div>
-                    <Link
-                        href={route("profile.edit")}
-                        className="inline-flex h-11 w-11 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-500 transition hover:bg-slate-100 hover:text-slate-900"
-                    >
-                        <HiOutlineCog6Tooth className="h-5 w-5" />
-                    </Link>
+                        <Link
+                            href={route("profile.edit")}
+                            className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl border border-slate-200 bg-white text-slate-500 transition hover:border-slate-300 hover:bg-slate-100 hover:text-slate-900"
+                        >
+                            <HiOutlineCog6Tooth className="h-5 w-5" />
+                        </Link>
+                        <Link
+                            href={route("logout")}
+                            method="post"
+                            as="button"
+                            className="group inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl border border-slate-200 bg-white text-slate-500 transition hover:border-black hover:bg-black hover:text-white"
+                        >
+                            <HiOutlineArrowLeftOnRectangle className="h-[18px] w-[18px]" />
+                            <span className="sr-only">Sign Out</span>
+                        </Link>
                 </div>
-                <Link
-                    href={route("logout")}
-                    method="post"
-                    as="button"
-                    className="group flex w-full items-center gap-3 rounded-lg border border-transparent px-3 py-2 text-left text-slate-600 transition hover:border-slate-200 hover:bg-slate-100 hover:text-slate-950"
-                >
-                    <span className="rounded-md border border-slate-200 bg-slate-100 p-1.5 text-slate-500 transition group-hover:bg-white group-hover:text-slate-900">
-                        <HiOutlineArrowLeftOnRectangle className="h-[18px] w-[18px]" />
-                    </span>
-                    <span className="text-sm font-google-sans-semibold">
-                        Sign Out
-                    </span>
-                </Link>
             </div>
         </div>
     );

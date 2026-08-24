@@ -26,6 +26,8 @@ export default function AdminFixedSectionPage({
     config,
     tabSections = {},
 }) {
+    const hasMultipleTabs = config.tabs.length > 1;
+
     const tabMatches = (tab, tabId) => {
         const aliases = tab.aliases ?? [tab.id];
 
@@ -303,7 +305,9 @@ export default function AdminFixedSectionPage({
                             <div className="min-w-0 space-y-3">
                                 <div className="space-y-1">
                                     <p className="text-xs font-bold uppercase tracking-[0.24em] text-emerald-700">
-                                        Fixed-Tab Content Manager
+                                        {hasMultipleTabs
+                                            ? "Fixed-Tab Content Manager"
+                                            : "Content Manager"}
                                     </p>
                                     <h2 className="text-2xl font-bold text-slate-900">
                                         {config.pageTitle}
@@ -365,71 +369,75 @@ export default function AdminFixedSectionPage({
                         </div>
                     </div>
 
-                    <div className="border-b border-slate-100 bg-slate-50/80 px-4 py-3 sm:px-6">
-                        <div className={`grid min-w-0 gap-2 ${config.tabGridClassName}`}>
-                            {config.tabs.map((tab) => {
-                                const isActive = activeTab === tab.id;
-                                const tabCount = contents.filter(
-                                    (content) => tabMatches(tab, content.tab_id),
-                                ).length;
+                    {hasMultipleTabs ? (
+                        <div className="border-b border-slate-100 bg-slate-50/80 px-4 py-3 sm:px-6">
+                            <div
+                                className={`grid min-w-0 gap-2 ${config.tabGridClassName}`}
+                            >
+                                {config.tabs.map((tab) => {
+                                    const isActive = activeTab === tab.id;
+                                    const tabCount = contents.filter((content) =>
+                                        tabMatches(tab, content.tab_id),
+                                    ).length;
 
-                                return (
-                                    <button
-                                        key={tab.id}
-                                        type="button"
-                                        onClick={() => {
-                                            setActiveTab(tab.id);
-                                            setData("tab_id", tab.id);
-                                        }}
-                                        title={tab.helper}
-                                        className={`w-full min-w-0 overflow-hidden rounded-lg border px-3 py-3 text-left transition ${
-                                            isActive
-                                                ? "border-emerald-700 bg-emerald-700 text-white shadow-sm"
-                                                : "border-emerald-200 bg-emerald-50/80 text-slate-700 hover:border-emerald-300 hover:bg-emerald-100/80"
-                                        }`}
-                                    >
-                                        <div className="flex min-w-0 items-center gap-2 sm:gap-3">
-                                            <div className="flex min-w-0 flex-1 items-center gap-3">
-                                                <span
-                                                    className={`inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-md border ${
-                                                        isActive
-                                                            ? "border-white/20 bg-white/15"
-                                                            : "border-emerald-100 bg-emerald-50"
-                                                    }`}
-                                                >
-                                                    {tab.icon({ isActive })}
-                                                </span>
-                                                <div className="min-w-0">
-                                                    <p className="truncate text-sm font-bold sm:text-base">
-                                                        {tab.label}
-                                                    </p>
-                                                    <p
-                                                        className={`mt-0.5 truncate text-xs sm:text-sm ${
+                                    return (
+                                        <button
+                                            key={tab.id}
+                                            type="button"
+                                            onClick={() => {
+                                                setActiveTab(tab.id);
+                                                setData("tab_id", tab.id);
+                                            }}
+                                            title={tab.helper}
+                                            className={`w-full min-w-0 overflow-hidden rounded-lg border px-3 py-3 text-left transition ${
+                                                isActive
+                                                    ? "border-emerald-700 bg-emerald-700 text-white shadow-sm"
+                                                    : "border-emerald-200 bg-emerald-50/80 text-slate-700 hover:border-emerald-300 hover:bg-emerald-100/80"
+                                            }`}
+                                        >
+                                            <div className="flex min-w-0 items-center gap-2 sm:gap-3">
+                                                <div className="flex min-w-0 flex-1 items-center gap-3">
+                                                    <span
+                                                        className={`inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-md border ${
                                                             isActive
-                                                                ? "text-emerald-50/95"
-                                                                : "text-slate-500"
+                                                                ? "border-white/20 bg-white/15"
+                                                                : "border-emerald-100 bg-emerald-50"
                                                         }`}
                                                     >
-                                                        {tab.helper}
-                                                    </p>
+                                                        {tab.icon({ isActive })}
+                                                    </span>
+                                                    <div className="min-w-0">
+                                                        <p className="truncate text-sm font-bold sm:text-base">
+                                                            {tab.label}
+                                                        </p>
+                                                        <p
+                                                            className={`mt-0.5 truncate text-xs sm:text-sm ${
+                                                                isActive
+                                                                    ? "text-emerald-50/95"
+                                                                    : "text-slate-500"
+                                                            }`}
+                                                        >
+                                                            {tab.helper}
+                                                        </p>
+                                                    </div>
                                                 </div>
+                                                <span
+                                                    className={`hidden shrink-0 rounded-full px-2 py-1 text-[10px] font-bold uppercase tracking-[0.12em] sm:inline-flex ${
+                                                        isActive
+                                                            ? "bg-white/15 text-white"
+                                                            : "bg-emerald-100 text-emerald-700"
+                                                    }`}
+                                                >
+                                                    {tabCount} item
+                                                    {tabCount === 1 ? "" : "s"}
+                                                </span>
                                             </div>
-                                            <span
-                                                className={`hidden shrink-0 rounded-full px-2 py-1 text-[10px] font-bold uppercase tracking-[0.12em] sm:inline-flex ${
-                                                    isActive
-                                                        ? "bg-white/15 text-white"
-                                                        : "bg-emerald-100 text-emerald-700"
-                                                }`}
-                                            >
-                                                {tabCount} item
-                                                {tabCount === 1 ? "" : "s"}
-                                            </span>
-                                        </div>
-                                    </button>
-                                );
-                            })}
+                                        </button>
+                                    );
+                                })}
+                            </div>
                         </div>
-                    </div>
+                    ) : null}
 
                     {tabSections[activeTab] ? (
                         <ActiveTabSection
@@ -442,56 +450,150 @@ export default function AdminFixedSectionPage({
                         />
                     ) : (
                         <>
-                    <div className="hidden overflow-x-auto md:block">
-                        <table className="min-w-full divide-y divide-gray-200">
-                            <thead className="bg-gray-50">
-                                <tr>
-                                    <th className="px-6 py-3 text-left text-xs font-bold uppercase tracking-wider text-slate-600">
-                                        Title
-                                    </th>
-                                    <th className="px-6 py-3 text-left text-xs font-bold uppercase tracking-wider text-slate-600">
-                                        Tab
-                                    </th>
-                                    <th className="px-6 py-3 text-left text-xs font-bold uppercase tracking-wider text-slate-600">
-                                        Image
-                                    </th>
-                                    <th className="px-6 py-3 text-left text-xs font-bold uppercase tracking-wider text-slate-600">
-                                        PDF
-                                    </th>
-                                    <th className="px-6 py-3 text-left text-xs font-bold uppercase tracking-wider text-slate-600">
-                                        Status
-                                    </th>
-                                    <th className="px-6 py-3 text-right text-xs font-bold uppercase tracking-wider text-slate-600">
-                                        Action
-                                    </th>
-                                </tr>
-                            </thead>
-                            <tbody className="divide-y divide-gray-100 bg-white">
+                            <div className="hidden overflow-x-auto md:block">
+                                <table className="min-w-full divide-y divide-gray-200">
+                                    <thead className="bg-gray-50">
+                                        <tr>
+                                            <th className="px-6 py-3 text-left text-xs font-bold uppercase tracking-wider text-slate-600">
+                                                Title
+                                            </th>
+                                            {hasMultipleTabs ? (
+                                                <th className="px-6 py-3 text-left text-xs font-bold uppercase tracking-wider text-slate-600">
+                                                    Tab
+                                                </th>
+                                            ) : null}
+                                            <th className="px-6 py-3 text-left text-xs font-bold uppercase tracking-wider text-slate-600">
+                                                Image
+                                            </th>
+                                            <th className="px-6 py-3 text-left text-xs font-bold uppercase tracking-wider text-slate-600">
+                                                PDF
+                                            </th>
+                                            <th className="px-6 py-3 text-left text-xs font-bold uppercase tracking-wider text-slate-600">
+                                                Status
+                                            </th>
+                                            <th className="px-6 py-3 text-right text-xs font-bold uppercase tracking-wider text-slate-600">
+                                                Action
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody className="divide-y divide-gray-100 bg-white">
+                                        {filteredContents.length > 0 ? (
+                                            filteredContents.map((content) => (
+                                                <tr
+                                                    key={content.id}
+                                                    className="transition hover:bg-slate-50/80"
+                                                >
+                                                    <td className="px-6 py-4 text-sm font-semibold text-slate-900">
+                                                        {content.title}
+                                                    </td>
+                                                    {hasMultipleTabs ? (
+                                                        <td className="px-6 py-4 text-sm text-slate-600">
+                                                            {config.tabs.find(
+                                                                (tab) =>
+                                                                    tabMatches(
+                                                                        tab,
+                                                                        content.tab_id,
+                                                                    ),
+                                                            )?.label ??
+                                                                content.tab_id}
+                                                        </td>
+                                                    ) : null}
+                                                    <td className="max-w-[12rem] truncate px-6 py-4 text-sm text-slate-600">
+                                                        {content.image ||
+                                                            "No image"}
+                                                    </td>
+                                                    <td className="max-w-[12rem] truncate px-6 py-4 text-sm text-slate-600">
+                                                        {content.pdf || "No PDF"}
+                                                    </td>
+                                                    <td className="px-6 py-4 text-sm">
+                                                        <span
+                                                            className={`rounded-full px-3 py-1 text-xs font-semibold ${
+                                                                content.is_active
+                                                                    ? "bg-emerald-50 text-emerald-700"
+                                                                    : "bg-gray-100 text-gray-600"
+                                                            }`}
+                                                        >
+                                                            {content.is_active
+                                                                ? "Active"
+                                                                : "Hidden"}
+                                                        </span>
+                                                    </td>
+                                                    <td className="px-6 py-4 text-right text-sm">
+                                                        <div className="flex justify-end gap-4">
+                                                            <button
+                                                                type="button"
+                                                                onClick={() =>
+                                                                    openEditModal(
+                                                                        content,
+                                                                    )
+                                                                }
+                                                                className="font-semibold text-indigo-600 hover:text-indigo-800"
+                                                            >
+                                                                Edit
+                                                            </button>
+                                                            <button
+                                                                type="button"
+                                                                onClick={() =>
+                                                                    openDeleteModal(
+                                                                        content,
+                                                                    )
+                                                                }
+                                                                className="font-semibold text-rose-600 hover:text-rose-800"
+                                                            >
+                                                                Delete
+                                                            </button>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            ))
+                                        ) : (
+                                            <tr>
+                                                <td
+                                                    colSpan={
+                                                        hasMultipleTabs ? 6 : 5
+                                                    }
+                                                    className="px-6 py-8 text-center text-sm text-slate-500"
+                                                >
+                                                    No content found for the{" "}
+                                                    {currentTab?.label ??
+                                                        "selected section"}
+                                                    .
+                                                </td>
+                                            </tr>
+                                        )}
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <div className="space-y-3 p-4 md:hidden">
                                 {filteredContents.length > 0 ? (
                                     filteredContents.map((content) => (
-                                        <tr
+                                        <article
                                             key={content.id}
-                                            className="transition hover:bg-slate-50/80"
+                                            className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm"
                                         >
-                                            <td className="px-6 py-4 text-sm font-semibold text-slate-900">
-                                                {content.title}
-                                            </td>
-                                            <td className="px-6 py-4 text-sm text-slate-600">
-                                                {config.tabs.find(
-                                                    (tab) =>
-                                                        tabMatches(
-                                                            tab,
-                                                            content.tab_id,
-                                                        ),
-                                                )?.label ?? content.tab_id}
-                                            </td>
-                                            <td className="max-w-[12rem] truncate px-6 py-4 text-sm text-slate-600">
-                                                {content.image || "No image"}
-                                            </td>
-                                            <td className="max-w-[12rem] truncate px-6 py-4 text-sm text-slate-600">
-                                                {content.pdf || "No PDF"}
-                                            </td>
-                                            <td className="px-6 py-4 text-sm">
+                                            <div className="flex items-start justify-between gap-3">
+                                                <div className="min-w-0 flex-1">
+                                                    <p className="text-base font-bold text-slate-950">
+                                                        {content.title}
+                                                    </p>
+                                                    {hasMultipleTabs ? (
+                                                        <p className="mt-1 text-sm text-slate-500">
+                                                            {config.tabs.find(
+                                                                (tab) =>
+                                                                    tabMatches(
+                                                                        tab,
+                                                                        content.tab_id,
+                                                                    ),
+                                                            )?.label ??
+                                                                content.tab_id}
+                                                        </p>
+                                                    ) : null}
+                                                    <p className="mt-1 text-xs text-slate-500">
+                                                        PDF:{" "}
+                                                        {content.pdf || "No PDF"}
+                                                    </p>
+                                                </div>
                                                 <span
                                                     className={`rounded-full px-3 py-1 text-xs font-semibold ${
                                                         content.is_active
@@ -503,119 +605,40 @@ export default function AdminFixedSectionPage({
                                                         ? "Active"
                                                         : "Hidden"}
                                                 </span>
-                                            </td>
-                                            <td className="px-6 py-4 text-right text-sm">
-                                                <div className="flex justify-end gap-4">
-                                                    <button
-                                                        type="button"
-                                                        onClick={() =>
-                                                            openEditModal(
-                                                                content,
-                                                            )
-                                                        }
-                                                        className="font-semibold text-indigo-600 hover:text-indigo-800"
-                                                    >
-                                                        Edit
-                                                    </button>
-                                                    <button
-                                                        type="button"
-                                                        onClick={() =>
-                                                            openDeleteModal(
-                                                                content,
-                                                            )
-                                                        }
-                                                        className="font-semibold text-rose-600 hover:text-rose-800"
-                                                    >
-                                                        Delete
-                                                    </button>
-                                                </div>
-                                            </td>
-                                        </tr>
+                                            </div>
+                                            <div className="mt-4 grid grid-cols-2 gap-3 border-t border-slate-100 pt-4">
+                                                <button
+                                                    type="button"
+                                                    onClick={() =>
+                                                        openEditModal(content)
+                                                    }
+                                                    className="inline-flex w-full items-center justify-center rounded-full bg-slate-100 px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-200"
+                                                >
+                                                    Edit
+                                                </button>
+                                                <button
+                                                    type="button"
+                                                    onClick={() =>
+                                                        openDeleteModal(content)
+                                                    }
+                                                    className="inline-flex w-full items-center justify-center rounded-full bg-rose-50 px-4 py-2 text-sm font-semibold text-rose-700 transition hover:bg-rose-100"
+                                                >
+                                                    Delete
+                                                </button>
+                                            </div>
+                                        </article>
                                     ))
                                 ) : (
-                                    <tr>
-                                        <td
-                                            colSpan="6"
-                                            className="px-6 py-8 text-center text-sm text-slate-500"
-                                        >
+                                    <div className="rounded-2xl border border-dashed border-slate-300 bg-slate-50 px-4 py-8 text-center">
+                                        <p className="text-sm font-medium text-slate-500">
                                             No content found for the{" "}
-                                            {currentTab?.label ?? "selected tab"}
+                                            {currentTab?.label ??
+                                                "selected section"}
                                             .
-                                        </td>
-                                    </tr>
+                                        </p>
+                                    </div>
                                 )}
-                            </tbody>
-                        </table>
-                    </div>
-
-                    <div className="space-y-3 p-4 md:hidden">
-                        {filteredContents.length > 0 ? (
-                            filteredContents.map((content) => (
-                                <article
-                                    key={content.id}
-                                    className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm"
-                                >
-                                    <div className="flex items-start justify-between gap-3">
-                                        <div className="min-w-0 flex-1">
-                                            <p className="text-base font-bold text-slate-950">
-                                                {content.title}
-                                            </p>
-                                            <p className="mt-1 text-sm text-slate-500">
-                                                {config.tabs.find(
-                                                    (tab) =>
-                                                        tabMatches(
-                                                            tab,
-                                                            content.tab_id,
-                                                        ),
-                                                )?.label ?? content.tab_id}
-                                            </p>
-                                            <p className="mt-1 text-xs text-slate-500">
-                                                PDF: {content.pdf || "No PDF"}
-                                            </p>
-                                        </div>
-                                        <span
-                                            className={`rounded-full px-3 py-1 text-xs font-semibold ${
-                                                content.is_active
-                                                    ? "bg-emerald-50 text-emerald-700"
-                                                    : "bg-gray-100 text-gray-600"
-                                            }`}
-                                        >
-                                            {content.is_active
-                                                ? "Active"
-                                                : "Hidden"}
-                                        </span>
-                                    </div>
-                                    <div className="mt-4 grid grid-cols-2 gap-3 border-t border-slate-100 pt-4">
-                                        <button
-                                            type="button"
-                                            onClick={() =>
-                                                openEditModal(content)
-                                            }
-                                            className="inline-flex w-full items-center justify-center rounded-full bg-slate-100 px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-200"
-                                        >
-                                            Edit
-                                        </button>
-                                        <button
-                                            type="button"
-                                            onClick={() =>
-                                                openDeleteModal(content)
-                                            }
-                                            className="inline-flex w-full items-center justify-center rounded-full bg-rose-50 px-4 py-2 text-sm font-semibold text-rose-700 transition hover:bg-rose-100"
-                                        >
-                                            Delete
-                                        </button>
-                                    </div>
-                                </article>
-                            ))
-                        ) : (
-                            <div className="rounded-2xl border border-dashed border-slate-300 bg-slate-50 px-4 py-8 text-center">
-                                <p className="text-sm font-medium text-slate-500">
-                                    No content found for the{" "}
-                                    {currentTab?.label ?? "selected tab"}.
-                                </p>
                             </div>
-                        )}
-                    </div>
                         </>
                     )}
                 </section>
@@ -675,32 +698,34 @@ export default function AdminFixedSectionPage({
                         className="flex min-h-0 flex-1 flex-col"
                     >
                         <div className="min-h-0 flex-1 space-y-5 overflow-y-auto px-5 py-5 sm:px-6">
-                        <div className="grid gap-4 md:grid-cols-2">
-                            <div>
-                                <InputLabel
-                                    htmlFor={`${config.formIdPrefix}-tab`}
-                                    value="Fixed Tab"
-                                />
-                                <select
-                                    id={`${config.formIdPrefix}-tab`}
-                                    value={data.tab_id}
-                                    onChange={(event) =>
-                                        setData("tab_id", event.target.value)
-                                    }
-                                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                                    disabled={processing}
-                                >
-                                    {config.tabs.map((tab) => (
-                                        <option key={tab.id} value={tab.id}>
-                                            {tab.label}
-                                        </option>
-                                    ))}
-                                </select>
-                                <InputError
-                                    message={errors.tab_id}
-                                    className="mt-2"
-                                />
-                            </div>
+                        <div className={`grid gap-4 ${hasMultipleTabs ? "md:grid-cols-2" : ""}`}>
+                            {hasMultipleTabs ? (
+                                <div>
+                                    <InputLabel
+                                        htmlFor={`${config.formIdPrefix}-tab`}
+                                        value="Fixed Tab"
+                                    />
+                                    <select
+                                        id={`${config.formIdPrefix}-tab`}
+                                        value={data.tab_id}
+                                        onChange={(event) =>
+                                            setData("tab_id", event.target.value)
+                                        }
+                                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                                        disabled={processing}
+                                    >
+                                        {config.tabs.map((tab) => (
+                                            <option key={tab.id} value={tab.id}>
+                                                {tab.label}
+                                            </option>
+                                        ))}
+                                    </select>
+                                    <InputError
+                                        message={errors.tab_id}
+                                        className="mt-2"
+                                    />
+                                </div>
+                            ) : null}
 
                             <div>
                                 <InputLabel
