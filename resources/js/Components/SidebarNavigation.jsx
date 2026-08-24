@@ -82,14 +82,14 @@ export default function SidebarNavigation({ user, onNavigate = null }) {
                         const active = item.isActive();
                         const Icon = item.icon;
                         const itemClasses = active
-                            ? " bg-amber-600 text-white"
-                            : "border-transparent bg-transparent text-slate-600 hover:bg-black/50 hover:text-white duration-200 ease-out";
+                            ? "bg-slate-300 text-black"
+                            : "border-transparent bg-transparent text-slate-600 hover:bg-slate-300 hover:text-black duration-200 ease-out";
                         const iconClasses = active
-                            ? "bg-white/30 text-white"
+                            ? "bg-white/70 text-black"
                             : "bg-slate-100 text-slate-500 hover:bg-white/10 hover:text-white";
                         const labelClasses = active
-                            ? "text-white"
-                            : "text-slate-700 group-hover:text-white";
+                            ? "text-black"
+                            : "text-slate-700 group-hover:text-black";
 
                         return (
                             <Link
