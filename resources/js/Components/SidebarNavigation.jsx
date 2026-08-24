@@ -76,25 +76,24 @@ export default function SidebarNavigation({ user, onNavigate = null }) {
                     {navigationItems.map((item) => {
                         const active = item.isActive();
                         const Icon = item.icon;
+                        const itemClasses = active
+                            ? "border-black bg-black text-white shadow-none"
+                            : "border-transparent text-slate-600 hover:border-black hover:bg-black hover:text-white hover:shadow-none";
+                        const iconClasses = active
+                            ? "bg-white/10 text-white"
+                            : "bg-transparent text-slate-400 group-hover:bg-white/10 group-hover:text-white";
 
                         return (
                             <Link
                                 key={item.label}
                                 href={route(item.href)}
                                 onClick={onNavigate ?? undefined}
-                                className={`group rounded-lg border px-3 py-2 transition ${
-                                    active
-                                        ? "border-sky-200 bg-sky-50 text-sky-950 shadow-sm"
-                                        : "border-transparent text-slate-600 hover:border-sky-100 hover:bg-sky-50/60 hover:text-slate-950"
-                                }`}
+                                aria-current={active ? "page" : undefined}
+                                className={`group rounded-2xl border px-3 py-2.5 transition-all duration-200 ease-out ${itemClasses}`}
                             >
                                 <div className="flex items-center gap-3">
                                     <span
-                                        className={`rounded-md border p-1.5 ${
-                                            active
-                                                ? "border-sky-200 bg-white text-sky-700 shadow-sm"
-                                                : "border-slate-200 bg-slate-100 text-slate-500 group-hover:bg-white group-hover:text-slate-900"
-                                        }`}
+                                        className={`rounded-xl p-1.5 transition-colors duration-200 ${iconClasses}`}
                                     >
                                         <Icon className="h-[18px] w-[18px]" />
                                     </span>
