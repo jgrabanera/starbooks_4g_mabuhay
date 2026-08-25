@@ -1,5 +1,5 @@
-import AdminFixedSectionTabSection from "@/Components/AdminFixedSectionTabSection";
+import DostServicesTabSection from "@/Pages/Admin/DostServices/DostServicesTabSection";
 
 export default function FacebookPostsTabSection(props) {
-    return <AdminFixedSectionTabSection {...props} />;
+    return <DostServicesTabSection {...props} />;
 }
