@@ -250,15 +250,19 @@ export default function Dashboard({ categories = [] }) {
                     </div>
                     <div className="grid min-w-0 gap-2 p-3 md:grid-cols-2">
                         {cmsSections.map(([label, description, routeName, Icon]) => (
-                            <Link key={routeName} href={route(routeName)} className="group flex items-center gap-3 rounded-xl border border-transparent p-3 transition hover:border-sky-100 hover:bg-sky-50/60">
+                            <Link
+                                key={routeName}
+                                href={route(routeName)}
+                                className="group grid grid-cols-[auto_minmax(0,1fr)] items-start gap-x-3 gap-y-1 rounded-xl border border-transparent p-3 transition hover:border-sky-100 hover:bg-sky-50/60 sm:grid-cols-[auto_minmax(0,1fr)_auto] sm:items-center"
+                            >
                                 <span className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-slate-200 bg-slate-50 text-slate-600 transition group-hover:border-sky-200 group-hover:bg-white group-hover:text-sky-700">
                                     <Icon className="h-[18px] w-[18px]" />
                                 </span>
                                 <span className="min-w-0 flex-1">
-                                    <span className="block text-sm font-bold text-slate-800">{label}</span>
-                                    <span className="block truncate text-xs text-slate-500">{description}</span>
+                                    <span className="block break-words text-sm font-bold text-slate-800">{label}</span>
+                                    <span className="mt-0.5 block text-xs leading-5 text-slate-500">{description}</span>
                                 </span>
-                                <HiOutlineArrowRight className="h-4 w-4 shrink-0 text-slate-300 transition group-hover:translate-x-0.5 group-hover:text-sky-600" />
+                                <HiOutlineArrowRight className="hidden h-4 w-4 shrink-0 self-center text-slate-300 transition group-hover:translate-x-0.5 group-hover:text-sky-600 sm:block" />
                             </Link>
                         ))}
                     </div>
