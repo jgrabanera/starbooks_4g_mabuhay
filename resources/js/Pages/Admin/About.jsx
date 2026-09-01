@@ -23,30 +23,6 @@ const normalizeArray = (items, fallback) =>
 const contentCardClassName =
     "rounded-lg border border-slate-200 bg-white p-5 shadow-sm sm:p-6";
 
-const getCouncilMemberImageStatus = (member) => {
-    if (member?.image) {
-        return {
-            label: "New image selected",
-            className:
-                "bg-amber-50 text-amber-700 ring-1 ring-inset ring-amber-200",
-        };
-    }
-
-    if (member?.current_image) {
-        return {
-            label: "With image",
-            className:
-                "bg-emerald-50 text-emerald-700 ring-1 ring-inset ring-emerald-200",
-        };
-    }
-
-    return {
-        label: "No image",
-        className:
-            "bg-slate-100 text-slate-500 ring-1 ring-inset ring-slate-200",
-    };
-};
-
 const createCouncilMemberDraft = () => ({
     name: "",
     role: "Council Member",
@@ -69,22 +45,6 @@ const createEmptyBarangayDraft = (id = null) => ({
         kagawads: [""],
     },
 });
-
-const getBarangayImageStatus = (barangay) => {
-    if (barangay?.captain_image) {
-        return {
-            label: "With image",
-            className:
-                "bg-emerald-50 text-emerald-700 ring-1 ring-inset ring-emerald-200",
-        };
-    }
-
-    return {
-        label: "No image",
-        className:
-            "bg-slate-100 text-slate-500 ring-1 ring-inset ring-slate-200",
-    };
-};
 
 export default function About({ aboutContent }) {
     const [activeTab, setActiveTab] = useState("about");
@@ -735,9 +695,6 @@ export default function About({ aboutContent }) {
                                     openEditCouncilMemberModal
                                 }
                                 removeCouncilMember={removeCouncilMember}
-                                getCouncilMemberImageStatus={
-                                    getCouncilMemberImageStatus
-                                }
                                 renderTabSaveButton={renderTabSaveButton}
                             />
                         ) : null}
@@ -754,7 +711,6 @@ export default function About({ aboutContent }) {
                                 }
                                 openEditBarangayModal={openEditBarangayModal}
                                 removeBarangay={removeBarangay}
-                                getBarangayImageStatus={getBarangayImageStatus}
                                 renderTabSaveButton={renderTabSaveButton}
                             />
                         ) : null}

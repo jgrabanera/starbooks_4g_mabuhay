@@ -8,7 +8,6 @@ export default function OrganizationTabSection({
     openCreateCouncilMemberModal,
     openEditCouncilMemberModal,
     removeCouncilMember,
-    getCouncilMemberImageStatus,
     renderTabSaveButton,
 }) {
     const itemsPerPage = 10;
@@ -21,6 +20,17 @@ export default function OrganizationTabSection({
         startIndex,
         endIndex,
     );
+    const councilMemberImageUrl = (member) => {
+        const image = member?.current_image ?? member?.image;
+
+        if (typeof image !== "string" || image.length === 0) {
+            return null;
+        }
+
+        return image.startsWith("/") || image.startsWith("http")
+            ? image
+            : `/storage/images/thumbnails/${image}`;
+    };
 
     useEffect(() => {
         if (currentPage > totalPages) {
@@ -222,9 +232,8 @@ export default function OrganizationTabSection({
                         <tbody className="divide-y divide-slate-100 bg-white">
                             {visibleMembers.length > 0 ? (
                                 visibleMembers.map((member, index) => {
-                                    const imageStatus =
-                                        getCouncilMemberImageStatus(member);
                                     const itemNumber = startIndex + index + 1;
+                                    const imageUrl = councilMemberImageUrl(member);
 
                                     return (
                                         <tr
@@ -234,12 +243,18 @@ export default function OrganizationTabSection({
                                             <td className="px-4 py-4 text-sm font-semibold text-slate-700">
                                                 {itemNumber}
                                             </td>
-                                            <td className="px-4 py-4 text-sm text-slate-600">
-                                                <span
-                                                    className={`inline-flex rounded-full px-3 py-1 text-xs font-semibold ${imageStatus.className}`}
-                                                >
-                                                    {imageStatus.label}
-                                                </span>
+                                            <td className="px-4 py-4">
+                                                {imageUrl ? (
+                                                    <img
+                                                        src={imageUrl}
+                                                        alt={`${member.name || "Council member"} portrait`}
+                                                        className="h-12 w-12 rounded-full border border-slate-200 object-cover shadow-sm"
+                                                    />
+                                                ) : (
+                                                    <span className="text-xs text-slate-500">
+                                                        No image
+                                                    </span>
+                                                )}
                                             </td>
                                             <td className="px-4 py-4 text-sm font-semibold text-slate-900">
                                                 {member.name ||
@@ -298,9 +313,8 @@ export default function OrganizationTabSection({
                 <div className="space-y-3 md:hidden">
                     {visibleMembers.length > 0 ? (
                         visibleMembers.map((member, index) => {
-                            const imageStatus =
-                                getCouncilMemberImageStatus(member);
                             const itemNumber = startIndex + index + 1;
+                            const imageUrl = councilMemberImageUrl(member);
 
                             return (
                                 <article
@@ -308,7 +322,15 @@ export default function OrganizationTabSection({
                                     className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm"
                                 >
                                     <div className="flex items-start justify-between gap-3">
-                                        <div>
+                                        <div className="flex min-w-0 gap-3">
+                                            {imageUrl ? (
+                                                <img
+                                                    src={imageUrl}
+                                                    alt={`${member.name || "Council member"} portrait`}
+                                                    className="h-14 w-14 shrink-0 rounded-full border border-slate-200 object-cover shadow-sm"
+                                                />
+                                            ) : null}
+                                            <div className="min-w-0">
                                             <p className="text-xs font-bold uppercase tracking-[0.18em] text-emerald-700">
                                                 Council Member {itemNumber}
                                             </p>
@@ -316,15 +338,16 @@ export default function OrganizationTabSection({
                                                 {member.name ||
                                                     "Untitled member"}
                                             </p>
-                                            <p
-                                                className={`mt-2 inline-flex rounded-full px-2.5 py-1 text-[0.65rem] font-semibold uppercase tracking-[0.16em] ${imageStatus.className}`}
-                                            >
-                                                {imageStatus.label}
-                                            </p>
                                             <p className="mt-2 text-sm text-slate-500">
                                                 {member.role ||
                                                     "Council Member"}
                                             </p>
+                                            {!imageUrl ? (
+                                                <p className="mt-2 text-xs text-slate-500">
+                                                    No image
+                                                </p>
+                                            ) : null}
+                                            </div>
                                         </div>
                                         <div className="flex gap-3">
                                             <button

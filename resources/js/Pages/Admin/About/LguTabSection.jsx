@@ -12,9 +12,20 @@ export default function LguTabSection({
     openCreateBarangayModal,
     openEditBarangayModal,
     removeBarangay,
-    getBarangayImageStatus,
     renderTabSaveButton,
 }) {
+    const barangayCaptainImageUrl = (barangay) => {
+        const image = barangay?.captain_image;
+
+        if (typeof image !== "string" || image.length === 0) {
+            return null;
+        }
+
+        return image.startsWith("/") || image.startsWith("http")
+            ? image
+            : `/storage/images/thumbnails/${image}`;
+    };
+
     return (
         <section className={contentCardClassName}>
             <div className="flex items-center justify-between">
@@ -120,8 +131,8 @@ export default function LguTabSection({
                         </thead>
                         <tbody className="divide-y divide-slate-100 bg-white">
                             {data.lgu_barangays.map((barangay, index) => {
-                                const imageStatus =
-                                    getBarangayImageStatus(barangay);
+                                const imageUrl =
+                                    barangayCaptainImageUrl(barangay);
 
                                 return (
                                     <tr
@@ -131,12 +142,18 @@ export default function LguTabSection({
                                         <td className="px-4 py-4 text-sm font-semibold text-slate-700">
                                             {index + 1}
                                         </td>
-                                        <td className="px-4 py-4 text-sm text-slate-600">
-                                            <span
-                                                className={`inline-flex rounded-full px-3 py-1 text-xs font-semibold ${imageStatus.className}`}
-                                            >
-                                                {imageStatus.label}
-                                            </span>
+                                        <td className="px-4 py-4">
+                                            {imageUrl ? (
+                                                <img
+                                                    src={imageUrl}
+                                                    alt={`${barangay.officials?.captain || "Barangay captain"} portrait`}
+                                                    className="h-12 w-12 rounded-full border border-slate-200 object-cover shadow-sm"
+                                                />
+                                            ) : (
+                                                <span className="text-xs text-slate-500">
+                                                    No image
+                                                </span>
+                                            )}
                                         </td>
                                         <td className="px-4 py-4 text-sm font-semibold text-slate-900">
                                             {barangay.title ||
@@ -179,12 +196,15 @@ export default function LguTabSection({
                 </div>
 
                 <div className="space-y-4 lg:hidden">
-                    {data.lgu_barangays.map((barangay, index) => (
-                        <div
-                            key={barangay.id || index}
-                            className="rounded-2xl border border-slate-200 bg-slate-50 p-4"
-                        >
-                            <div className="mb-4 flex items-center justify-between">
+                    {data.lgu_barangays.map((barangay, index) => {
+                        const imageUrl = barangayCaptainImageUrl(barangay);
+
+                        return (
+                            <div
+                                key={barangay.id || index}
+                                className="rounded-2xl border border-slate-200 bg-slate-50 p-4"
+                            >
+                                <div className="mb-4 flex items-center justify-between">
                                 <p className="text-sm font-semibold text-slate-700">
                                     Barangay {index + 1}
                                 </p>
@@ -210,8 +230,16 @@ export default function LguTabSection({
                                     </button>
                                 </div>
                             </div>
-                            <div className="space-y-2 text-sm text-slate-600">
-                                <p>
+                                <div className="flex gap-3 text-sm text-slate-600">
+                                    {imageUrl ? (
+                                        <img
+                                            src={imageUrl}
+                                            alt={`${barangay.officials?.captain || "Barangay captain"} portrait`}
+                                            className="h-14 w-14 shrink-0 rounded-full border border-slate-200 object-cover shadow-sm"
+                                        />
+                                    ) : null}
+                                    <div className="space-y-2">
+                                    <p>
                                     <span className="font-semibold text-slate-900">
                                         Name:
                                     </span>{" "}
@@ -224,14 +252,16 @@ export default function LguTabSection({
                                     {barangay.officials?.captain ||
                                         "No captain"}
                                 </p>
-                                <span
-                                    className={`inline-flex rounded-full px-2.5 py-1 text-[0.65rem] font-semibold uppercase tracking-[0.16em] ${getBarangayImageStatus(barangay).className}`}
-                                >
-                                    {getBarangayImageStatus(barangay).label}
-                                </span>
+                                    {!imageUrl ? (
+                                        <p className="text-xs text-slate-500">
+                                            No image
+                                        </p>
+                                    ) : null}
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                    ))}
+                        );
+                    })}
                 </div>
             </div>
 
