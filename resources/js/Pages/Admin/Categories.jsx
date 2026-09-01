@@ -120,7 +120,7 @@ export default function Categories({ categories: categoryItems = [] }) {
                                 </div>
                             </div>
 
-                            <div className="flex w-full flex-col gap-3 sm:flex-row lg:w-auto lg:min-w-[28rem]">
+                            <div className="flex w-full flex-col gap-3 sm:flex-row lg:w-auto ">
                                 <div className="relative w-full sm:flex-1 lg:w-80 lg:flex-none">
                                     <span className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4 text-slate-400">
                                         <svg
@@ -188,8 +188,18 @@ export default function Categories({ categories: categoryItems = [] }) {
                                                         "No description"}
                                                 </p>
                                             </td>
-                                            <td className="max-w-[12rem] truncate px-6 py-4 text-xs text-gray-600">
-                                                {category.image || "No image"}
+                                            <td className="px-6 py-4">
+                                                {category.image ? (
+                                                    <img
+                                                        src={`/storage/images/thumbnails/${category.image}`}
+                                                        alt={`${category.title} thumbnail`}
+                                                        className="h-12 w-16 rounded-lg border border-slate-200 object-cover shadow-sm"
+                                                    />
+                                                ) : (
+                                                    <span className="text-xs text-gray-500">
+                                                        No image
+                                                    </span>
+                                                )}
                                             </td>
                                             <td className="whitespace-nowrap px-6 py-4 text-sm">
                                                 <span
@@ -251,9 +261,17 @@ export default function Categories({ categories: categoryItems = [] }) {
                                                 {category.description ||
                                                     "No description"}
                                             </p>
-                                            <p className="mt-2 break-all text-sm text-slate-500">
-                                                {category.image || "No image"}
-                                            </p>
+                                            {category.image ? (
+                                                <img
+                                                    src={`/storage/images/thumbnails/${category.image}`}
+                                                    alt={`${category.title} thumbnail`}
+                                                    className="mt-3 h-20 w-28 rounded-xl border border-slate-200 object-cover shadow-sm"
+                                                />
+                                            ) : (
+                                                <p className="mt-2 text-sm text-slate-500">
+                                                    No image
+                                                </p>
+                                            )}
                                         </div>
                                         <span
                                             className={`inline-flex w-fit rounded-full px-3 py-1 text-xs font-semibold ${
