@@ -45,10 +45,7 @@ class SocialServicesController extends Controller
     private function normalizeTabId(?string $tabId): ?string
     {
         return match ($tabId) {
-            'award', 'posting-of-awardings-3' => 'award',
-            'budget', 'nta-budget-per-month-4' => 'budget',
-            'memorandum', 'memorandum-1' => 'memorandum',
-            'ordinance', 'ordinance-2' => 'ordinance',
+            'social-services', 'resources', 'memorandum' => 'social-services',
             default => $tabId,
         };
     }

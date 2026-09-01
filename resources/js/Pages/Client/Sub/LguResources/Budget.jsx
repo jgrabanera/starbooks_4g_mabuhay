@@ -5,7 +5,7 @@ const Budget = ({ items = [], loading = false, error = "" }) => (
     <ContentCollectionPanel
         logoSrc="/assets/images/logos/lgu-mabuhay.png"
         logoAlt="LGU Mabuhay"
-        eyebrow="Social Services Records"
+        eyebrow="LGU Resources Records"
         title="Budget"
         searchPlaceholder="Search budget items"
         emptyTitle="No budget items found."

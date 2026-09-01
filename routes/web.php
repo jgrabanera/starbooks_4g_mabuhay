@@ -50,12 +50,14 @@ Route::middleware(['auth'])->group(function () {
         ->name('admin.dost-services.index');
     Route::get('/cms/projects', [App\Http\Controllers\Admin\ProjectsAdminController::class, 'index'])
         ->name('admin.projects.index');
-    Route::get('/cms/social-services', [App\Http\Controllers\Admin\SocialServicesAdminController::class, 'index'])
-        ->name('admin.social-services.index');
+    Route::get('/cms/lgu-resources', [App\Http\Controllers\Admin\LguResourcesAdminController::class, 'index'])
+        ->name('admin.lgu-resources.index');
     Route::get('/cms/tourism', [App\Http\Controllers\Admin\TourismAdminController::class, 'index'])
         ->name('admin.tourism.index');
-    Route::get('/cms/resources', [App\Http\Controllers\Admin\ResourcesAdminController::class, 'index'])
-        ->name('admin.resources.index');
+    Route::get('/cms/social-services', [App\Http\Controllers\Admin\SocialServicesAdminController::class, 'index'])
+        ->name('admin.social-services.index');
+    Route::redirect('/cms/resources', '/cms/lgu-resources', 301)
+        ->name('legacy.admin.resources.index');
 
     Route::post('/admin/categories', [App\Http\Controllers\Admin\CategoryController::class, 'store'])
         ->name('admin.categories.store');
@@ -74,12 +76,12 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('/admin/projects/{project}', [App\Http\Controllers\Admin\ProjectsAdminController::class, 'destroy'])
         ->name('admin.projects.destroy');
 
-    Route::post('/admin/resources', [App\Http\Controllers\Admin\ResourcesAdminController::class, 'store'])
-        ->name('admin.resources.store');
-    Route::post('/admin/resources/{resource}', [App\Http\Controllers\Admin\ResourcesAdminController::class, 'update'])
-        ->name('admin.resources.update');
-    Route::delete('/admin/resources/{resource}', [App\Http\Controllers\Admin\ResourcesAdminController::class, 'destroy'])
-        ->name('admin.resources.destroy');
+    Route::post('/admin/lgu-resources', [App\Http\Controllers\Admin\LguResourcesAdminController::class, 'store'])
+        ->name('admin.lgu-resources.store');
+    Route::post('/admin/lgu-resources/{lguResource}', [App\Http\Controllers\Admin\LguResourcesAdminController::class, 'update'])
+        ->name('admin.lgu-resources.update');
+    Route::delete('/admin/lgu-resources/{lguResource}', [App\Http\Controllers\Admin\LguResourcesAdminController::class, 'destroy'])
+        ->name('admin.lgu-resources.destroy');
 
     Route::post('/admin/social-services', [App\Http\Controllers\Admin\SocialServicesAdminController::class, 'store'])
         ->name('admin.social-services.store');

@@ -5,7 +5,7 @@ const AwardPosting = ({ items = [], loading = false, error = "" }) => (
     <ContentCollectionPanel
         logoSrc="/assets/images/logos/lgu-mabuhay.png"
         logoAlt="LGU Mabuhay"
-        eyebrow="Social Services Records"
+        eyebrow="LGU Resources Records"
         title="Award Posting"
         searchPlaceholder="Search award postings"
         emptyTitle="No award postings found."

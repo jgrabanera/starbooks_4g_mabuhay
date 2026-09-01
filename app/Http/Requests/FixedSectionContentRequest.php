@@ -19,7 +19,7 @@ class FixedSectionContentRequest extends FormRequest
 
         if ($this->routeIs(
             'admin.projects.store',
-            'admin.resources.store',
+            'admin.lgu-resources.store',
             'admin.social-services.store',
             'admin.tourism.store',
             'admin.dost-services.store',

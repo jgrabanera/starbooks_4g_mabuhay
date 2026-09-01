@@ -10,47 +10,11 @@ import SecondaryButton from "@/Components/SecondaryButton";
 import TextInput from "@/Components/TextInput";
 import AdminLayout from "@/Layouts/AdminLayout";
 import { Head, router, useForm, useRemember } from "@inertiajs/react";
-import {
-    IoBriefcaseOutline,
-    IoCashOutline,
-    IoCloseOutline,
-    IoDocumentOutline,
-    IoRibbonOutline,
-} from "react-icons/io5";
+import { IoCloseOutline, IoDocumentOutline } from "react-icons/io5";
 
-const socialTabs = [
-    {
-        id: "award",
-        aliases: ["award", "posting-of-awardings-3"],
-        label: "Award Posting",
-        helper: "Entries shown in the public Award Posting section.",
-        Icon: IoRibbonOutline,
-    },
-    {
-        id: "budget",
-        aliases: ["budget", "nta-budget-per-month-4"],
-        label: "Budget",
-        helper: "Budget-related entries shown on the public page.",
-        Icon: IoCashOutline,
-    },
-    {
-        id: "memorandum",
-        aliases: ["memorandum", "memorandum-1"],
-        label: "Memorandum",
-        helper: "Memorandum entries shown on the public page.",
-        Icon: IoDocumentOutline,
-    },
-    {
-        id: "ordinance",
-        aliases: ["ordinance", "ordinance-2"],
-        label: "Ordinance",
-        helper: "Ordinance entries shown on the public page.",
-        Icon: IoBriefcaseOutline,
-    },
-];
-
+const SOCIAL_SERVICES_TAB_ID = "social-services";
 const emptySocialService = {
-    tab_id: socialTabs[0].id,
+    tab_id: SOCIAL_SERVICES_TAB_ID,
     title: "",
     image: null,
     pdf: null,
@@ -63,10 +27,8 @@ export default function SocialServices({
     contents: socialServiceItems = [],
 }) {
     const [contents, setContents] = useState(socialServiceItems);
-    const [activeTab, setActiveTab] = useState(socialTabs[0].id);
     const [editingSocialService, setEditingSocialService] = useState(null);
-    const [socialServicePendingDelete, setSocialServicePendingDelete] =
-        useState(null);
+    const [socialServicePendingDelete, setSocialServicePendingDelete] = useState(null);
     const [pdfPreview, setPdfPreview] = useState(null);
     const [isFormModalOpen, setIsFormModalOpen] = useState(false);
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
@@ -94,43 +56,18 @@ export default function SocialServices({
         errors,
         reset,
         clearErrors,
-    } = useForm({
-        ...emptySocialService,
-        tab_id: socialTabs[0].id,
-    });
+    } = useForm(emptySocialService);
 
     const canManageSection = Boolean(sectionCategory?.id);
-
-    const tabMatches = (tab, tabId) => {
-        const aliases = tab.aliases ?? [tab.id];
-
-        return aliases.includes(tabId);
-    };
-
-    const findTabById = (tabId) =>
-        socialTabs.find((tab) => tabMatches(tab, tabId)) ?? null;
-
-    const normalizeTabId = (tabId) => findTabById(tabId)?.id ?? tabId;
 
     useEffect(() => {
         setContents(socialServiceItems);
     }, [socialServiceItems]);
 
-    const currentTab = findTabById(activeTab);
-
     const filteredContents = useMemo(() => {
         const term = search.trim().toLowerCase();
 
         return contents.filter((content) => {
-            const matchesTab = tabMatches(
-                findTabById(activeTab) ?? { id: activeTab },
-                content.tab_id,
-            );
-
-            if (!matchesTab) {
-                return false;
-            }
-
             if (!term) {
                 return true;
             }
@@ -139,16 +76,13 @@ export default function SocialServices({
                 .filter(Boolean)
                 .some((value) => String(value).toLowerCase().includes(term));
         });
-    }, [activeTab, contents, search]);
+    }, [contents, search]);
 
-    const resetForm = (tabId = activeTab) => {
+    const resetForm = () => {
         setEditingSocialService(null);
         clearErrors();
         reset();
-        setData({
-            ...emptySocialService,
-            tab_id: tabId,
-        });
+        setData(emptySocialService);
     };
 
     const closeFormModal = () => {
@@ -157,7 +91,7 @@ export default function SocialServices({
     };
 
     const openCreateModal = () => {
-        resetForm(activeTab);
+        resetForm();
         setIsFormModalOpen(true);
     };
 
@@ -165,7 +99,7 @@ export default function SocialServices({
         setEditingSocialService(socialService);
         clearErrors();
         setData({
-            tab_id: normalizeTabId(socialService.tab_id ?? activeTab),
+            tab_id: SOCIAL_SERVICES_TAB_ID,
             title: socialService.title ?? "",
             image: null,
             pdf: null,
@@ -260,8 +194,8 @@ export default function SocialServices({
 
         openConfirmation({
             title: isEditing
-                ? "Save changes to social service item?"
-                : "Add new social service item?",
+                ? "Save changes to social service?"
+                : "Add new social service?",
             message: isEditing
                 ? "Are you sure you want to save the updates to this social service item?"
                 : "Are you sure you want to add this new social service item to the public Social Services page?",
@@ -269,10 +203,7 @@ export default function SocialServices({
             onConfirm: () => {
                 if (editingSocialService) {
                     router.post(
-                        route(
-                            "admin.social-services.update",
-                            editingSocialService.id,
-                        ),
+                        route("admin.social-services.update", editingSocialService.id),
                         data,
                         {
                             forceFormData: true,
@@ -321,35 +252,26 @@ export default function SocialServices({
             return;
         }
 
-        destroy(
-            route(
-                "admin.social-services.destroy",
-                socialServicePendingDelete.id,
-            ),
-            {
-                preserveScroll: true,
-                onSuccess: () => {
-                    closeDeleteModal();
-                    showNotification(
-                        "success",
-                        "Social service content was deleted successfully.",
-                    );
+        destroy(route("admin.social-services.destroy", socialServicePendingDelete.id), {
+            preserveScroll: true,
+            onSuccess: () => {
+                closeDeleteModal();
+                showNotification(
+                    "success",
+                    "Social service content was deleted successfully.",
+                );
 
-                    if (
-                        editingSocialService?.id ===
-                        socialServicePendingDelete.id
-                    ) {
-                        closeFormModal();
-                    }
-                },
-                onError: () => {
-                    showNotification(
-                        "error",
-                        "The social service item could not be deleted. Please try again.",
-                    );
-                },
+                if (editingSocialService?.id === socialServicePendingDelete.id) {
+                    closeFormModal();
+                }
             },
-        );
+            onError: () => {
+                showNotification(
+                    "error",
+                    "The social service item could not be deleted. Please try again.",
+                );
+            },
+        });
     };
 
     return (
@@ -365,16 +287,15 @@ export default function SocialServices({
                             <div className="min-w-0 space-y-3">
                                 <div className="space-y-1">
                                     <p className="text-xs font-bold uppercase tracking-[0.24em] text-emerald-700">
-                                        Fixed-Tab Content Manager
+                                        Content Manager
                                     </p>
                                     <h2 className="text-2xl font-bold text-slate-900">
                                         Social Services CMS
                                     </h2>
                                     <p className="max-w-2xl text-sm leading-6 text-slate-600">
-                                        Manage the fixed social services tabs
-                                        used by the public page for award
-                                        postings, budget updates, memorandums,
-                                        and ordinances.
+                                        Manage the fixed Social Services page
+                                        content that appears in the public
+                                        social services section.
                                     </p>
                                 </div>
 
@@ -414,7 +335,7 @@ export default function SocialServices({
                                             setSearch(event.target.value)
                                         }
                                         className="h-12 w-full rounded-lg border border-slate-200 bg-white pl-11 pr-4 text-sm text-slate-700 shadow-sm transition placeholder:text-slate-400 focus:border-slate-200 focus:ring-slate-200"
-                                        placeholder={`Search ${currentTab?.label?.toLowerCase() ?? "social service items"}`}
+                                        placeholder="Search social service items"
                                     />
                                 </div>
                                 <button
@@ -423,82 +344,9 @@ export default function SocialServices({
                                     disabled={processing || !canManageSection}
                                     className="inline-flex h-12 w-full items-center justify-center rounded-lg bg-emerald-600 px-5 text-sm font-semibold text-white shadow-sm transition hover:bg-emerald-700 disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto sm:px-6"
                                 >
-                                    Add {currentTab?.label ?? "Social Service"}
+                                    Add Social Service
                                 </button>
                             </div>
-                        </div>
-                    </div>
-
-                    <div className="border-b border-slate-100 bg-slate-50/80 px-4 py-3 sm:px-6">
-                        <div className="grid min-w-0 gap-2 md:grid-cols-2 xl:grid-cols-4">
-                            {socialTabs.map((tab) => {
-                                const isActive = activeTab === tab.id;
-                                const tabCount = contents.filter((content) =>
-                                    tabMatches(tab, content.tab_id),
-                                ).length;
-                                const TabIcon = tab.Icon;
-
-                                return (
-                                    <button
-                                        key={tab.id}
-                                        type="button"
-                                        onClick={() => {
-                                            setActiveTab(tab.id);
-                                            setData("tab_id", tab.id);
-                                        }}
-                                        title={tab.helper}
-                                        className={`w-full min-w-0 overflow-hidden rounded-lg border px-3 py-3 text-left transition ${
-                                            isActive
-                                                ? "border-emerald-700 bg-emerald-700 text-white shadow-sm"
-                                                : "border-emerald-200 bg-emerald-50/80 text-slate-700 hover:border-emerald-300 hover:bg-emerald-100/80"
-                                        }`}
-                                    >
-                                        <div className="flex min-w-0 items-center gap-2 sm:gap-3">
-                                            <div className="flex min-w-0 flex-1 items-center gap-3">
-                                                <span
-                                                    className={`inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-md border ${
-                                                        isActive
-                                                            ? "border-white/20 bg-white/15"
-                                                            : "border-emerald-100 bg-emerald-50"
-                                                    }`}
-                                                >
-                                                    <TabIcon
-                                                        className={`h-4 w-4 ${
-                                                            isActive
-                                                                ? "text-white"
-                                                                : "text-emerald-700"
-                                                        }`}
-                                                    />
-                                                </span>
-                                                <div className="min-w-0">
-                                                    <p className="truncate text-sm font-bold sm:text-base">
-                                                        {tab.label}
-                                                    </p>
-                                                    <p
-                                                        className={`mt-0.5 truncate text-xs sm:text-sm ${
-                                                            isActive
-                                                                ? "text-emerald-50/95"
-                                                                : "text-slate-500"
-                                                        }`}
-                                                    >
-                                                        {tab.helper}
-                                                    </p>
-                                                </div>
-                                            </div>
-                                            <span
-                                                className={`hidden shrink-0 rounded-full px-2 py-1 text-[10px] font-bold uppercase tracking-[0.12em] sm:inline-flex ${
-                                                    isActive
-                                                        ? "bg-white/15 text-white"
-                                                        : "bg-emerald-100 text-emerald-700"
-                                                }`}
-                                            >
-                                                {tabCount} item
-                                                {tabCount === 1 ? "" : "s"}
-                                            </span>
-                                        </div>
-                                    </button>
-                                );
-                            })}
                         </div>
                     </div>
 
@@ -506,16 +354,19 @@ export default function SocialServices({
                         <table className="min-w-full divide-y divide-gray-200">
                             <thead className="bg-gray-50">
                                 <tr>
-                                    {["Title", "Image", "PDF", "Status"].map(
-                                        (heading) => (
-                                            <th
-                                                key={heading}
-                                                className="px-6 py-3 text-left text-xs font-bold uppercase tracking-wider text-slate-600"
-                                            >
-                                                {heading}
-                                            </th>
-                                        ),
-                                    )}
+                                    {[
+                                        "Title",
+                                        "Image",
+                                        "PDF",
+                                        "Status",
+                                    ].map((heading) => (
+                                        <th
+                                            key={heading}
+                                            className="px-6 py-3 text-left text-xs font-bold uppercase tracking-wider text-slate-600"
+                                        >
+                                            {heading}
+                                        </th>
+                                    ))}
                                     <th className="px-6 py-3 text-right text-xs font-bold uppercase tracking-wider text-slate-600">
                                         Action
                                     </th>
@@ -555,16 +406,16 @@ export default function SocialServices({
                                                     <button
                                                         type="button"
                                                         onClick={() =>
-                                                            openPdfPreview(content)
+                                                            openPdfPreview(
+                                                                content,
+                                                            )
                                                         }
                                                         className="inline-flex items-center rounded-full border border-emerald-300 bg-emerald-600 px-3.5 py-2 text-xs font-bold uppercase tracking-[0.12em] text-white shadow-sm transition hover:bg-emerald-700"
                                                     >
                                                         View PDF
                                                     </button>
                                                 ) : (
-                                                    <span className="font-semibold text-rose-600">
-                                                        No PDF
-                                                    </span>
+                                                    "No PDF"
                                                 )}
                                             </td>
                                             <td className="px-6 py-4 text-sm">
@@ -585,7 +436,9 @@ export default function SocialServices({
                                                     <button
                                                         type="button"
                                                         onClick={() =>
-                                                            openEditModal(content)
+                                                            openEditModal(
+                                                                content,
+                                                            )
                                                         }
                                                         className="font-semibold text-indigo-600 hover:text-indigo-800"
                                                     >
@@ -594,7 +447,9 @@ export default function SocialServices({
                                                     <button
                                                         type="button"
                                                         onClick={() =>
-                                                            openDeleteModal(content)
+                                                            openDeleteModal(
+                                                                content,
+                                                            )
                                                         }
                                                         className="font-semibold text-rose-600 hover:text-rose-800"
                                                     >
@@ -610,8 +465,7 @@ export default function SocialServices({
                                             colSpan="5"
                                             className="px-6 py-8 text-center text-sm text-slate-500"
                                         >
-                                            No content found for the{" "}
-                                            {currentTab?.label ?? "selected tab"}.
+                                            No social services found.
                                         </td>
                                     </tr>
                                 )}
@@ -626,13 +480,6 @@ export default function SocialServices({
                                     key={content.id}
                                     className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm"
                                 >
-                                    {content.image ? (
-                                        <img
-                                            src={`/storage/images/thumbnails/${content.image}`}
-                                            alt={content.title}
-                                            className="mb-4 h-40 w-full rounded-xl border border-slate-200 object-cover shadow-sm"
-                                        />
-                                    ) : null}
                                     <div className="flex items-start justify-between gap-3">
                                         <div className="min-w-0 flex-1">
                                             <p className="break-words text-base font-bold text-slate-950">
@@ -642,21 +489,25 @@ export default function SocialServices({
                                                 {content.description ||
                                                     "No description provided"}
                                             </p>
-                                            <div className="mt-3 text-xs text-slate-500">
+                                            <p className="mt-2 break-all text-xs text-slate-500">
+                                                Image:{" "}
+                                                {content.image || "No image"}
+                                            </p>
+                                            <div className="mt-1 text-xs text-slate-500">
                                                 {content.pdf ? (
                                                     <button
                                                         type="button"
                                                         onClick={() =>
-                                                            openPdfPreview(content)
+                                                            openPdfPreview(
+                                                                content,
+                                                            )
                                                         }
                                                         className="inline-flex items-center rounded-full border border-emerald-300 bg-emerald-600 px-3.5 py-2 text-xs font-bold uppercase tracking-[0.12em] text-white shadow-sm transition hover:bg-emerald-700"
                                                     >
                                                         View PDF
                                                     </button>
                                                 ) : (
-                                                    <span className="font-semibold text-rose-600">
-                                                        PDF: No PDF
-                                                    </span>
+                                                    <span>PDF: No PDF</span>
                                                 )}
                                             </div>
                                         </div>
@@ -697,8 +548,7 @@ export default function SocialServices({
                         ) : (
                             <div className="rounded-2xl border border-dashed border-slate-300 bg-slate-50 px-4 py-8 text-center">
                                 <p className="text-sm font-medium text-slate-500">
-                                    No content found for the{" "}
-                                    {currentTab?.label ?? "selected tab"}.
+                                    No social services found.
                                 </p>
                             </div>
                         )}
@@ -802,57 +652,29 @@ export default function SocialServices({
                         className="flex min-h-0 flex-1 flex-col"
                     >
                         <div className="min-h-0 flex-1 space-y-5 overflow-y-auto px-5 py-5 sm:px-6">
-                            <div className="grid gap-4 md:grid-cols-2">
-                                <div>
-                                    <InputLabel
-                                        htmlFor="social-services-tab"
-                                        value="Fixed Tab"
-                                    />
-                                    <select
-                                        id="social-services-tab"
-                                        value={data.tab_id}
+                            <div>
+                                <InputLabel
+                                    htmlFor="social-services-status"
+                                    value="Visibility"
+                                />
+                                <label
+                                    id="social-services-status"
+                                    className="mt-1 flex h-[42px] items-center gap-3 rounded-md border border-gray-300 px-3 text-sm font-medium text-gray-700"
+                                >
+                                    <input
+                                        type="checkbox"
+                                        checked={data.is_active}
                                         onChange={(event) =>
-                                            setData("tab_id", event.target.value)
+                                            setData(
+                                                "is_active",
+                                                event.target.checked,
+                                            )
                                         }
-                                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
                                         disabled={processing}
-                                    >
-                                        {socialTabs.map((tab) => (
-                                            <option key={tab.id} value={tab.id}>
-                                                {tab.label}
-                                            </option>
-                                        ))}
-                                    </select>
-                                    <InputError
-                                        message={errors.tab_id}
-                                        className="mt-2"
+                                        className="rounded border-gray-300 text-indigo-600 shadow-sm focus:ring-indigo-500"
                                     />
-                                </div>
-
-                                <div>
-                                    <InputLabel
-                                        htmlFor="social-services-status"
-                                        value="Visibility"
-                                    />
-                                    <label
-                                        id="social-services-status"
-                                        className="mt-1 flex h-[42px] items-center gap-3 rounded-md border border-gray-300 px-3 text-sm font-medium text-gray-700"
-                                    >
-                                        <input
-                                            type="checkbox"
-                                            checked={data.is_active}
-                                            onChange={(event) =>
-                                                setData(
-                                                    "is_active",
-                                                    event.target.checked,
-                                                )
-                                            }
-                                            disabled={processing}
-                                            className="rounded border-gray-300 text-indigo-600 shadow-sm focus:ring-indigo-500"
-                                        />
-                                        Show publicly
-                                    </label>
-                                </div>
+                                    Show publicly
+                                </label>
                             </div>
 
                             <div>
@@ -1047,10 +869,7 @@ SocialServices.layout = (page) => (
     <AdminLayout
         user={page.props.auth.user}
         title="Social Services CMS"
-        breadcrumbs={[
-            { label: "Admin Workspace" },
-            { label: "Social Services CMS" },
-        ]}
+        breadcrumbs={[{ label: "Admin Workspace" }, { label: "Social Services CMS" }]}
         children={page}
     />
 );

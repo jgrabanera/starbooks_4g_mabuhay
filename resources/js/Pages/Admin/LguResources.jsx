@@ -10,11 +10,47 @@ import SecondaryButton from "@/Components/SecondaryButton";
 import TextInput from "@/Components/TextInput";
 import AdminLayout from "@/Layouts/AdminLayout";
 import { Head, router, useForm, useRemember } from "@inertiajs/react";
-import { IoCloseOutline, IoDocumentOutline } from "react-icons/io5";
+import {
+    IoBriefcaseOutline,
+    IoCashOutline,
+    IoCloseOutline,
+    IoDocumentOutline,
+    IoRibbonOutline,
+} from "react-icons/io5";
 
-const RESOURCE_TAB_ID = "resources";
-const emptyResource = {
-    tab_id: RESOURCE_TAB_ID,
+const lguResourceTabs = [
+    {
+        id: "award",
+        aliases: ["award", "posting-of-awardings-3"],
+        label: "Award Posting",
+        helper: "Entries shown in the public Award Posting section.",
+        Icon: IoRibbonOutline,
+    },
+    {
+        id: "budget",
+        aliases: ["budget", "nta-budget-per-month-4"],
+        label: "Budget",
+        helper: "Budget-related entries shown on the public page.",
+        Icon: IoCashOutline,
+    },
+    {
+        id: "memorandum",
+        aliases: ["memorandum", "memorandum-1"],
+        label: "Memorandum",
+        helper: "Memorandum entries shown on the public page.",
+        Icon: IoDocumentOutline,
+    },
+    {
+        id: "ordinance",
+        aliases: ["ordinance", "ordinance-2"],
+        label: "Ordinance",
+        helper: "Ordinance entries shown on the public page.",
+        Icon: IoBriefcaseOutline,
+    },
+];
+
+const emptyLguResource = {
+    tab_id: lguResourceTabs[0].id,
     title: "",
     image: null,
     pdf: null,
@@ -22,13 +58,15 @@ const emptyResource = {
     is_active: true,
 };
 
-export default function Resources({
+export default function LguResources({
     sectionCategory = null,
-    contents: resourceItems = [],
+    contents: lguResourceItems = [],
 }) {
-    const [contents, setContents] = useState(resourceItems);
-    const [editingResource, setEditingResource] = useState(null);
-    const [resourcePendingDelete, setResourcePendingDelete] = useState(null);
+    const [contents, setContents] = useState(lguResourceItems);
+    const [activeTab, setActiveTab] = useState(lguResourceTabs[0].id);
+    const [editingLguResource, setEditingLguResource] = useState(null);
+    const [lguResourcePendingDelete, setLguResourcePendingDelete] =
+        useState(null);
     const [pdfPreview, setPdfPreview] = useState(null);
     const [isFormModalOpen, setIsFormModalOpen] = useState(false);
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
@@ -43,7 +81,7 @@ export default function Resources({
         type: "success",
         message: "",
     });
-    const [search, setSearch] = useRemember("", "admin-resources-search");
+    const [search, setSearch] = useRemember("", "admin-lgu-resources-search");
     const pendingConfirmationActionRef = useRef(null);
     const notificationTimeoutRef = useRef(null);
 
@@ -56,18 +94,43 @@ export default function Resources({
         errors,
         reset,
         clearErrors,
-    } = useForm(emptyResource);
+    } = useForm({
+        ...emptyLguResource,
+        tab_id: lguResourceTabs[0].id,
+    });
 
     const canManageSection = Boolean(sectionCategory?.id);
 
+    const tabMatches = (tab, tabId) => {
+        const aliases = tab.aliases ?? [tab.id];
+
+        return aliases.includes(tabId);
+    };
+
+    const findTabById = (tabId) =>
+        lguResourceTabs.find((tab) => tabMatches(tab, tabId)) ?? null;
+
+    const normalizeTabId = (tabId) => findTabById(tabId)?.id ?? tabId;
+
     useEffect(() => {
-        setContents(resourceItems);
-    }, [resourceItems]);
+        setContents(lguResourceItems);
+    }, [lguResourceItems]);
+
+    const currentTab = findTabById(activeTab);
 
     const filteredContents = useMemo(() => {
         const term = search.trim().toLowerCase();
 
         return contents.filter((content) => {
+            const matchesTab = tabMatches(
+                findTabById(activeTab) ?? { id: activeTab },
+                content.tab_id,
+            );
+
+            if (!matchesTab) {
+                return false;
+            }
+
             if (!term) {
                 return true;
             }
@@ -76,13 +139,16 @@ export default function Resources({
                 .filter(Boolean)
                 .some((value) => String(value).toLowerCase().includes(term));
         });
-    }, [contents, search]);
+    }, [activeTab, contents, search]);
 
-    const resetForm = () => {
-        setEditingResource(null);
+    const resetForm = (tabId = activeTab) => {
+        setEditingLguResource(null);
         clearErrors();
         reset();
-        setData(emptyResource);
+        setData({
+            ...emptyLguResource,
+            tab_id: tabId,
+        });
     };
 
     const closeFormModal = () => {
@@ -91,42 +157,42 @@ export default function Resources({
     };
 
     const openCreateModal = () => {
-        resetForm();
+        resetForm(activeTab);
         setIsFormModalOpen(true);
     };
 
-    const openEditModal = (resource) => {
-        setEditingResource(resource);
+    const openEditModal = (lguResource) => {
+        setEditingLguResource(lguResource);
         clearErrors();
         setData({
-            tab_id: RESOURCE_TAB_ID,
-            title: resource.title ?? "",
+            tab_id: normalizeTabId(lguResource.tab_id ?? activeTab),
+            title: lguResource.title ?? "",
             image: null,
             pdf: null,
-            description: resource.description ?? "",
-            is_active: Boolean(resource.is_active),
+            description: lguResource.description ?? "",
+            is_active: Boolean(lguResource.is_active),
         });
         setIsFormModalOpen(true);
     };
 
-    const openDeleteModal = (resource) => {
-        setResourcePendingDelete(resource);
+    const openDeleteModal = (lguResource) => {
+        setLguResourcePendingDelete(lguResource);
         setIsDeleteModalOpen(true);
     };
 
     const closeDeleteModal = () => {
-        setResourcePendingDelete(null);
+        setLguResourcePendingDelete(null);
         setIsDeleteModalOpen(false);
     };
 
-    const openPdfPreview = (resource) => {
-        if (!resource?.pdf) {
+    const openPdfPreview = (lguResource) => {
+        if (!lguResource?.pdf) {
             return;
         }
 
         setPdfPreview({
-            title: resource.title,
-            url: `/storage/documents/pdfs/${resource.pdf}`,
+            title: lguResource.title,
+            url: `/storage/documents/pdfs/${lguResource.pdf}`,
         });
     };
 
@@ -183,27 +249,30 @@ export default function Resources({
         }, 4000);
     };
 
-    const submitResource = (event) => {
+    const submitLguResource = (event) => {
         event.preventDefault();
 
         if (!canManageSection) {
             return;
         }
 
-        const isEditing = Boolean(editingResource);
+        const isEditing = Boolean(editingLguResource);
 
         openConfirmation({
             title: isEditing
-                ? "Save changes to resource?"
-                : "Add new resource?",
+                ? "Save changes to LGU resource item?"
+                : "Add new LGU resource item?",
             message: isEditing
-                ? "Are you sure you want to save the updates to this resource item?"
-                : "Are you sure you want to add this new resource item to the public Resources page?",
-            confirmLabel: isEditing ? "Save Changes" : "Add Resource",
+                ? "Are you sure you want to save the updates to this LGU resource item?"
+                : "Are you sure you want to add this new LGU resource item to the public LGU Resources page?",
+            confirmLabel: isEditing ? "Save Changes" : "Add LGU Resource",
             onConfirm: () => {
-                if (editingResource) {
+                if (editingLguResource) {
                     router.post(
-                        route("admin.resources.update", editingResource.id),
+                        route(
+                            "admin.lgu-resources.update",
+                            editingLguResource.id,
+                        ),
                         data,
                         {
                             forceFormData: true,
@@ -212,13 +281,13 @@ export default function Resources({
                                 closeFormModal();
                                 showNotification(
                                     "success",
-                                    "Resource content was updated successfully.",
+                                    "LGU resource content was updated successfully.",
                                 );
                             },
                             onError: () => {
                                 showNotification(
                                     "error",
-                                    "The resource item could not be updated. Please review the form and try again.",
+                                    "The LGU resource item could not be updated. Please review the form and try again.",
                                 );
                             },
                         },
@@ -226,20 +295,20 @@ export default function Resources({
                     return;
                 }
 
-                post(route("admin.resources.store"), {
+                post(route("admin.lgu-resources.store"), {
                     forceFormData: true,
                     preserveScroll: true,
                     onSuccess: () => {
                         closeFormModal();
                         showNotification(
                             "success",
-                            "New resource content was added successfully.",
+                            "New LGU resource content was added successfully.",
                         );
                     },
                     onError: () => {
                         showNotification(
                             "error",
-                            "The new resource item could not be added. Please review the form and try again.",
+                            "The new LGU resource item could not be added. Please review the form and try again.",
                         );
                     },
                 });
@@ -247,36 +316,45 @@ export default function Resources({
         });
     };
 
-    const deleteResource = () => {
-        if (!resourcePendingDelete) {
+    const deleteLguResource = () => {
+        if (!lguResourcePendingDelete) {
             return;
         }
 
-        destroy(route("admin.resources.destroy", resourcePendingDelete.id), {
-            preserveScroll: true,
-            onSuccess: () => {
-                closeDeleteModal();
-                showNotification(
-                    "success",
-                    "Resource content was deleted successfully.",
-                );
+        destroy(
+            route(
+                "admin.lgu-resources.destroy",
+                lguResourcePendingDelete.id,
+            ),
+            {
+                preserveScroll: true,
+                onSuccess: () => {
+                    closeDeleteModal();
+                    showNotification(
+                        "success",
+                        "LGU resource content was deleted successfully.",
+                    );
 
-                if (editingResource?.id === resourcePendingDelete.id) {
-                    closeFormModal();
-                }
+                    if (
+                        editingLguResource?.id ===
+                        lguResourcePendingDelete.id
+                    ) {
+                        closeFormModal();
+                    }
+                },
+                onError: () => {
+                    showNotification(
+                        "error",
+                        "The LGU resource item could not be deleted. Please try again.",
+                    );
+                },
             },
-            onError: () => {
-                showNotification(
-                    "error",
-                    "The resource item could not be deleted. Please try again.",
-                );
-            },
-        });
+        );
     };
 
     return (
         <>
-            <Head title="Resources" />
+            <Head title="LGU Resources" />
 
             <div className="min-w-0 space-y-4 sm:space-y-6">
                 <ActionStatusAlert notification={notification} />
@@ -287,15 +365,16 @@ export default function Resources({
                             <div className="min-w-0 space-y-3">
                                 <div className="space-y-1">
                                     <p className="text-xs font-bold uppercase tracking-[0.24em] text-emerald-700">
-                                        Content Manager
+                                        Fixed-Tab Content Manager
                                     </p>
                                     <h2 className="text-2xl font-bold text-slate-900">
-                                        Resources CMS
+                                        LGU Resources CMS
                                     </h2>
                                     <p className="max-w-2xl text-sm leading-6 text-slate-600">
-                                        Manage the fixed LGU Resources page
-                                        content that appears in the public
-                                        resources section.
+                                        Manage the fixed LGU resources tabs
+                                        used by the public page for award
+                                        postings, budget updates, memorandums,
+                                        and ordinances.
                                     </p>
                                 </div>
 
@@ -303,7 +382,7 @@ export default function Resources({
                                     <div className="rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
                                         The fixed category with slug{" "}
                                         <span className="font-semibold">
-                                            resources
+                                            lgu-resources
                                         </span>{" "}
                                         was not found. Create or restore that
                                         category record first.
@@ -335,7 +414,7 @@ export default function Resources({
                                             setSearch(event.target.value)
                                         }
                                         className="h-12 w-full rounded-lg border border-slate-200 bg-white pl-11 pr-4 text-sm text-slate-700 shadow-sm transition placeholder:text-slate-400 focus:border-slate-200 focus:ring-slate-200"
-                                        placeholder="Search resource items"
+                                        placeholder={`Search ${currentTab?.label?.toLowerCase() ?? "LGU resource items"}`}
                                     />
                                 </div>
                                 <button
@@ -344,9 +423,82 @@ export default function Resources({
                                     disabled={processing || !canManageSection}
                                     className="inline-flex h-12 w-full items-center justify-center rounded-lg bg-emerald-600 px-5 text-sm font-semibold text-white shadow-sm transition hover:bg-emerald-700 disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto sm:px-6"
                                 >
-                                    Add Resource
+                                    Add {currentTab?.label ?? "LGU Resource"}
                                 </button>
                             </div>
+                        </div>
+                    </div>
+
+                    <div className="border-b border-slate-100 bg-slate-50/80 px-4 py-3 sm:px-6">
+                        <div className="grid min-w-0 gap-2 md:grid-cols-2 xl:grid-cols-4">
+                            {lguResourceTabs.map((tab) => {
+                                const isActive = activeTab === tab.id;
+                                const tabCount = contents.filter((content) =>
+                                    tabMatches(tab, content.tab_id),
+                                ).length;
+                                const TabIcon = tab.Icon;
+
+                                return (
+                                    <button
+                                        key={tab.id}
+                                        type="button"
+                                        onClick={() => {
+                                            setActiveTab(tab.id);
+                                            setData("tab_id", tab.id);
+                                        }}
+                                        title={tab.helper}
+                                        className={`w-full min-w-0 overflow-hidden rounded-lg border px-3 py-3 text-left transition ${
+                                            isActive
+                                                ? "border-emerald-700 bg-emerald-700 text-white shadow-sm"
+                                                : "border-emerald-200 bg-emerald-50/80 text-slate-700 hover:border-emerald-300 hover:bg-emerald-100/80"
+                                        }`}
+                                    >
+                                        <div className="flex min-w-0 items-center gap-2 sm:gap-3">
+                                            <div className="flex min-w-0 flex-1 items-center gap-3">
+                                                <span
+                                                    className={`inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-md border ${
+                                                        isActive
+                                                            ? "border-white/20 bg-white/15"
+                                                            : "border-emerald-100 bg-emerald-50"
+                                                    }`}
+                                                >
+                                                    <TabIcon
+                                                        className={`h-4 w-4 ${
+                                                            isActive
+                                                                ? "text-white"
+                                                                : "text-emerald-700"
+                                                        }`}
+                                                    />
+                                                </span>
+                                                <div className="min-w-0">
+                                                    <p className="truncate text-sm font-bold sm:text-base">
+                                                        {tab.label}
+                                                    </p>
+                                                    <p
+                                                        className={`mt-0.5 truncate text-xs sm:text-sm ${
+                                                            isActive
+                                                                ? "text-emerald-50/95"
+                                                                : "text-slate-500"
+                                                        }`}
+                                                    >
+                                                        {tab.helper}
+                                                    </p>
+                                                </div>
+                                            </div>
+                                            <span
+                                                className={`hidden shrink-0 rounded-full px-2 py-1 text-[10px] font-bold uppercase tracking-[0.12em] sm:inline-flex ${
+                                                    isActive
+                                                        ? "bg-white/15 text-white"
+                                                        : "bg-emerald-100 text-emerald-700"
+                                                }`}
+                                            >
+                                                {tabCount} item
+                                                {tabCount === 1 ? "" : "s"}
+                                            </span>
+                                        </div>
+                                    </button>
+                                );
+                            })}
                         </div>
                     </div>
 
@@ -354,19 +506,16 @@ export default function Resources({
                         <table className="min-w-full divide-y divide-gray-200">
                             <thead className="bg-gray-50">
                                 <tr>
-                                    {[
-                                        "Title",
-                                        "Image",
-                                        "PDF",
-                                        "Status",
-                                    ].map((heading) => (
-                                        <th
-                                            key={heading}
-                                            className="px-6 py-3 text-left text-xs font-bold uppercase tracking-wider text-slate-600"
-                                        >
-                                            {heading}
-                                        </th>
-                                    ))}
+                                    {["Title", "Image", "PDF", "Status"].map(
+                                        (heading) => (
+                                            <th
+                                                key={heading}
+                                                className="px-6 py-3 text-left text-xs font-bold uppercase tracking-wider text-slate-600"
+                                            >
+                                                {heading}
+                                            </th>
+                                        ),
+                                    )}
                                     <th className="px-6 py-3 text-right text-xs font-bold uppercase tracking-wider text-slate-600">
                                         Action
                                     </th>
@@ -406,16 +555,16 @@ export default function Resources({
                                                     <button
                                                         type="button"
                                                         onClick={() =>
-                                                            openPdfPreview(
-                                                                content,
-                                                            )
+                                                            openPdfPreview(content)
                                                         }
                                                         className="inline-flex items-center rounded-full border border-emerald-300 bg-emerald-600 px-3.5 py-2 text-xs font-bold uppercase tracking-[0.12em] text-white shadow-sm transition hover:bg-emerald-700"
                                                     >
                                                         View PDF
                                                     </button>
                                                 ) : (
-                                                    "No PDF"
+                                                    <span className="font-semibold text-rose-600">
+                                                        No PDF
+                                                    </span>
                                                 )}
                                             </td>
                                             <td className="px-6 py-4 text-sm">
@@ -436,9 +585,7 @@ export default function Resources({
                                                     <button
                                                         type="button"
                                                         onClick={() =>
-                                                            openEditModal(
-                                                                content,
-                                                            )
+                                                            openEditModal(content)
                                                         }
                                                         className="font-semibold text-indigo-600 hover:text-indigo-800"
                                                     >
@@ -447,9 +594,7 @@ export default function Resources({
                                                     <button
                                                         type="button"
                                                         onClick={() =>
-                                                            openDeleteModal(
-                                                                content,
-                                                            )
+                                                            openDeleteModal(content)
                                                         }
                                                         className="font-semibold text-rose-600 hover:text-rose-800"
                                                     >
@@ -465,7 +610,8 @@ export default function Resources({
                                             colSpan="5"
                                             className="px-6 py-8 text-center text-sm text-slate-500"
                                         >
-                                            No resources found.
+                                            No content found for the{" "}
+                                            {currentTab?.label ?? "selected tab"}.
                                         </td>
                                     </tr>
                                 )}
@@ -480,6 +626,13 @@ export default function Resources({
                                     key={content.id}
                                     className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm"
                                 >
+                                    {content.image ? (
+                                        <img
+                                            src={`/storage/images/thumbnails/${content.image}`}
+                                            alt={content.title}
+                                            className="mb-4 h-40 w-full rounded-xl border border-slate-200 object-cover shadow-sm"
+                                        />
+                                    ) : null}
                                     <div className="flex items-start justify-between gap-3">
                                         <div className="min-w-0 flex-1">
                                             <p className="break-words text-base font-bold text-slate-950">
@@ -489,25 +642,21 @@ export default function Resources({
                                                 {content.description ||
                                                     "No description provided"}
                                             </p>
-                                            <p className="mt-2 break-all text-xs text-slate-500">
-                                                Image:{" "}
-                                                {content.image || "No image"}
-                                            </p>
-                                            <div className="mt-1 text-xs text-slate-500">
+                                            <div className="mt-3 text-xs text-slate-500">
                                                 {content.pdf ? (
                                                     <button
                                                         type="button"
                                                         onClick={() =>
-                                                            openPdfPreview(
-                                                                content,
-                                                            )
+                                                            openPdfPreview(content)
                                                         }
                                                         className="inline-flex items-center rounded-full border border-emerald-300 bg-emerald-600 px-3.5 py-2 text-xs font-bold uppercase tracking-[0.12em] text-white shadow-sm transition hover:bg-emerald-700"
                                                     >
                                                         View PDF
                                                     </button>
                                                 ) : (
-                                                    <span>PDF: No PDF</span>
+                                                    <span className="font-semibold text-rose-600">
+                                                        PDF: No PDF
+                                                    </span>
                                                 )}
                                             </div>
                                         </div>
@@ -548,7 +697,8 @@ export default function Resources({
                         ) : (
                             <div className="rounded-2xl border border-dashed border-slate-300 bg-slate-50 px-4 py-8 text-center">
                                 <p className="text-sm font-medium text-slate-500">
-                                    No resources found.
+                                    No content found for the{" "}
+                                    {currentTab?.label ?? "selected tab"}.
                                 </p>
                             </div>
                         )}
@@ -622,7 +772,7 @@ export default function Resources({
                                 </svg>
                             </span>
                             <p className="text-xs font-bold uppercase tracking-[0.2em] text-emerald-700">
-                                Resource Content
+                                LGU Resource Content
                             </p>
                         </div>
                         <button
@@ -648,42 +798,70 @@ export default function Resources({
                     </div>
 
                     <form
-                        onSubmit={submitResource}
+                        onSubmit={submitLguResource}
                         className="flex min-h-0 flex-1 flex-col"
                     >
                         <div className="min-h-0 flex-1 space-y-5 overflow-y-auto px-5 py-5 sm:px-6">
-                            <div>
-                                <InputLabel
-                                    htmlFor="resources-status"
-                                    value="Visibility"
-                                />
-                                <label
-                                    id="resources-status"
-                                    className="mt-1 flex h-[42px] items-center gap-3 rounded-md border border-gray-300 px-3 text-sm font-medium text-gray-700"
-                                >
-                                    <input
-                                        type="checkbox"
-                                        checked={data.is_active}
-                                        onChange={(event) =>
-                                            setData(
-                                                "is_active",
-                                                event.target.checked,
-                                            )
-                                        }
-                                        disabled={processing}
-                                        className="rounded border-gray-300 text-indigo-600 shadow-sm focus:ring-indigo-500"
+                            <div className="grid gap-4 md:grid-cols-2">
+                                <div>
+                                    <InputLabel
+                                        htmlFor="lgu-resources-tab"
+                                        value="Fixed Tab"
                                     />
-                                    Show publicly
-                                </label>
+                                    <select
+                                        id="lgu-resources-tab"
+                                        value={data.tab_id}
+                                        onChange={(event) =>
+                                            setData("tab_id", event.target.value)
+                                        }
+                                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                                        disabled={processing}
+                                    >
+                                        {lguResourceTabs.map((tab) => (
+                                            <option key={tab.id} value={tab.id}>
+                                                {tab.label}
+                                            </option>
+                                        ))}
+                                    </select>
+                                    <InputError
+                                        message={errors.tab_id}
+                                        className="mt-2"
+                                    />
+                                </div>
+
+                                <div>
+                                    <InputLabel
+                                        htmlFor="lgu-resources-status"
+                                        value="Visibility"
+                                    />
+                                    <label
+                                        id="lgu-resources-status"
+                                        className="mt-1 flex h-[42px] items-center gap-3 rounded-md border border-gray-300 px-3 text-sm font-medium text-gray-700"
+                                    >
+                                        <input
+                                            type="checkbox"
+                                            checked={data.is_active}
+                                            onChange={(event) =>
+                                                setData(
+                                                    "is_active",
+                                                    event.target.checked,
+                                                )
+                                            }
+                                            disabled={processing}
+                                            className="rounded border-gray-300 text-indigo-600 shadow-sm focus:ring-indigo-500"
+                                        />
+                                        Show publicly
+                                    </label>
+                                </div>
                             </div>
 
                             <div>
                                 <InputLabel
-                                    htmlFor="resources-title"
-                                    value="Resource Title"
+                                    htmlFor="lgu-resources-title"
+                                    value="LGU Resource Title"
                                 />
                                 <TextInput
-                                    id="resources-title"
+                                    id="lgu-resources-title"
                                     value={data.title}
                                     onChange={(event) =>
                                         setData("title", event.target.value)
@@ -699,11 +877,11 @@ export default function Resources({
 
                             <div>
                                 <InputLabel
-                                    htmlFor="resources-image"
+                                    htmlFor="lgu-resources-image"
                                     value="Image File"
                                 />
                                 <input
-                                    id="resources-image"
+                                    id="lgu-resources-image"
                                     type="file"
                                     accept=".png,.jpg,.jpeg,.webp"
                                     onChange={(event) =>
@@ -715,9 +893,9 @@ export default function Resources({
                                     className="mt-1 block w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm file:mr-4 file:rounded-md file:border-0 file:bg-emerald-50 file:px-3 file:py-2 file:font-semibold file:text-emerald-700 hover:file:bg-emerald-100"
                                     disabled={processing}
                                 />
-                                {editingResource?.image ? (
+                                {editingLguResource?.image ? (
                                     <p className="mt-2 text-xs text-gray-500">
-                                        Current image: {editingResource.image}
+                                        Current image: {editingLguResource.image}
                                     </p>
                                 ) : null}
                                 <InputError
@@ -728,11 +906,11 @@ export default function Resources({
 
                             <div>
                                 <InputLabel
-                                    htmlFor="resources-pdf"
+                                    htmlFor="lgu-resources-pdf"
                                     value="PDF File"
                                 />
                                 <input
-                                    id="resources-pdf"
+                                    id="lgu-resources-pdf"
                                     type="file"
                                     accept=".pdf,application/pdf"
                                     onChange={(event) =>
@@ -744,9 +922,9 @@ export default function Resources({
                                     className="mt-1 block w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm file:mr-4 file:rounded-md file:border-0 file:bg-emerald-50 file:px-3 file:py-2 file:font-semibold file:text-emerald-700 hover:file:bg-emerald-100"
                                     disabled={processing}
                                 />
-                                {editingResource?.pdf ? (
+                                {editingLguResource?.pdf ? (
                                     <p className="mt-2 text-xs text-gray-500">
-                                        Current PDF: {editingResource.pdf}
+                                        Current PDF: {editingLguResource.pdf}
                                     </p>
                                 ) : (
                                     <p className="mt-2 text-xs text-gray-500">
@@ -762,11 +940,11 @@ export default function Resources({
 
                             <div>
                                 <InputLabel
-                                    htmlFor="resources-description"
+                                    htmlFor="lgu-resources-description"
                                     value="Description"
                                 />
                                 <textarea
-                                    id="resources-description"
+                                    id="lgu-resources-description"
                                     value={data.description}
                                     onChange={(event) =>
                                         setData(
@@ -787,11 +965,11 @@ export default function Resources({
 
                         <div className="flex shrink-0 flex-wrap items-center justify-between gap-3 border-t border-slate-200 bg-slate-50 px-5 py-4 shadow-[0_-8px_24px_rgba(15,23,42,0.06)] sm:px-6">
                             <div>
-                                {editingResource ? (
+                                {editingLguResource ? (
                                     <DangerButton
                                         type="button"
                                         onClick={() =>
-                                            openDeleteModal(editingResource)
+                                            openDeleteModal(editingLguResource)
                                         }
                                         disabled={processing}
                                     >
@@ -809,7 +987,7 @@ export default function Resources({
                                 <PrimaryButton disabled={processing}>
                                     {processing
                                         ? "Saving..."
-                                        : editingResource
+                                        : editingLguResource
                                           ? "Update"
                                           : "Save"}
                                 </PrimaryButton>
@@ -826,12 +1004,12 @@ export default function Resources({
             >
                 <div className="p-6">
                     <h2 className="text-xl font-semibold text-slate-950">
-                        Delete Resource Item
+                        Delete LGU Resource Item
                     </h2>
                     <p className="mt-3 text-sm leading-6 text-slate-600">
-                        {resourcePendingDelete
-                            ? `Are you sure you want to delete "${resourcePendingDelete.title}"? This action cannot be undone.`
-                            : "Are you sure you want to delete this resource item?"}
+                        {lguResourcePendingDelete
+                            ? `Are you sure you want to delete "${lguResourcePendingDelete.title}"? This action cannot be undone.`
+                            : "Are you sure you want to delete this LGU resource item?"}
                     </p>
 
                     <div className="mt-6 flex flex-wrap justify-end gap-3">
@@ -843,7 +1021,7 @@ export default function Resources({
                         </SecondaryButton>
                         <DangerButton
                             type="button"
-                            onClick={deleteResource}
+                            onClick={deleteLguResource}
                             disabled={processing}
                         >
                             {processing ? "Deleting..." : "Delete"}
@@ -865,11 +1043,14 @@ export default function Resources({
     );
 }
 
-Resources.layout = (page) => (
+LguResources.layout = (page) => (
     <AdminLayout
         user={page.props.auth.user}
-        title="Resources CMS"
-        breadcrumbs={[{ label: "Admin Workspace" }, { label: "Resources CMS" }]}
+        title="LGU Resources CMS"
+        breadcrumbs={[
+            { label: "Admin Workspace" },
+            { label: "LGU Resources CMS" },
+        ]}
         children={page}
     />
 );

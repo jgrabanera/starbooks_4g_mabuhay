@@ -45,9 +45,9 @@ const navigationItems = [
         icon: HiOutlineFolderOpen,
     },
     {
-        label: "Social Services",
-        href: "admin.social-services.index",
-        isActive: () => route().current("admin.social-services.*"),
+        label: "LGU Resources",
+        href: "admin.lgu-resources.index",
+        isActive: () => route().current("admin.lgu-resources.*"),
         icon: HiOutlineUsers,
     },
     {
@@ -57,9 +57,9 @@ const navigationItems = [
         icon: HiOutlineGlobeAsiaAustralia,
     },
     {
-        label: "Resources",
-        href: "admin.resources.index",
-        isActive: () => route().current("admin.resources.*"),
+        label: "Social Services",
+        href: "admin.social-services.index",
+        isActive: () => route().current("admin.social-services.*"),
         icon: HiOutlineDocumentText,
     },
 ];

@@ -7,7 +7,7 @@ use App\Models\About;
 use App\Models\Category;
 use App\Models\DostServiceContent;
 use App\Models\ProjectContent;
-use App\Models\ResourceContent;
+use App\Models\LguResourceContent;
 use App\Models\SocialServiceContent;
 use App\Models\TourismContent;
 use Inertia\Inertia;
@@ -21,7 +21,7 @@ class DashboardController extends Controller
             'about-lgu-mabuhay' => About::query()->where('page_key', 'about-lgu-mabuhay')->count(),
             'dost-services' => DostServiceContent::query()->count(),
             'lgu-mabuhay-projects' => ProjectContent::query()->count(),
-            'resources' => ResourceContent::query()->count(),
+            'lgu-resources' => LguResourceContent::query()->count(),
             'social-services' => SocialServiceContent::query()->count(),
             'tourism' => TourismContent::query()->count(),
         ];

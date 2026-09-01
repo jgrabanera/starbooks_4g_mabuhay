@@ -4,19 +4,19 @@ namespace App\Http\Controllers\Client;
 
 use App\Http\Controllers\Controller;
 use App\Models\Category;
-use App\Models\ResourceContent;
+use App\Models\LguResourceContent;
 use Illuminate\Http\JsonResponse;
 
-class ResourcesController extends Controller
+class LguResourcesController extends Controller
 {
     public function content(): JsonResponse
     {
         $category = Category::query()
-            ->where('slug', 'resources')
+            ->where('slug', 'lgu-resources')
             ->where('is_active', true)
             ->firstOrFail(['id', 'title', 'slug']);
 
-        $contents = ResourceContent::query()
+        $contents = LguResourceContent::query()
             ->where('is_active', true)
             ->orderByDesc('id')
             ->get()
@@ -45,7 +45,10 @@ class ResourcesController extends Controller
     private function normalizeTabId(?string $tabId): ?string
     {
         return match ($tabId) {
-            'resources', 'memorandum' => 'resources',
+            'award', 'posting-of-awardings-3' => 'award',
+            'budget', 'nta-budget-per-month-4' => 'budget',
+            'memorandum', 'memorandum-1' => 'memorandum',
+            'ordinance', 'ordinance-2' => 'ordinance',
             default => $tabId,
         };
     }

@@ -4,7 +4,7 @@ namespace Tests\Feature;
 
 use App\Models\Category;
 use App\Models\DostServiceContent;
-use App\Models\ResourceContent;
+use App\Models\LguResourceContent;
 use App\Models\SocialServiceContent;
 use App\Models\TourismContent;
 use App\Models\User;
@@ -22,20 +22,20 @@ class AdminFixedSectionPagesTest extends TestCase
 
         $definitions = [
             [
-                'route' => 'admin.resources.index',
-                'component' => 'Admin/Resources',
-                'slug' => 'resources',
-                'title' => 'Resources',
-                'tab_id' => 'resources',
-                'content_title' => 'Citizen Resource Guide',
+                'route' => 'admin.lgu-resources.index',
+                'component' => 'Admin/LguResources',
+                'slug' => 'lgu-resources',
+                'title' => 'LGU Resources',
+                'tab_id' => 'award',
+                'content_title' => 'Livelihood Award Posting',
             ],
             [
                 'route' => 'admin.social-services.index',
                 'component' => 'Admin/SocialServices',
                 'slug' => 'social-services',
                 'title' => 'Social Services',
-                'tab_id' => 'award',
-                'content_title' => 'Livelihood Award Posting',
+                'tab_id' => 'social-services',
+                'content_title' => 'Community Social Services',
             ],
             [
                 'route' => 'admin.tourism.index',
@@ -69,7 +69,7 @@ class AdminFixedSectionPagesTest extends TestCase
             ]);
 
             match ($definition['slug']) {
-                'resources' => ResourceContent::create([
+                'lgu-resources' => LguResourceContent::create([
                     'tab_id' => $definition['tab_id'],
                     'title' => $definition['content_title'],
                     'slug' => str($definition['content_title'])->slug()->toString(),

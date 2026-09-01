@@ -33,6 +33,10 @@ class CategoryController extends Controller
 
     public function show(string $slug): Response|RedirectResponse
     {
+        if ($slug === 'resources') {
+            return to_route('client.category.show', ['slug' => 'lgu-resources'], 301);
+        }
+
         if ($slug === 'about-lgu-mabuhay') {
             $about = $this->loadAboutRecord();
 
@@ -78,7 +82,7 @@ class CategoryController extends Controller
         return [
             'dost-services' => 'Client/Sub/DostServices',
             'lgu-mabuhay-projects' => 'Client/Sub/LguMabuhayProjects',
-            'resources' => 'Client/Sub/Resources',
+            'lgu-resources' => 'Client/Sub/LguResources',
             'social-services' => 'Client/Sub/SocialServices',
             'tourism' => 'Client/Sub/Tourism',
         ];

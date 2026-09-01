@@ -39,15 +39,18 @@ class ClientCategoryPageRoutingTest extends TestCase
             ->assertInertia(fn ($page) => $page->component('Client/Sub/LguMabuhayProjects'));
     }
 
-    public function test_resources_slug_renders_its_dedicated_page(): void
+    public function test_resources_slug_redirects_to_lgu_resources(): void
     {
         $response = $this->get(route('client.category.show', [
             'slug' => 'resources',
         ]));
 
         $response
+            ->assertRedirect(route('client.category.show', ['slug' => 'lgu-resources']));
+
+        $this->get(route('client.category.show', ['slug' => 'lgu-resources']))
             ->assertOk()
-            ->assertInertia(fn ($page) => $page->component('Client/Sub/Resources'));
+            ->assertInertia(fn ($page) => $page->component('Client/Sub/LguResources'));
     }
 
     public function test_social_services_slug_renders_its_dedicated_page(): void

@@ -21,9 +21,9 @@ const cmsSections = [
     ["About", "About, organization, and LGU information", "admin.about.index", HiOutlineInformationCircle],
     ["DOST Services", "DOST IX programs, services, and posts", "admin.dost-services.index", HiOutlineBeaker],
     ["Projects", "Completed and ongoing LGU projects", "admin.projects.index", HiOutlineFolderOpen],
-    ["Social Services", "Awards, budgets, memorandums, and ordinances", "admin.social-services.index", HiOutlineUsers],
+    ["LGU Resources", "Awards, budgets, memorandums, and ordinances", "admin.lgu-resources.index", HiOutlineUsers],
     ["Tourism", "Events, festivities, and tourism sites", "admin.tourism.index", HiOutlineGlobeAsiaAustralia],
-    ["Resources", "Public LGU documents and resources", "admin.resources.index", HiOutlineDocumentText],
+    ["Social Services", "Public social service information", "admin.social-services.index", HiOutlineDocumentText],
 ];
 
 const plannedAnalytics = [

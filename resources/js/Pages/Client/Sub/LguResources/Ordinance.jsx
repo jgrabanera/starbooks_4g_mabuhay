@@ -5,7 +5,7 @@ const Ordinance = ({ items = [], loading = false, error = "" }) => (
     <ContentCollectionPanel
         logoSrc="/assets/images/logos/lgu-mabuhay.png"
         logoAlt="LGU Mabuhay"
-        eyebrow="Social Services Records"
+        eyebrow="LGU Resources Records"
         title="Ordinance"
         searchPlaceholder="Search ordinances"
         emptyTitle="No ordinances found."
