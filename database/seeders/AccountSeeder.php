@@ -2,10 +2,9 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
-use App\Models\User;
 
 class AccountSeeder extends Seeder
 {
@@ -14,13 +13,13 @@ class AccountSeeder extends Seeder
      */
     public function run(): void
     {
-        //
-        User::factory()->create([
-            'name' => 'Jomar Rabanera',
-            'email' => 'admin.user@sb4g.com',
-            'password' => Hash::make('sb4g@dminPassword'), // Replace with a secure password
-        ]);
-
-
+        User::query()->updateOrCreate(
+            ['email' => 'admin.user@sb4g.com'],
+            [
+                'name' => 'Jomar Rabanera',
+                'email_verified_at' => '2026-09-05 07:32:34',
+                'password' => Hash::make('sb4g@dminPassword'),
+            ],
+        );
     }
 }
