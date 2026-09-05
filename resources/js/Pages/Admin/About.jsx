@@ -23,6 +23,32 @@ const normalizeArray = (items, fallback) =>
 const contentCardClassName =
     "rounded-lg border border-slate-200 bg-white p-5 shadow-sm sm:p-6";
 
+const ValidationErrorSummary = ({ errors }) => {
+    const messages = [...new Set(Object.values(errors).filter(Boolean))];
+
+    if (messages.length === 0) {
+        return null;
+    }
+
+    return (
+        <div
+            role="alert"
+            aria-live="assertive"
+            className="rounded-lg border border-rose-300 bg-rose-50 p-4 text-rose-900"
+        >
+            <p className="font-bold">Your changes could not be saved.</p>
+            <p className="mt-1 text-sm">
+                Please correct the following {messages.length === 1 ? "error" : "errors"} and try again:
+            </p>
+            <ul className="mt-3 list-disc space-y-1 pl-5 text-sm">
+                {messages.map((message) => (
+                    <li key={message}>{message}</li>
+                ))}
+            </ul>
+        </div>
+    );
+};
+
 const createCouncilMemberDraft = () => ({
     name: "",
     role: "Council Member",
@@ -73,6 +99,7 @@ export default function About({ aboutContent }) {
     );
     const pendingConfirmationActionRef = useRef(null);
     const notificationTimeoutRef = useRef(null);
+    const validationErrorRef = useRef(null);
 
     const {
         data,
@@ -529,12 +556,21 @@ export default function About({ aboutContent }) {
                 notificationOverrides.onSuccess?.(page);
             },
             onError: (responseErrors) => {
+                const errorCount = Object.keys(responseErrors).length;
+
                 showNotification(
                     "error",
                     notificationOverrides.errorMessage ??
-                    `The ${sectionLabel} tab could not be saved. Please review the form and try again.`,
+                    `The ${sectionLabel} tab could not be saved. Please correct ${errorCount} ${errorCount === 1 ? "error" : "errors"} and try again.`,
                 );
                 notificationOverrides.onError?.(responseErrors);
+
+                window.requestAnimationFrame(() => {
+                    validationErrorRef.current?.scrollIntoView({
+                        behavior: "smooth",
+                        block: "center",
+                    });
+                });
             },
             onFinish: () => {
                 transform((currentData) => currentData);
@@ -666,6 +702,10 @@ export default function About({ aboutContent }) {
                     </div>
 
                     <form onSubmit={submit} className="space-y-6 p-5 sm:p-6">
+                        <div ref={validationErrorRef}>
+                            <ValidationErrorSummary errors={errors} />
+                        </div>
+
                         {activeTab === "about" ? (
                             <AboutTabSection
                                 data={data}

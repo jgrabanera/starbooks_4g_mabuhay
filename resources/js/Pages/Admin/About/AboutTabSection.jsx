@@ -47,6 +47,10 @@ export default function AboutTabSection({
                             }
                             className="mt-1 block w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm"
                         />
+                        <InputError
+                            message={errors.hero_logo}
+                            className="mt-2"
+                        />
                     </div>
                     <div>
                         <InputLabel value="Hero Logo Alt" />
@@ -56,6 +60,10 @@ export default function AboutTabSection({
                                 setData("hero_logo_alt", event.target.value)
                             }
                             className="mt-1 block w-full"
+                        />
+                        <InputError
+                            message={errors.hero_logo_alt}
+                            className="mt-2"
                         />
                     </div>
                     <div>
@@ -275,6 +283,10 @@ export default function AboutTabSection({
                             }
                             className="mt-1 block w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm"
                         />
+                        <InputError
+                            message={errors.media_preview_image}
+                            className="mt-2"
+                        />
                     </div>
                     <div>
                         <InputLabel value="Video File" />
@@ -380,6 +392,13 @@ export default function AboutTabSection({
                                     }
                                     className="block w-full"
                                 />
+                                <InputError
+                                    message={
+                                        errors[
+                                            `priorities_items.${index}.title`
+                                        ]
+                                    }
+                                />
                                 <textarea
                                     value={item.description}
                                     onChange={(event) =>
@@ -391,6 +410,13 @@ export default function AboutTabSection({
                                     }
                                     rows="3"
                                     className="block w-full rounded-md border-gray-300"
+                                />
+                                <InputError
+                                    message={
+                                        errors[
+                                            `priorities_items.${index}.description`
+                                        ]
+                                    }
                                 />
                             </div>
                         </div>

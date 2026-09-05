@@ -15,6 +15,7 @@ class CurrentDatabaseSeeder extends Seeder
             AccountSeeder::class,
             CategorySeeder::class,
             AboutSeeder::class,
+            AboutPrioritySeeder::class,
             AboutCouncilMemberSeeder::class,
             AboutLguBarangaySeeder::class,
         ]);

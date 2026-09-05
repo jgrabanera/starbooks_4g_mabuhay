@@ -177,10 +177,6 @@ const About = ({ aboutData = null }) => {
                                 </div>
                             </div>
                         )}
-                        <div className="flex items-center justify-between border-t border-white/10 bg-slate-950/95 px-4 py-3 text-xs uppercase tracking-[0.16em] text-slate-300 md:px-5">
-                            <span>{media.footerLeft || ""}</span>
-                            <span>{media.footerRight || ""}</span>
-                        </div>
                     </div>
                 </article>
 
