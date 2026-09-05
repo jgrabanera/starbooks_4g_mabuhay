@@ -18,6 +18,7 @@ class CurrentDatabaseSeeder extends Seeder
             AboutPrioritySeeder::class,
             AboutCouncilMemberSeeder::class,
             AboutLguBarangaySeeder::class,
+            DostServiceContentSeeder::class,
         ]);
     }
 }
