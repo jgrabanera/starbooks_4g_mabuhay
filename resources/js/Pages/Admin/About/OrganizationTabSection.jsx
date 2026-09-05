@@ -1,6 +1,12 @@
 import SecondaryButton from "@/Components/SecondaryButton";
 import { useEffect, useState } from "react";
 
+const categoryLabels = {
+    sangguniang_bayan: "Sangguniang Bayan",
+    ex_officio: "Ex-Officio",
+    secretary: "Secretary to the Sangguniang",
+};
+
 export default function OrganizationTabSection({
     data,
     setData,
@@ -224,6 +230,9 @@ export default function OrganizationTabSection({
                                 <th className="px-4 py-3 text-left text-xs font-bold uppercase tracking-[0.18em] text-slate-600">
                                     Role
                                 </th>
+                                <th className="px-4 py-3 text-left text-xs font-bold uppercase tracking-[0.18em] text-slate-600">
+                                    Category / Expertise
+                                </th>
                                 <th className="px-4 py-3 text-right text-xs font-bold uppercase tracking-[0.18em] text-slate-600">
                                     Action
                                 </th>
@@ -264,6 +273,17 @@ export default function OrganizationTabSection({
                                                 {member.role ||
                                                     "Council Member"}
                                             </td>
+                                            <td className="px-4 py-4 text-sm text-slate-600">
+                                                <p className="font-semibold text-slate-800">
+                                                    {categoryLabels[
+                                                        member.category
+                                                    ] ?? "Sangguniang Bayan"}
+                                                </p>
+                                                <p className="mt-1 text-xs">
+                                                    {member.area_of_expertise ||
+                                                        "No expertise specified"}
+                                                </p>
+                                            </td>
                                             <td className="px-4 py-4">
                                                 <div className="flex justify-end gap-3">
                                                     <button
@@ -299,7 +319,7 @@ export default function OrganizationTabSection({
                             ) : (
                                 <tr>
                                     <td
-                                        colSpan="5"
+                                        colSpan="6"
                                         className="px-4 py-10 text-center text-sm text-slate-500"
                                     >
                                         No council members added yet.
@@ -342,6 +362,16 @@ export default function OrganizationTabSection({
                                                 {member.role ||
                                                     "Council Member"}
                                             </p>
+                                            <p className="mt-2 text-xs font-semibold text-emerald-700">
+                                                {categoryLabels[
+                                                    member.category
+                                                ] ?? "Sangguniang Bayan"}
+                                            </p>
+                                            {member.area_of_expertise ? (
+                                                <p className="mt-1 text-xs text-slate-500">
+                                                    {member.area_of_expertise}
+                                                </p>
+                                            ) : null}
                                             {!imageUrl ? (
                                                 <p className="mt-2 text-xs text-slate-500">
                                                     No image

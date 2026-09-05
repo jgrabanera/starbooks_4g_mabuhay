@@ -52,6 +52,8 @@ const ValidationErrorSummary = ({ errors }) => {
 const createCouncilMemberDraft = () => ({
     name: "",
     role: "Council Member",
+    category: "sangguniang_bayan",
+    area_of_expertise: "",
     image: null,
     current_image: null,
 });
@@ -284,6 +286,8 @@ export default function About({ aboutContent }) {
         setCouncilMemberDraft({
             name: member?.name ?? "",
             role: member?.role ?? "Council Member",
+            category: member?.category ?? "sangguniang_bayan",
+            area_of_expertise: member?.area_of_expertise ?? "",
             image: null,
             current_image: member?.current_image ?? null,
         });
@@ -329,6 +333,9 @@ export default function About({ aboutContent }) {
                 const memberPayload = {
                     name: councilMemberDraft.name.trim(),
                     role: councilMemberDraft.role.trim(),
+                    category: councilMemberDraft.category,
+                    area_of_expertise:
+                        councilMemberDraft.area_of_expertise.trim(),
                     image: councilMemberDraft.image,
                 };
 
@@ -1085,6 +1092,45 @@ export default function About({ aboutContent }) {
                                         role: event.target.value,
                                     }))
                                 }
+                                className="mt-1 block w-full"
+                            />
+                        </div>
+
+                        <div>
+                            <InputLabel value="Category" />
+                            <select
+                                value={councilMemberDraft.category}
+                                onChange={(event) =>
+                                    setCouncilMemberDraft((currentState) => ({
+                                        ...currentState,
+                                        category: event.target.value,
+                                    }))
+                                }
+                                className="mt-1 block w-full rounded-md border-gray-300"
+                            >
+                                <option value="sangguniang_bayan">
+                                    Sangguniang Bayan Member
+                                </option>
+                                <option value="ex_officio">
+                                    Ex-Officio Municipal Councilor
+                                </option>
+                                <option value="secretary">
+                                    Secretary to the Sangguniang
+                                </option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <InputLabel value="Area of Expertise" />
+                            <TextInput
+                                value={councilMemberDraft.area_of_expertise}
+                                onChange={(event) =>
+                                    setCouncilMemberDraft((currentState) => ({
+                                        ...currentState,
+                                        area_of_expertise: event.target.value,
+                                    }))
+                                }
+                                placeholder="e.g. Agriculture, Appropriations, DRR"
                                 className="mt-1 block w-full"
                             />
                         </div>

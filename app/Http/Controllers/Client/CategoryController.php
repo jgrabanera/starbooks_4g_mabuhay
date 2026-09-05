@@ -196,6 +196,8 @@ class CategoryController extends Controller
                     'id' => $member->id,
                     'name' => $member->name,
                     'role' => $member->role,
+                    'category' => $member->category,
+                    'areaOfExpertise' => $member->area_of_expertise,
                     'image' => $member->image
                         ? '/storage/images/thumbnails/' . $member->image
                         : null,
@@ -209,6 +211,8 @@ class CategoryController extends Controller
                 'id' => $member['id'] ?? null,
                 'name' => $member['name'] ?? null,
                 'role' => $member['role'] ?? 'Council Member',
+                'category' => $member['category'] ?? 'sangguniang_bayan',
+                'areaOfExpertise' => $member['area_of_expertise'] ?? null,
                 'image' => ! empty($member['image'])
                     ? '/storage/images/thumbnails/' . $member['image']
                     : null,

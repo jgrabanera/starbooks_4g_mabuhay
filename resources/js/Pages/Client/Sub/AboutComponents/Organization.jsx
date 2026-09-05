@@ -26,6 +26,8 @@ const normalizeCouncilMembers = (members = []) => {
             id: member?.id || `member-${index + 1}`,
             name: member?.name || "",
             role: member?.role || "Council Member",
+            category: member?.category || "sangguniang_bayan",
+            areaOfExpertise: member?.areaOfExpertise || "",
             image: member?.image || null,
         }))
         .filter((member) => member.name || member.role || member.image);
@@ -40,6 +42,11 @@ const MemberCard = ({ member }) => {
                 </div>
             </div>
             <div className="rounded-[0.8rem] bg-white px-3 py-3 text-center shadow-lg">
+                {member.areaOfExpertise ? (
+                    <p className="mb-2 rounded-full bg-slate-100 px-2 py-1 text-[0.65rem] font-semibold leading-tight text-slate-700">
+                        {member.areaOfExpertise}
+                    </p>
+                ) : null}
                 <p className="text-[0.82rem] font-semibold uppercase tracking-[0.04em] leading-5">
                     {member.name}
                 </p>
@@ -79,8 +86,27 @@ const Organization = ({ organizationData = null }) => {
             </div>
         );
     }
-    const desktopFirstRow = councilMembers.slice(0, 4);
-    const desktopSecondRow = councilMembers.slice(4);
+    const memberGroups = [
+        {
+            id: "sangguniang_bayan",
+            label: "Sangguniang Bayan Members",
+        },
+        {
+            id: "ex_officio",
+            label: "Ex-Officio Municipal Councilors",
+        },
+        {
+            id: "secretary",
+            label: "Secretary to the Sangguniang",
+        },
+    ]
+        .map((group) => ({
+            ...group,
+            members: councilMembers.filter(
+                (member) => member.category === group.id,
+            ),
+        }))
+        .filter((group) => group.members.length > 0);
 
     return (
         <div className="space-y-6">
@@ -126,29 +152,21 @@ const Organization = ({ organizationData = null }) => {
                     </article>
 
                     <div className="mx-auto h-10 w-0.5 bg-slate-400" />
-                    <div className="mx-auto h-10 max-w-6xl border-t-2 border-dashed border-slate-400/80" />
-
-                    <div className="mx-auto -mt-1 grid max-w-6xl grid-cols-4 gap-8">
-                        {desktopFirstRow.map((member) => (
-                            <div
-                                key={member.id}
-                                className="flex flex-col items-center"
-                            >
-                                <div className="h-7 w-0.5 bg-slate-400" />
-                                <MemberCard member={member} />
-                            </div>
-                        ))}
-                    </div>
-
-                    <div className="mx-auto mt-8 grid max-w-[50rem] grid-cols-3 gap-8">
-                        {desktopSecondRow.map((member) => (
-                            <div
-                                key={`${member.id}-second-row`}
-                                className="flex flex-col items-center"
-                            >
-                                <div className="h-7 w-0.5 bg-slate-400" />
-                                <MemberCard member={member} />
-                            </div>
+                    <div className="space-y-12">
+                        {memberGroups.map((group) => (
+                            <section key={group.id}>
+                                <h2 className="mb-8 text-center text-lg font-bold uppercase tracking-[0.16em] text-sky-900">
+                                    {group.label}
+                                </h2>
+                                <div className="mx-auto flex max-w-6xl flex-wrap justify-center gap-8">
+                                    {group.members.map((member) => (
+                                        <MemberCard
+                                            key={member.id}
+                                            member={member}
+                                        />
+                                    ))}
+                                </div>
+                            </section>
                         ))}
                     </div>
                 </div>
@@ -195,14 +213,21 @@ const Organization = ({ organizationData = null }) => {
                     </div>
                 </article>
 
-                <p className="text-center text-lg font-bold uppercase tracking-[0.22em] text-sky-900 mb-20">
-                    Sangguniang Bayan Members
-                </p>
-                <div className="mt-10 grid gap-10 sm:grid-cols-2 lg:grid-cols-3">
-                    {councilMembers.map((member) => (
-                        <MemberCard key={member.id} member={member} />
-                    ))}
-                </div>
+                {memberGroups.map((group) => (
+                    <section key={group.id} className="space-y-8">
+                        <h2 className="text-center text-lg font-bold uppercase tracking-[0.16em] text-sky-900">
+                            {group.label}
+                        </h2>
+                        <div className="flex flex-wrap justify-center gap-10">
+                            {group.members.map((member) => (
+                                <MemberCard
+                                    key={member.id}
+                                    member={member}
+                                />
+                            ))}
+                        </div>
+                    </section>
+                ))}
             </div>
         </div>
     );

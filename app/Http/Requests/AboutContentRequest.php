@@ -111,6 +111,8 @@ class AboutContentRequest extends FormRequest
             'organization_council_members.*.id' => ['nullable', 'string', 'max:255'],
             'organization_council_members.*.name' => ['required', 'string', 'max:255'],
             'organization_council_members.*.role' => ['required', 'string', 'max:255'],
+            'organization_council_members.*.category' => ['required', 'string', 'in:sangguniang_bayan,ex_officio,secretary'],
+            'organization_council_members.*.area_of_expertise' => ['nullable', 'string', 'max:255'],
             'organization_council_members.*.image' => ['nullable', 'file', 'mimes:jpg,jpeg,png,webp', 'max:5120'],
         ];
     }

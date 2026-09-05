@@ -189,6 +189,10 @@ class AboutAdminController extends Controller
                     'id' => $memberId,
                     'name' => trim($member['name']),
                     'role' => trim($member['role']),
+                    'category' => $member['category'],
+                    'area_of_expertise' => filled($member['area_of_expertise'] ?? null)
+                        ? trim($member['area_of_expertise'])
+                        : null,
                     'image' => $storedImage,
                 ];
             })
@@ -417,6 +421,8 @@ class AboutAdminController extends Controller
                     'id' => (string) $member->id,
                     'name' => $member->name,
                     'role' => $member->role,
+                    'category' => $member->category,
+                    'area_of_expertise' => $member->area_of_expertise,
                     'image' => null,
                     'current_image' => $member->image,
                 ])
@@ -432,6 +438,8 @@ class AboutAdminController extends Controller
                 'id' => (string) ($member['id'] ?? 'member-' . ($index + 1)),
                 'name' => $member['name'] ?? '',
                 'role' => $member['role'] ?? 'Council Member',
+                'category' => $member['category'] ?? 'sangguniang_bayan',
+                'area_of_expertise' => $member['area_of_expertise'] ?? '',
                 'image' => null,
                 'current_image' => $member['image'] ?? null,
             ])
@@ -561,6 +569,10 @@ class AboutAdminController extends Controller
             $member->fill([
                 'name' => trim($item['name']),
                 'role' => trim($item['role']),
+                'category' => $item['category'],
+                'area_of_expertise' => filled($item['area_of_expertise'] ?? null)
+                    ? trim($item['area_of_expertise'])
+                    : null,
                 'image' => $storedImage,
                 'display_order' => $index,
             ])->save();
@@ -658,6 +670,8 @@ class AboutAdminController extends Controller
                 'id' => (string) $member->id,
                 'name' => $member->name,
                 'role' => $member->role,
+                'category' => $member->category,
+                'area_of_expertise' => $member->area_of_expertise,
                 'image' => $member->image,
             ])
             ->values()

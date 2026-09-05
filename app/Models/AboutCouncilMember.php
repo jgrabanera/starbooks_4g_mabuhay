@@ -14,6 +14,8 @@ class AboutCouncilMember extends Model
         'about_id',
         'name',
         'role',
+        'category',
+        'area_of_expertise',
         'image',
         'display_order',
     ];
