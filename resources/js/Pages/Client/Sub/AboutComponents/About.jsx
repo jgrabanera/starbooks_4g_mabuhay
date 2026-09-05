@@ -87,13 +87,13 @@ const About = ({ aboutData = null }) => {
                 <div className="grid gap-8 px-6 py-8 md:px-10 md:py-10">
                     <article className="space-y-6">
                         <div>
-                            {overview.badge ? (
+                            {/* {overview.badge ? (
                                 <span className="inline-flex rounded-full bg-emerald-100 px-3 py-1 text-xs font-bold uppercase tracking-[0.22em] text-emerald-800">
                                     {overview.badge}
                                 </span>
-                            ) : null}
+                            ) : null} */}
                             {overview.title ? (
-                                <h2 className="mt-4 text-2xl font-black text-slate-950 md:text-4xl">
+                                <h2 className="mt-4 text-2xl text-center font-black text-slate-950 md:text-4xl">
                                     {overview.title}
                                 </h2>
                             ) : null}

@@ -4,7 +4,7 @@ const renderPortrait = (official, label) => {
             <img
                 src={official.image}
                 alt={official.name || label}
-                className="h-full w-full object-cover"
+                className="h-full w-full object-contain object-top"
             />
         );
     }
@@ -36,22 +36,24 @@ const normalizeCouncilMembers = (members = []) => {
 
 const MemberCard = ({ member }) => {
     return (
-        <article className=" mx-auto w-full max-w-[12.5rem]">
-            <div className="  mx-auto h-32 w-32  rounded-full  shadow-md">
+        <article className="flex h-full w-full max-w-[13.5rem] shrink-0 basis-[13.5rem] flex-col">
+            <div className="relative z-10 mx-auto -mb-4 h-32 w-32 shrink-0 rounded-full shadow-md">
                 <div className="h-full w-full overflow-hidden rounded-full border-4 border-white bg-white">
                     {renderPortrait(member, member.name || "Council Member")}
                 </div>
             </div>
-            <div className="rounded-[0.8rem] bg-white px-3 py-3 text-center shadow-lg">
+            <div className="flex min-h-[9.5rem] flex-1 flex-col rounded-[0.8rem] bg-white px-3 pb-3 pt-7 text-center shadow-lg">
                 {member.areaOfExpertise ? (
-                    <p className="mb-2 rounded-full bg-slate-100 px-2 py-1 text-[0.65rem] font-semibold leading-tight text-slate-700">
+                    <p className="mb-2 flex min-h-[2.75rem] items-center justify-center rounded-2xl bg-slate-100 px-2 py-1 text-[0.65rem] font-semibold leading-tight text-slate-700">
                         {member.areaOfExpertise}
                     </p>
-                ) : null}
-                <p className="text-[0.82rem] font-semibold uppercase tracking-[0.04em] leading-5">
+                ) : (
+                    <div className="mb-2 min-h-[2.75rem]" aria-hidden="true" />
+                )}
+                <p className="flex min-h-10 items-center justify-center text-[0.82rem] font-semibold uppercase leading-5 tracking-[0.04em]">
                     {member.name}
                 </p>
-                <p className=" text-center text-[0.72rem] font-medium uppercase tracking-[0.16em] text-slate-500">
+                <p className="mt-auto text-center text-[0.72rem] font-medium uppercase tracking-[0.16em] text-slate-500">
                     {member.role}
                 </p>
             </div>
@@ -159,13 +161,13 @@ const Organization = ({ organizationData = null }) => {
                     </article>
 
                     <div className="mx-auto h-10 w-0.5 bg-slate-400" />
-                    <div className="space-y-12">
+                    <div className="space-y-16">
                         {memberGroups.map((group) => (
                             <section key={group.id}>
                                 <h2 className="mb-8 text-center text-lg font-bold uppercase tracking-[0.16em] text-sky-900">
                                     {group.label}
                                 </h2>
-                                <div className="mx-auto flex max-w-6xl flex-wrap justify-center gap-8">
+                                <div className="mx-auto flex max-w-5xl flex-wrap items-stretch justify-center gap-x-8 gap-y-10">
                                     {group.members.map((member) => (
                                         <MemberCard
                                             key={member.id}
@@ -221,11 +223,11 @@ const Organization = ({ organizationData = null }) => {
                 </article>
 
                 {memberGroups.map((group) => (
-                    <section key={group.id} className="space-y-8">
+                    <section key={group.id} className="space-y-8 pt-4">
                         <h2 className="text-center text-lg font-bold uppercase tracking-[0.16em] text-sky-900">
                             {group.label}
                         </h2>
-                        <div className="flex flex-wrap justify-center gap-10">
+                        <div className="mx-auto flex max-w-3xl flex-wrap items-stretch justify-center gap-8">
                             {group.members.map((member) => (
                                 <MemberCard
                                     key={member.id}

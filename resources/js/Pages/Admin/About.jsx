@@ -23,6 +23,60 @@ const normalizeArray = (items, fallback) =>
 const contentCardClassName =
     "rounded-lg border border-slate-200 bg-white p-5 shadow-sm sm:p-6";
 
+const sectionFields = {
+    about: [
+        "hero_logo",
+        "hero_logo_alt",
+        "hero_title",
+        "hero_description",
+        "overview_badge",
+        "overview_title",
+        "overview_paragraphs",
+        "overview_highlights",
+        "media_badge",
+        "media_title",
+        "media_preview_image",
+        "media_video",
+        "media_overlay_title",
+        "media_overlay_description",
+        "media_footer_left",
+        "media_footer_right",
+        "priorities_title",
+        "priorities_items",
+    ],
+    organization: [
+        "organization_mayor_name",
+        "organization_mayor_role",
+        "organization_mayor_image",
+        "organization_vice_mayor_name",
+        "organization_vice_mayor_role",
+        "organization_vice_mayor_image",
+        "organization_council_members",
+    ],
+    lgu: [
+        "lgu_badge",
+        "lgu_subtitle",
+        "lgu_title",
+        "lgu_logo",
+        "lgu_barangays",
+    ],
+};
+
+const buildSectionPayload = (section, currentData, overrides) => {
+    const submittedData = {
+        ...currentData,
+        ...overrides,
+    };
+
+    return sectionFields[section].reduce(
+        (payload, field) => ({
+            ...payload,
+            [field]: submittedData[field],
+        }),
+        { section },
+    );
+};
+
 const ValidationErrorSummary = ({ errors }) => {
     const messages = [...new Set(Object.values(errors).filter(Boolean))];
 
@@ -548,11 +602,9 @@ export default function About({ aboutContent }) {
                     ? "Organization"
                     : "LGU";
 
-        transform((currentData) => ({
-            ...currentData,
-            ...overrides,
-            section,
-        }));
+        transform((currentData) =>
+            buildSectionPayload(section, currentData, overrides),
+        );
 
         post(route("admin.about.update"), {
             forceFormData: true,
