@@ -25,6 +25,7 @@ const SubCategories = ({ category, subCategories }) => {
     const [activeTab, setActiveTab] = useState(primaryTabId);
     const [searchQuery, setSearchQuery] = useState("");
     const [selectedSubCategory, setSelectedSubCategory] = useState(null);
+    const [pdfPreview, setPdfPreview] = useState(null);
 
     const normalizedSearchQuery = searchQuery.trim().toLowerCase();
     const filteredSubCategories = subCategories.filter((subCategory) => {
@@ -69,7 +70,11 @@ const SubCategories = ({ category, subCategories }) => {
 
         const handleKeyDown = (event) => {
             if (event.key === "Escape") {
-                closeSubCategoryModal();
+                if (pdfPreview) {
+                    setPdfPreview(null);
+                } else {
+                    closeSubCategoryModal();
+                }
             }
         };
 
@@ -80,7 +85,7 @@ const SubCategories = ({ category, subCategories }) => {
             document.removeEventListener("keydown", handleKeyDown);
             document.body.style.overflow = "";
         };
-    }, [selectedSubCategory]);
+    }, [pdfPreview, selectedSubCategory]);
 
     return (
         <>
@@ -251,14 +256,18 @@ const SubCategories = ({ category, subCategories }) => {
                                     "No description available."}
                             </p>
                             {selectedSubCategory.pdf ? (
-                                <a
-                                    href={`/storage/documents/pdfs/${selectedSubCategory.pdf}`}
-                                    target="_blank"
-                                    rel="noreferrer"
+                                <button
+                                    type="button"
+                                    onClick={() =>
+                                        setPdfPreview({
+                                            title: selectedSubCategory.title,
+                                            url: `/storage/documents/pdfs/${selectedSubCategory.pdf}`,
+                                        })
+                                    }
                                     className="mt-6 inline-flex w-full items-center justify-center rounded-full bg-amber-400 px-6 py-3 text-sm font-bold uppercase tracking-wide text-emerald-950 shadow-[0_12px_24px_rgba(245,158,11,0.28)] transition hover:-translate-y-0.5 hover:bg-amber-300 focus:outline-none focus:ring-4 focus:ring-yellow-300 sm:w-auto"
                                 >
-                                    Open PDF
-                                </a>
+                                    View PDF
+                                </button>
                             ) : null}
                             <div className="mt-6 flex justify-end sm:mt-8">
                                 <button
@@ -273,6 +282,49 @@ const SubCategories = ({ category, subCategories }) => {
                     </div>
                 </div>
             )}
+            {pdfPreview ? (
+                <div
+                    className="fixed inset-0 z-[70] flex items-center justify-center bg-slate-950/75 p-3 backdrop-blur-sm sm:p-5"
+                    onClick={() => setPdfPreview(null)}
+                >
+                    <div
+                        role="dialog"
+                        aria-modal="true"
+                        aria-labelledby="subcategory-pdf-title"
+                        className="flex max-h-[calc(100dvh-2rem)] w-full max-w-7xl flex-col overflow-hidden rounded-xl bg-white shadow-2xl"
+                        onClick={(event) => event.stopPropagation()}
+                    >
+                        <div className="flex items-center justify-between gap-4 border-b border-emerald-100 bg-gradient-to-r from-emerald-50 via-white to-amber-50 px-4 py-3 sm:px-6 sm:py-4">
+                            <div className="min-w-0">
+                                <p className="text-xs font-bold uppercase tracking-[0.2em] text-emerald-700">
+                                    PDF Preview
+                                </p>
+                                <h2
+                                    id="subcategory-pdf-title"
+                                    className="mt-1 truncate text-sm font-bold text-emerald-950 sm:text-lg"
+                                >
+                                    {pdfPreview.title}
+                                </h2>
+                            </div>
+                            <button
+                                type="button"
+                                onClick={() => setPdfPreview(null)}
+                                aria-label="Close PDF preview"
+                                className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-emerald-100 bg-white text-2xl text-emerald-800 shadow-sm transition hover:bg-emerald-100 focus:outline-none focus:ring-4 focus:ring-emerald-100"
+                            >
+                                &times;
+                            </button>
+                        </div>
+                        <div className="min-h-0 flex-1 bg-slate-100 p-2 sm:p-4">
+                            <iframe
+                                src={pdfPreview.url}
+                                title={`${pdfPreview.title} PDF`}
+                                className="h-[76dvh] w-full rounded-lg border border-slate-200 bg-white"
+                            />
+                        </div>
+                    </div>
+                </div>
+            ) : null}
         </>
     );
 };

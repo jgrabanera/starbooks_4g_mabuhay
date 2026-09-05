@@ -16,6 +16,7 @@ const Memorandum = ({ items = [], loading = false, error = "" }) => (
         items={items}
         loading={loading}
         error={error}
+        useAttachmentModal
     />
 );
 
