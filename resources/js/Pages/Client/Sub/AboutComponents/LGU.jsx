@@ -6,6 +6,13 @@ import {
 } from "react-icons/io5";
 import Modal from "@/Components/Modal";
 
+const captainPlaceholderImage = "/assets/images/placeholder.jpg";
+
+const useCaptainPlaceholder = (event) => {
+    event.currentTarget.onerror = null;
+    event.currentTarget.src = captainPlaceholderImage;
+};
+
 const LGU = ({ lguData = null }) => {
     const barangays = Array.isArray(lguData?.barangays)
         ? lguData.barangays
@@ -177,10 +184,10 @@ const LGU = ({ lguData = null }) => {
                                         <img
                                             src={
                                                 barangay.captain_image ||
-                                                "/assets/images/lgu_mabuhay.jpg"
+                                                captainPlaceholderImage
                                             }
-                                            alt=""
-                                            aria-hidden="true"
+                                            onError={useCaptainPlaceholder}
+                                            alt={`${barangay.officials.captain || "Barangay captain"} portrait`}
                                             className="h-24 w-full object-cover"
                                         />
                                     </div>
@@ -289,19 +296,17 @@ const LGU = ({ lguData = null }) => {
                                             <div className="w-full max-w-lg rounded-2xl border border-amber-200/80 bg-[linear-gradient(135deg,rgba(251,191,36,0.14),rgba(255,255,255,0.97),rgba(249,115,22,0.1))] px-4 py-4 shadow-[0_14px_40px_rgba(245,158,11,0.12)] sm:px-5">
                                                 <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-amber-50 ring-4 ring-white shadow-md">
                                                     <div className="h-16 w-16 overflow-hidden rounded-full border-2 border-amber-400 bg-white">
-                                                        {selectedBarangay.captain_image ? (
-                                                            <img
-                                                                src={selectedBarangay.captain_image}
-                                                                alt={`${selectedBarangay.officials.captain} portrait`}
-                                                                className="h-full w-full object-cover"
-                                                            />
-                                                        ) : (
-                                                            <div className="flex h-full w-full items-center justify-center bg-amber-100 text-lg font-black text-amber-800">
-                                                                {selectedBarangay.officials.captain
-                                                                    ?.charAt(0)
-                                                                    .toUpperCase() || "C"}
-                                                            </div>
-                                                        )}
+                                                        <img
+                                                            src={
+                                                                selectedBarangay.captain_image ||
+                                                                captainPlaceholderImage
+                                                            }
+                                                            onError={
+                                                                useCaptainPlaceholder
+                                                            }
+                                                            alt={`${selectedBarangay.officials.captain || "Barangay captain"} portrait`}
+                                                            className="h-full w-full object-cover"
+                                                        />
                                                     </div>
                                                 </div>
 
