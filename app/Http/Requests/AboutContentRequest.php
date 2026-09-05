@@ -54,6 +54,8 @@ class AboutContentRequest extends FormRequest
             'organization_council_members.required' => 'Add at least one council member.',
             'organization_council_members.*.name.required' => 'Each council member needs a name.',
             'organization_council_members.*.role.required' => 'Each council member needs a role.',
+            'organization_council_members.*.display_order.required' => 'Each council member needs a display order.',
+            'organization_council_members.*.display_order.integer' => 'Council member display order must be a whole number.',
             'organization_council_members.*.image.mimes' => 'Council member images must be JPG, JPEG, PNG, or WEBP files.',
             'lgu_barangays.required' => 'Add at least one barangay.',
             'lgu_barangays.*.title.required' => 'Each barangay needs a title.',
@@ -113,6 +115,7 @@ class AboutContentRequest extends FormRequest
             'organization_council_members.*.role' => ['required', 'string', 'max:255'],
             'organization_council_members.*.category' => ['required', 'string', 'in:sangguniang_bayan,ex_officio,secretary'],
             'organization_council_members.*.area_of_expertise' => ['nullable', 'string', 'max:255'],
+            'organization_council_members.*.display_order' => ['required', 'integer', 'min:1'],
             'organization_council_members.*.image' => ['nullable', 'file', 'mimes:jpg,jpeg,png,webp', 'max:5120'],
         ];
     }

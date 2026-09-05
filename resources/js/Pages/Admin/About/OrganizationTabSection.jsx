@@ -233,6 +233,9 @@ export default function OrganizationTabSection({
                                 <th className="px-4 py-3 text-left text-xs font-bold uppercase tracking-[0.18em] text-slate-600">
                                     Category / Expertise
                                 </th>
+                                <th className="px-4 py-3 text-center text-xs font-bold uppercase tracking-[0.18em] text-slate-600">
+                                    Order
+                                </th>
                                 <th className="px-4 py-3 text-right text-xs font-bold uppercase tracking-[0.18em] text-slate-600">
                                     Action
                                 </th>
@@ -272,6 +275,9 @@ export default function OrganizationTabSection({
                                             <td className="px-4 py-4 text-sm text-slate-600">
                                                 {member.role ||
                                                     "Council Member"}
+                                            </td>
+                                            <td className="px-4 py-4 text-center text-sm font-bold text-slate-700">
+                                                {Math.max(1, Number(member.display_order ?? 1))}
                                             </td>
                                             <td className="px-4 py-4 text-sm text-slate-600">
                                                 <p className="font-semibold text-slate-800">
@@ -319,7 +325,7 @@ export default function OrganizationTabSection({
                             ) : (
                                 <tr>
                                     <td
-                                        colSpan="6"
+                                        colSpan="7"
                                         className="px-4 py-10 text-center text-sm text-slate-500"
                                     >
                                         No council members added yet.
@@ -372,6 +378,9 @@ export default function OrganizationTabSection({
                                                     {member.area_of_expertise}
                                                 </p>
                                             ) : null}
+                                            <p className="mt-1 text-xs text-slate-500">
+                                                Display order: {Math.max(1, Number(member.display_order ?? 1))}
+                                            </p>
                                             {!imageUrl ? (
                                                 <p className="mt-2 text-xs text-slate-500">
                                                     No image

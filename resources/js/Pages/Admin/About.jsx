@@ -54,6 +54,7 @@ const createCouncilMemberDraft = () => ({
     role: "Council Member",
     category: "sangguniang_bayan",
     area_of_expertise: "",
+    display_order: 1,
     image: null,
     current_image: null,
 });
@@ -288,6 +289,7 @@ export default function About({ aboutContent }) {
             role: member?.role ?? "Council Member",
             category: member?.category ?? "sangguniang_bayan",
             area_of_expertise: member?.area_of_expertise ?? "",
+            display_order: Math.max(1, Number(member?.display_order ?? 1)),
             image: null,
             current_image: member?.current_image ?? null,
         });
@@ -336,6 +338,7 @@ export default function About({ aboutContent }) {
                     category: councilMemberDraft.category,
                     area_of_expertise:
                         councilMemberDraft.area_of_expertise.trim(),
+                    display_order: Number(councilMemberDraft.display_order),
                     image: councilMemberDraft.image,
                 };
 
@@ -1133,6 +1136,25 @@ export default function About({ aboutContent }) {
                                 placeholder="e.g. Agriculture, Appropriations, DRR"
                                 className="mt-1 block w-full"
                             />
+                        </div>
+
+                        <div>
+                            <InputLabel value="Display Order (within category)" />
+                            <TextInput
+                                type="number"
+                                min="1"
+                                value={councilMemberDraft.display_order}
+                                onChange={(event) =>
+                                    setCouncilMemberDraft((currentState) => ({
+                                        ...currentState,
+                                        display_order: event.target.value,
+                                    }))
+                                }
+                                className="mt-1 block w-full"
+                            />
+                            <p className="mt-1 text-xs text-slate-500">
+                                Lower numbers appear first within the selected category.
+                            </p>
                         </div>
 
                         <div>

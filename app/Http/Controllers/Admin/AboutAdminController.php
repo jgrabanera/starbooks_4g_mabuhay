@@ -193,6 +193,7 @@ class AboutAdminController extends Controller
                     'area_of_expertise' => filled($member['area_of_expertise'] ?? null)
                         ? trim($member['area_of_expertise'])
                         : null,
+                    'display_order' => (int) $member['display_order'],
                     'image' => $storedImage,
                 ];
             })
@@ -423,6 +424,7 @@ class AboutAdminController extends Controller
                     'role' => $member->role,
                     'category' => $member->category,
                     'area_of_expertise' => $member->area_of_expertise,
+                    'display_order' => max(1, $member->display_order),
                     'image' => null,
                     'current_image' => $member->image,
                 ])
@@ -440,6 +442,7 @@ class AboutAdminController extends Controller
                 'role' => $member['role'] ?? 'Council Member',
                 'category' => $member['category'] ?? 'sangguniang_bayan',
                 'area_of_expertise' => $member['area_of_expertise'] ?? '',
+                'display_order' => max(1, (int) ($member['display_order'] ?? $index + 1)),
                 'image' => null,
                 'current_image' => $member['image'] ?? null,
             ])
@@ -574,7 +577,7 @@ class AboutAdminController extends Controller
                     ? trim($item['area_of_expertise'])
                     : null,
                 'image' => $storedImage,
-                'display_order' => $index,
+                'display_order' => (int) $item['display_order'],
             ])->save();
 
             $keptMemberIds[] = $member->id;
@@ -672,6 +675,7 @@ class AboutAdminController extends Controller
                 'role' => $member->role,
                 'category' => $member->category,
                 'area_of_expertise' => $member->area_of_expertise,
+                'display_order' => $member->display_order,
                 'image' => $member->image,
             ])
             ->values()

@@ -198,6 +198,7 @@ class CategoryController extends Controller
                     'role' => $member->role,
                     'category' => $member->category,
                     'areaOfExpertise' => $member->area_of_expertise,
+                    'displayOrder' => max(1, $member->display_order),
                     'image' => $member->image
                         ? '/storage/images/thumbnails/' . $member->image
                         : null,
@@ -213,6 +214,7 @@ class CategoryController extends Controller
                 'role' => $member['role'] ?? 'Council Member',
                 'category' => $member['category'] ?? 'sangguniang_bayan',
                 'areaOfExpertise' => $member['area_of_expertise'] ?? null,
+                'displayOrder' => max(1, (int) ($member['display_order'] ?? 1)),
                 'image' => ! empty($member['image'])
                     ? '/storage/images/thumbnails/' . $member['image']
                     : null,

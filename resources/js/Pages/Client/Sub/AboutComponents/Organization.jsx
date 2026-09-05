@@ -28,6 +28,7 @@ const normalizeCouncilMembers = (members = []) => {
             role: member?.role || "Council Member",
             category: member?.category || "sangguniang_bayan",
             areaOfExpertise: member?.areaOfExpertise || "",
+            displayOrder: Number(member?.displayOrder ?? index),
             image: member?.image || null,
         }))
         .filter((member) => member.name || member.role || member.image);
@@ -102,9 +103,15 @@ const Organization = ({ organizationData = null }) => {
     ]
         .map((group) => ({
             ...group,
-            members: councilMembers.filter(
-                (member) => member.category === group.id,
-            ),
+            members: councilMembers
+                .filter((member) => member.category === group.id)
+                .sort((firstMember, secondMember) =>
+                    firstMember.displayOrder === secondMember.displayOrder
+                        ? String(firstMember.name).localeCompare(
+                              String(secondMember.name),
+                          )
+                        : firstMember.displayOrder - secondMember.displayOrder,
+                ),
         }))
         .filter((group) => group.members.length > 0);
 
