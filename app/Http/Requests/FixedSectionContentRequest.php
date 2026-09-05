@@ -14,7 +14,7 @@ class FixedSectionContentRequest extends FormRequest
     public function rules(): array
     {
         $imageRules = ['nullable', 'image', 'max:5048', 'mimes:png,jpg,jpeg,webp'];
-        $pdfRules = ['nullable', 'file', 'mimes:pdf', 'max:10240'];
+        $pdfRules = ['nullable', 'file', 'mimes:pdf', 'max:20480'];
         $videoRules = ['nullable', 'file', 'mimes:mp4,webm,mov', 'max:51200'];
 
         if ($this->routeIs(
@@ -35,6 +35,13 @@ class FixedSectionContentRequest extends FormRequest
             'pdf' => $pdfRules,
             'video' => $videoRules,
             'is_active' => ['boolean'],
+        ];
+    }
+
+    public function messages(): array
+    {
+        return [
+            'pdf.max' => 'The PDF file must not be larger than 20 MB.',
         ];
     }
 }

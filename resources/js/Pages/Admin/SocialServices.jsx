@@ -750,8 +750,8 @@ export default function SocialServices({
                                     </p>
                                 ) : (
                                     <p className="mt-2 text-xs text-gray-500">
-                                        Optional. Upload a PDF attachment for
-                                        this item.
+                                        Optional. Upload a PDF attachment up to
+                                        20 MB.
                                     </p>
                                 )}
                                 <InputError

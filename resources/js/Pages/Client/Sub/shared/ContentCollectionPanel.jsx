@@ -10,6 +10,15 @@ import {
 
 const DEFAULT_ITEMS_PER_PAGE = 10;
 
+const toSentenceCase = (value) => {
+    const normalizedValue = String(value || "").trim().toLowerCase();
+
+    return normalizedValue.replace(
+        /(^|[.!?]\s+)([a-z])/g,
+        (_, prefix, letter) => `${prefix}${letter.toUpperCase()}`,
+    );
+};
+
 export default function ContentCollectionPanel({
     logoSrc,
     logoAlt,
@@ -138,10 +147,10 @@ export default function ContentCollectionPanel({
                             return (
                                 <article
                                     key={item.id}
-                                    className="group relative overflow-hidden rounded-[1.2rem] border border-emerald-100/80 bg-white/85 shadow-md transition duration-200 hover:-translate-y-0.5"
+                                    className="group relative flex h-full flex-col overflow-hidden rounded-[1.2rem] border border-emerald-100/80 bg-white/85 shadow-md transition duration-200 hover:-translate-y-0.5"
                                 >
                                     <div className="absolute inset-0 bg-[linear-gradient(135deg,rgba(255,255,255,0.98),rgba(236,253,245,0.88),rgba(254,252,232,0.72))]" />
-                                    <div className="relative z-10 grid min-h-[11.5rem] gap-3 p-4 md:grid-cols-[minmax(0,1fr)_6rem]">
+                                    <div className="relative z-10 grid min-h-[18rem] flex-1 gap-4 p-4 md:grid-cols-[minmax(0,1fr)_6rem]">
                                         <div className="flex min-w-0 flex-col">
                                             <div className="flex items-start justify-between gap-3">
                                                 <span className="inline-flex items-center gap-2 text-[0.65rem] font-bold uppercase tracking-[0.18em] text-emerald-800">
@@ -152,16 +161,19 @@ export default function ContentCollectionPanel({
                                                 </span>
                                             </div>
 
-                                            <h2 className="mt-3 text-sm font-semibold text-slate-900 md:text-base">
+                                            <h2 className="mt-3 line-clamp-2 min-h-12 text-sm font-semibold leading-6 text-slate-900 md:text-base">
                                                 {item.title}
                                             </h2>
 
-                                            <p className="mt-2 line-clamp-3 text-sm leading-6 text-slate-600">
-                                                {item.description || "No description available."}
+                                            <p className="mt-2 line-clamp-2 min-h-12 text-sm leading-6 text-slate-600">
+                                                {toSentenceCase(
+                                                    item.description ||
+                                                        "No description available.",
+                                                )}
                                             </p>
 
-                                            <div className="mt-auto flex flex-wrap items-center justify-between gap-3 pt-4">
-                                                <p className="text-[0.68rem] font-bold uppercase tracking-[0.18em] text-emerald-800">
+                                            <div className="mt-auto flex min-h-10 flex-wrap items-center justify-between gap-3 pt-3">
+                                                <p className="line-clamp-2 text-[0.68rem] font-bold uppercase tracking-[0.18em] text-emerald-800">
                                                     {(item.slug || "content-item").replaceAll("-", " ")}
                                                 </p>
                                                 <div className="inline-flex items-center gap-1.5 text-[0.72rem] font-medium text-slate-500">
@@ -171,7 +183,7 @@ export default function ContentCollectionPanel({
                                             </div>
 
                                             {item.pdf_url ? (
-                                                <div className="pt-4">
+                                                <div className="min-h-12 pt-2">
                                                     <button
                                                         type="button"
                                                         onClick={() =>
@@ -195,7 +207,7 @@ export default function ContentCollectionPanel({
                                             ) : null}
 
                                             {item.video_url ? (
-                                                <div className="pt-4">
+                                                <div className="min-h-12 pt-2">
                                                     <button
                                                         type="button"
                                                         onClick={() =>
@@ -219,7 +231,7 @@ export default function ContentCollectionPanel({
                                             ) : null}
                                         </div>
 
-                                        <div className="mt-auto hidden overflow-hidden rounded-xl border border-white/80 shadow-sm md:block">
+                                        <div className="mt-auto hidden h-24 overflow-hidden rounded-xl border border-white/80 shadow-sm md:block">
                                             {item.image_url ? (
                                                 <img
                                                     src={item.image_url}
