@@ -6,7 +6,7 @@ const FacebookPost = ({ items = [], loading = false, error = "" }) => (
         logoSrc="/assets/images/logos/DOST.png"
         logoAlt="DOST"
         eyebrow="DOST Social Feed"
-        title="DOST IX Facebook Posts"
+        title="Facebook Posts"
         searchPlaceholder="Search Facebook posts"
         emptyTitle="No Facebook posts found."
         emptyBody="Facebook post records will appear here once they are added in the CMS."
