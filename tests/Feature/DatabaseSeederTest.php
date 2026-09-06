@@ -23,7 +23,7 @@ class DatabaseSeederTest extends TestCase
             ],
             'App\\Models\\About' => [
                 0 => 1,
-                1 => 'cae8730ec77b810c76c52eb7df3b021a76ae25eb859549af5cd9f115a8f3238c',
+                1 => '9d9a451de096aa98b94ec8f9c1bb7b5f2cfafdc6c129a03cd8f48ed1dbf48538',
             ],
             'App\\Models\\AboutPriority' => [
                 0 => 3,
@@ -31,7 +31,7 @@ class DatabaseSeederTest extends TestCase
             ],
             'App\\Models\\AboutCouncilMember' => [
                 0 => 12,
-                1 => '879e4406593f640bac04e91444a61731d81a4af494b1d2c9897c230a5c76b36f',
+                1 => 'b238e5d942b5a18fd2eecd619b4a183605d479eba09ccda72acfb6dcbe2108c4',
             ],
             'App\\Models\\AboutBarangay' => [
                 0 => 18,
@@ -50,8 +50,8 @@ class DatabaseSeederTest extends TestCase
                 1 => '1ebc3db48970887b548b1498626c848be8cea63023a6b9f856a0d8d73aaf1e9a',
             ],
             'App\\Models\\SocialServiceContent' => [
-                0 => 0,
-                1 => '4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945',
+                0 => 1,
+                1 => '381efedd6006d1cc4a81b81b71e28be8953741b3a891fdde894ca2613b6e2686',
             ],
             'App\\Models\\ProjectContent' => [
                 0 => 1,

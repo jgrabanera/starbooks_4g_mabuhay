@@ -101,10 +101,10 @@ class AboutCouncilMemberSeeder extends Seeder
                 'role' => 'Council Member',
                 'category' => 'sangguniang_bayan',
                 'area_of_expertise' => 'Trade & Commerce, Market',
-                'image' => '1788607446_organization-council-member-8.png',
+                'image' => '1788713075_organization-council-member-1.png',
                 'display_order' => 1,
                 'created_at' => '2026-08-04 02:52:38',
-                'updated_at' => '2026-09-05 11:24:06',
+                'updated_at' => '2026-09-06 16:44:35',
             ],
             8 => [
                 'id' => 17,
