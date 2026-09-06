@@ -1079,7 +1079,7 @@ export default function DostServices({
                                 ) : (
                                     <p className="mt-2 text-xs text-gray-500">
                                         Optional. Upload an MP4, WebM, or MOV
-                                        video up to 50 MB.
+                                        video up to 70 MB.
                                     </p>
                                 )}
                                 <InputError

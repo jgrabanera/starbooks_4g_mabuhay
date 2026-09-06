@@ -4,22 +4,24 @@ namespace Database\Seeders;
 
 use App\Models\User;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\Hash;
 
 class AccountSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
     public function run(): void
     {
-        User::query()->updateOrCreate(
-            ['email' => 'admin.user@sb4g.com'],
-            [
+        $rows = [
+            0 => [
+                'id' => 1,
                 'name' => 'Jomar Rabanera',
+                'email' => 'admin.user@sb4g.com',
                 'email_verified_at' => '2026-09-05 07:32:34',
-                'password' => Hash::make('sb4g@dminPassword'),
+                'password' => '$2y$12$IgyviFQySA11CmA1ktWtMeJk.MQJyDN.bXl4SWLJNvJt6PJ.71DzK',
+                'remember_token' => null,
+                'created_at' => '2026-09-05 12:32:30',
+                'updated_at' => '2026-09-05 12:32:30',
             ],
-        );
+        ];
+
+        User::query()->upsert($rows, ['id']);
     }
 }

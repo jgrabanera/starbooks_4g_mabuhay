@@ -28,8 +28,9 @@ class SocialServicesController extends Controller
                     'description' => $content->description,
                     'tab_id' => $content->tab_id,
                     'normalized_tab_id' => $this->normalizeTabId($content->tab_id),
-                    'image_url' => $content->image ? asset('storage/images/thumbnails/' . $content->image) : null,
-                    'pdf_url' => $content->pdf ? asset('storage/documents/pdfs/' . $content->pdf) : null,
+                    'image_url' => $content->image ? asset('storage/images/thumbnails/'.$content->image) : null,
+                    'pdf_url' => $content->pdf ? asset('storage/documents/pdfs/'.$content->pdf) : null,
+                    'video_url' => $content->video ? asset('storage/videos/social-services/'.$content->video) : null,
                     'published_at' => optional($content->created_at)?->toDateString(),
                     'published_label' => optional($content->created_at)?->format('F j, Y'),
                 ];

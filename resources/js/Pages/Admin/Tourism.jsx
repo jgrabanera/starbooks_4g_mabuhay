@@ -9,6 +9,7 @@ import PrimaryButton from "@/Components/PrimaryButton";
 import SecondaryButton from "@/Components/SecondaryButton";
 import TextInput from "@/Components/TextInput";
 import AdminLayout from "@/Layouts/AdminLayout";
+import { IoPlayCircleOutline } from "react-icons/io5";
 import { Head, router, useForm, useRemember } from "@inertiajs/react";
 import {
     IoCloseOutline,
@@ -47,6 +48,7 @@ const emptyTourism = {
     title: "",
     image: null,
     pdf: null,
+    video: null,
     description: "",
     is_active: true,
 };
@@ -59,6 +61,7 @@ export default function Tourism({
     const [activeTab, setActiveTab] = useState(tourismTabs[0].id);
     const [editingTourism, setEditingTourism] = useState(null);
     const [tourismPendingDelete, setTourismPendingDelete] = useState(null);
+    const [videoPreview, setVideoPreview] = useState(null);
     const [pdfPreview, setPdfPreview] = useState(null);
     const [isFormModalOpen, setIsFormModalOpen] = useState(false);
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
@@ -161,6 +164,7 @@ export default function Tourism({
             title: tourismContent.title ?? "",
             image: null,
             pdf: null,
+            video: null,
             description: tourismContent.description ?? "",
             is_active: Boolean(tourismContent.is_active),
         });
@@ -190,6 +194,21 @@ export default function Tourism({
 
     const closePdfPreview = () => {
         setPdfPreview(null);
+    };
+
+    const openVideoPreview = (tourismContent) => {
+        if (!tourismContent?.video) {
+            return;
+        }
+
+        setVideoPreview({
+            title: tourismContent.title,
+            url: `/storage/videos/tourism/${tourismContent.video}`,
+        });
+    };
+
+    const closeVideoPreview = () => {
+        setVideoPreview(null);
     };
 
     const openConfirmation = ({
@@ -485,7 +504,7 @@ export default function Tourism({
                         <table className="min-w-full divide-y divide-gray-200">
                             <thead className="bg-gray-50">
                                 <tr>
-                                    {["Title", "Image", "PDF", "Status"].map(
+                                    {["Title", "Image", "Attachments", "Status"].map(
                                         (heading) => (
                                             <th
                                                 key={heading}
@@ -529,7 +548,7 @@ export default function Tourism({
                                                     </span>
                                                 )}
                                             </td>
-                                            <td className="max-w-[12rem] truncate px-6 py-4 text-sm text-slate-600">
+                                            <td className="max-w-[12rem] truncate px-6 py-4 text-sm text-slate-600"><div className="flex flex-wrap items-center gap-2">
                                                 {content.pdf ? (
                                                     <button
                                                         type="button"
@@ -545,6 +564,21 @@ export default function Tourism({
                                                         No PDF
                                                     </span>
                                                 )}
+{content.video ? (
+                                                    <button
+                                                        type="button"
+                                                        onClick={() =>
+                                                            openVideoPreview(content)
+                                                        }
+                                                        className="inline-flex items-center rounded-full border border-emerald-300 bg-emerald-600 px-3.5 py-2 text-xs font-bold uppercase tracking-[0.12em] text-white shadow-sm transition hover:bg-emerald-700"
+                                                    >
+                                                        View Video
+                                                    </button>
+                                                ) : (
+                                                    <span className="font-semibold text-rose-600">
+                                                        No Video
+                                                    </span>
+                                                )}</div>
                                             </td>
                                             <td className="px-6 py-4 text-sm">
                                                 <span
@@ -621,7 +655,7 @@ export default function Tourism({
                                                 {content.description ||
                                                     "No description provided"}
                                             </p>
-                                            <div className="mt-3 text-xs text-slate-500">
+                                            <div className="mt-3 text-xs text-slate-500"><div className="flex flex-wrap items-center gap-2">
                                                 {content.pdf ? (
                                                     <button
                                                         type="button"
@@ -637,6 +671,21 @@ export default function Tourism({
                                                         PDF: No PDF
                                                     </span>
                                                 )}
+{content.video ? (
+                                                    <button
+                                                        type="button"
+                                                        onClick={() =>
+                                                            openVideoPreview(content)
+                                                        }
+                                                        className="inline-flex items-center rounded-full border border-emerald-300 bg-emerald-600 px-3.5 py-2 text-xs font-bold uppercase tracking-[0.12em] text-white shadow-sm transition hover:bg-emerald-700"
+                                                    >
+                                                        View Video
+                                                    </button>
+                                                ) : (
+                                                    <span className="font-semibold text-rose-600">
+                                                        Video: No Video
+                                                    </span>
+                                                )}</div>
                                             </div>
                                         </div>
                                         <span
@@ -682,6 +731,53 @@ export default function Tourism({
                     </div>
                 </section>
             </div>
+
+            <Modal
+                show={Boolean(videoPreview)}
+                onClose={closeVideoPreview}
+                maxWidth="7xl"
+            >
+                <div className="flex max-h-[calc(100dvh-2rem)] flex-col overflow-hidden bg-white sm:max-h-[calc(100dvh-3rem)]">
+                    <div className="flex items-center justify-between gap-3 border-b border-sky-100 bg-gradient-to-r from-sky-50 via-white to-amber-50 px-4 py-3 text-sky-950 sm:gap-5 sm:px-6 sm:py-4">
+                        <div className="flex min-w-0 items-center gap-3 sm:gap-4">
+                            <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-sky-100 bg-white text-sky-700 shadow-sm sm:h-12 sm:w-12">
+                                <IoPlayCircleOutline className="h-5 w-5 sm:h-6 sm:w-6" />
+                            </span>
+                            <div className="min-w-0">
+                                <p className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-sky-700 sm:text-xs">
+                                    Video Preview
+                                </p>
+                                <h2 className="mt-0.5 truncate text-sm font-bold sm:text-lg">
+                                    {videoPreview?.title}
+                                </h2>
+                            </div>
+                        </div>
+                        <button
+                            type="button"
+                            onClick={closeVideoPreview}
+                            className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-sky-100 bg-white text-sky-800 shadow-sm transition hover:border-sky-200 hover:bg-sky-100 focus:outline-none focus:ring-4 focus:ring-sky-100 sm:h-11 sm:w-11"
+                            aria-label="Close video preview"
+                        >
+                            <IoCloseOutline className="h-6 w-6" />
+                        </button>
+                    </div>
+
+                    <div className="min-h-0 flex-1 bg-slate-100 p-1.5 sm:p-3 lg:p-4">
+                        <div className="flex items-center justify-center overflow-hidden rounded-lg border border-slate-200 bg-white p-2 shadow-sm sm:rounded-xl sm:p-4">
+                            <video
+                                key={videoPreview?.url}
+                                src={videoPreview?.url}
+                                controls
+                                autoPlay
+                                playsInline
+                                className="aspect-video max-h-[76dvh] w-full rounded-lg bg-slate-100 object-contain"
+                            >
+                                Your browser does not support video playback.
+                            </video>
+                        </div>
+                    </div>
+                </div>
+            </Modal>
 
             <Modal
                 show={Boolean(pdfPreview)}
@@ -911,6 +1007,41 @@ export default function Tourism({
                                 )}
                                 <InputError
                                     message={errors.pdf}
+                                    className="mt-2"
+                                />
+                            </div>
+
+                            <div>
+                                <InputLabel
+                                    htmlFor="tourism-video"
+                                    value="Video File"
+                                />
+                                <input
+                                    id="tourism-video"
+                                    type="file"
+                                    accept=".mp4,.webm,.mov,video/mp4,video/webm,video/quicktime"
+                                    onChange={(event) =>
+                                        setData(
+                                            "video",
+                                            event.target.files?.[0] ?? null,
+                                        )
+                                    }
+                                    className="mt-1 block w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm file:mr-4 file:rounded-md file:border-0 file:bg-emerald-50 file:px-3 file:py-2 file:font-semibold file:text-emerald-700 hover:file:bg-emerald-100"
+                                    disabled={processing}
+                                />
+                                {editingTourism?.video ? (
+                                    <p className="mt-2 text-xs text-gray-500">
+                                        Current video:{" "}
+                                        {editingTourism.video}
+                                    </p>
+                                ) : (
+                                    <p className="mt-2 text-xs text-gray-500">
+                                        Optional. Upload an MP4, WebM, or MOV
+                                        video up to 70 MB.
+                                    </p>
+                                )}
+                                <InputError
+                                    message={errors.video}
                                     className="mt-2"
                                 />
                             </div>

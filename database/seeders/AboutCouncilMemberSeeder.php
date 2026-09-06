@@ -4,18 +4,13 @@ namespace Database\Seeders;
 
 use App\Models\AboutCouncilMember;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\Schema;
 
 class AboutCouncilMemberSeeder extends Seeder
 {
     public function run(): void
     {
-        if (! Schema::hasTable('about_council_members')) {
-            return;
-        }
-
-        $members = [
-            [
+        $rows = [
+            0 => [
                 'id' => 1,
                 'about_id' => 1,
                 'name' => 'Hon. MARIA PILAR T. ADLAON',
@@ -27,7 +22,7 @@ class AboutCouncilMemberSeeder extends Seeder
                 'created_at' => '2026-08-04 02:23:30',
                 'updated_at' => '2026-09-05 10:42:04',
             ],
-            [
+            1 => [
                 'id' => 2,
                 'about_id' => 1,
                 'name' => 'Hon. MAJIN V. ANDAK',
@@ -39,7 +34,7 @@ class AboutCouncilMemberSeeder extends Seeder
                 'created_at' => '2026-08-04 02:23:30',
                 'updated_at' => '2026-09-05 11:22:01',
             ],
-            [
+            2 => [
                 'id' => 3,
                 'about_id' => 1,
                 'name' => 'Hon. ANAM H. DAMMANG',
@@ -51,7 +46,7 @@ class AboutCouncilMemberSeeder extends Seeder
                 'created_at' => '2026-08-04 02:23:30',
                 'updated_at' => '2026-09-05 11:24:06',
             ],
-            [
+            3 => [
                 'id' => 4,
                 'about_id' => 1,
                 'name' => 'Hon. ALVIN D. HASSAN',
@@ -63,7 +58,7 @@ class AboutCouncilMemberSeeder extends Seeder
                 'created_at' => '2026-08-04 02:23:30',
                 'updated_at' => '2026-09-05 11:22:01',
             ],
-            [
+            4 => [
                 'id' => 5,
                 'about_id' => 1,
                 'name' => 'Hon. REY T. OMAMALIN',
@@ -75,7 +70,7 @@ class AboutCouncilMemberSeeder extends Seeder
                 'created_at' => '2026-08-04 02:23:30',
                 'updated_at' => '2026-09-05 11:22:01',
             ],
-            [
+            5 => [
                 'id' => 6,
                 'about_id' => 1,
                 'name' => 'Hon. JULHISAN H. BUHALI',
@@ -87,7 +82,7 @@ class AboutCouncilMemberSeeder extends Seeder
                 'created_at' => '2026-08-04 02:23:30',
                 'updated_at' => '2026-09-05 10:46:10',
             ],
-            [
+            6 => [
                 'id' => 7,
                 'about_id' => 1,
                 'name' => 'Hon. ABUBAKHAR S. ANJAWANG',
@@ -99,7 +94,7 @@ class AboutCouncilMemberSeeder extends Seeder
                 'created_at' => '2026-08-04 02:23:30',
                 'updated_at' => '2026-09-05 10:43:57',
             ],
-            [
+            7 => [
                 'id' => 15,
                 'about_id' => 1,
                 'name' => 'Hon. DARIO S. ALFORQUE',
@@ -111,7 +106,7 @@ class AboutCouncilMemberSeeder extends Seeder
                 'created_at' => '2026-08-04 02:52:38',
                 'updated_at' => '2026-09-05 11:24:06',
             ],
-            [
+            8 => [
                 'id' => 17,
                 'about_id' => 1,
                 'name' => 'CRISTINA R. OMAMALIN',
@@ -123,7 +118,7 @@ class AboutCouncilMemberSeeder extends Seeder
                 'created_at' => '2026-09-05 10:15:59',
                 'updated_at' => '2026-09-05 10:15:59',
             ],
-            [
+            9 => [
                 'id' => 18,
                 'about_id' => 1,
                 'name' => 'Hon. SAMMA G. DAUD',
@@ -135,7 +130,7 @@ class AboutCouncilMemberSeeder extends Seeder
                 'created_at' => '2026-09-05 10:15:59',
                 'updated_at' => '2026-09-05 10:15:59',
             ],
-            [
+            10 => [
                 'id' => 20,
                 'about_id' => 1,
                 'name' => 'Hon. ALEX C. FIGUEROA',
@@ -147,7 +142,7 @@ class AboutCouncilMemberSeeder extends Seeder
                 'created_at' => '2026-09-05 10:28:48',
                 'updated_at' => '2026-09-05 10:28:48',
             ],
-            [
+            11 => [
                 'id' => 21,
                 'about_id' => 1,
                 'name' => 'Hon. KAYL NIKKO A. CALOÑGE',
@@ -161,11 +156,6 @@ class AboutCouncilMemberSeeder extends Seeder
             ],
         ];
 
-        foreach ($members as $member) {
-            AboutCouncilMember::query()->updateOrCreate(
-                ['id' => $member['id']],
-                $member,
-            );
-        }
+        AboutCouncilMember::query()->upsert($rows, ['id']);
     }
 }

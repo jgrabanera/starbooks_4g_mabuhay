@@ -32,6 +32,7 @@ class SocialServicesAdminController extends Controller
                     'description',
                     'image',
                     'pdf',
+                    'video',
                     'is_active',
                 ]),
         ]);
@@ -56,6 +57,14 @@ class SocialServicesAdminController extends Controller
             )
             : null;
 
+        $videoName = $request->hasFile('video')
+            ? $request->file('video')->storeAs(
+                'videos/social-services',
+                $this->buildStoredFileName($slug, $request->file('video')->extension()),
+                'public',
+            )
+            : null;
+
         SocialServiceContent::create([
             'tab_id' => $validated['tab_id'],
             'title' => trim($validated['title']),
@@ -63,6 +72,7 @@ class SocialServicesAdminController extends Controller
             'description' => $validated['description'] ?? null,
             'image' => basename($imageName),
             'pdf' => $pdfName ? basename($pdfName) : null,
+            'video' => $videoName ? basename($videoName) : null,
             'is_active' => (bool) ($validated['is_active'] ?? false),
         ]);
 
@@ -88,8 +98,8 @@ class SocialServicesAdminController extends Controller
                 'public',
             );
 
-            if (!empty($socialService->image)) {
-                Storage::disk('public')->delete('images/thumbnails/' . $socialService->image);
+            if (! empty($socialService->image)) {
+                Storage::disk('public')->delete('images/thumbnails/'.$socialService->image);
             }
 
             $payload['image'] = basename($imageName);
@@ -102,11 +112,25 @@ class SocialServicesAdminController extends Controller
                 'public',
             );
 
-            if (!empty($socialService->pdf)) {
-                Storage::disk('public')->delete('documents/pdfs/' . $socialService->pdf);
+            if (! empty($socialService->pdf)) {
+                Storage::disk('public')->delete('documents/pdfs/'.$socialService->pdf);
             }
 
             $payload['pdf'] = basename($pdfName);
+        }
+
+        if ($request->hasFile('video')) {
+            $videoName = $request->file('video')->storeAs(
+                'videos/social-services',
+                $this->buildStoredFileName($slug, $request->file('video')->extension()),
+                'public',
+            );
+
+            if (! empty($socialService->video)) {
+                Storage::disk('public')->delete('videos/social-services/'.$socialService->video);
+            }
+
+            $payload['video'] = basename($videoName);
         }
 
         $socialService->update($payload);
@@ -116,12 +140,16 @@ class SocialServicesAdminController extends Controller
 
     public function destroy(SocialServiceContent $socialService): RedirectResponse
     {
-        if (!empty($socialService->image)) {
-            Storage::disk('public')->delete('images/thumbnails/' . $socialService->image);
+        if (! empty($socialService->image)) {
+            Storage::disk('public')->delete('images/thumbnails/'.$socialService->image);
         }
 
-        if (!empty($socialService->pdf)) {
-            Storage::disk('public')->delete('documents/pdfs/' . $socialService->pdf);
+        if (! empty($socialService->pdf)) {
+            Storage::disk('public')->delete('documents/pdfs/'.$socialService->pdf);
+        }
+
+        if (! empty($socialService->video)) {
+            Storage::disk('public')->delete('videos/social-services/'.$socialService->video);
         }
 
         $socialService->delete();
@@ -131,6 +159,6 @@ class SocialServicesAdminController extends Controller
 
     private function buildStoredFileName(string $slug, string $extension): string
     {
-        return now()->timestamp . '_' . $slug . '.' . $extension;
+        return Str::uuid().'_'.$slug.'.'.$extension;
     }
 }

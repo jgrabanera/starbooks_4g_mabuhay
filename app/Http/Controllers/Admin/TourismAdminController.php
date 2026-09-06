@@ -32,6 +32,7 @@ class TourismAdminController extends Controller
                     'description',
                     'image',
                     'pdf',
+                    'video',
                     'is_active',
                 ]),
         ]);
@@ -56,6 +57,14 @@ class TourismAdminController extends Controller
             )
             : null;
 
+        $videoName = $request->hasFile('video')
+            ? $request->file('video')->storeAs(
+                'videos/tourism',
+                $this->buildStoredFileName($slug, $request->file('video')->extension()),
+                'public',
+            )
+            : null;
+
         TourismContent::create([
             'tab_id' => $validated['tab_id'],
             'title' => trim($validated['title']),
@@ -63,6 +72,7 @@ class TourismAdminController extends Controller
             'description' => $validated['description'] ?? null,
             'image' => basename($imageName),
             'pdf' => $pdfName ? basename($pdfName) : null,
+            'video' => $videoName ? basename($videoName) : null,
             'is_active' => (bool) ($validated['is_active'] ?? false),
         ]);
 
@@ -88,8 +98,8 @@ class TourismAdminController extends Controller
                 'public',
             );
 
-            if (!empty($tourismContent->image)) {
-                Storage::disk('public')->delete('images/thumbnails/' . $tourismContent->image);
+            if (! empty($tourismContent->image)) {
+                Storage::disk('public')->delete('images/thumbnails/'.$tourismContent->image);
             }
 
             $payload['image'] = basename($imageName);
@@ -102,11 +112,25 @@ class TourismAdminController extends Controller
                 'public',
             );
 
-            if (!empty($tourismContent->pdf)) {
-                Storage::disk('public')->delete('documents/pdfs/' . $tourismContent->pdf);
+            if (! empty($tourismContent->pdf)) {
+                Storage::disk('public')->delete('documents/pdfs/'.$tourismContent->pdf);
             }
 
             $payload['pdf'] = basename($pdfName);
+        }
+
+        if ($request->hasFile('video')) {
+            $videoName = $request->file('video')->storeAs(
+                'videos/tourism',
+                $this->buildStoredFileName($slug, $request->file('video')->extension()),
+                'public',
+            );
+
+            if (! empty($tourismContent->video)) {
+                Storage::disk('public')->delete('videos/tourism/'.$tourismContent->video);
+            }
+
+            $payload['video'] = basename($videoName);
         }
 
         $tourismContent->update($payload);
@@ -116,12 +140,16 @@ class TourismAdminController extends Controller
 
     public function destroy(TourismContent $tourismContent): RedirectResponse
     {
-        if (!empty($tourismContent->image)) {
-            Storage::disk('public')->delete('images/thumbnails/' . $tourismContent->image);
+        if (! empty($tourismContent->image)) {
+            Storage::disk('public')->delete('images/thumbnails/'.$tourismContent->image);
         }
 
-        if (!empty($tourismContent->pdf)) {
-            Storage::disk('public')->delete('documents/pdfs/' . $tourismContent->pdf);
+        if (! empty($tourismContent->pdf)) {
+            Storage::disk('public')->delete('documents/pdfs/'.$tourismContent->pdf);
+        }
+
+        if (! empty($tourismContent->video)) {
+            Storage::disk('public')->delete('videos/tourism/'.$tourismContent->video);
         }
 
         $tourismContent->delete();
@@ -131,6 +159,6 @@ class TourismAdminController extends Controller
 
     private function buildStoredFileName(string $slug, string $extension): string
     {
-        return now()->timestamp . '_' . $slug . '.' . $extension;
+        return Str::uuid().'_'.$slug.'.'.$extension;
     }
 }

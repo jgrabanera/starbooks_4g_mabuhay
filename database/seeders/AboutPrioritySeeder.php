@@ -4,21 +4,13 @@ namespace Database\Seeders;
 
 use App\Models\AboutPriority;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\Schema;
 
 class AboutPrioritySeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
     public function run(): void
     {
-        if (! Schema::hasTable('about_priorities')) {
-            return;
-        }
-
-        $priorities = [
-            [
+        $rows = [
+            0 => [
                 'id' => 7,
                 'about_id' => 1,
                 'title' => 'Transparency',
@@ -27,7 +19,7 @@ class AboutPrioritySeeder extends Seeder
                 'created_at' => '2026-09-05 09:15:10',
                 'updated_at' => '2026-09-05 09:15:10',
             ],
-            [
+            1 => [
                 'id' => 8,
                 'about_id' => 1,
                 'title' => 'Service Excellence',
@@ -36,7 +28,7 @@ class AboutPrioritySeeder extends Seeder
                 'created_at' => '2026-09-05 09:15:10',
                 'updated_at' => '2026-09-05 09:15:10',
             ],
-            [
+            2 => [
                 'id' => 9,
                 'about_id' => 1,
                 'title' => 'Sustainability',
@@ -47,11 +39,6 @@ class AboutPrioritySeeder extends Seeder
             ],
         ];
 
-        foreach ($priorities as $priority) {
-            AboutPriority::query()->updateOrCreate(
-                ['id' => $priority['id']],
-                $priority,
-            );
-        }
+        AboutPriority::query()->upsert($rows, ['id']);
     }
 }

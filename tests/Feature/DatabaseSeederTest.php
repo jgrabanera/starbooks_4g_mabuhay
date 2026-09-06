@@ -12,23 +12,75 @@ class DatabaseSeederTest extends TestCase
 
     public function test_current_database_seeder_restores_the_saved_data_and_is_idempotent(): void
     {
-        $this->seed(CurrentDatabaseSeeder::class);
-        $this->seed(CurrentDatabaseSeeder::class);
+        $expected = [
+            'App\\Models\\User' => [
+                0 => 1,
+                1 => '39e135619eb53aa0338d63a8ca732dcf1f661f1b946927e986bf10ce7537daab',
+            ],
+            'App\\Models\\Category' => [
+                0 => 6,
+                1 => 'd3f3e82812dd4743ff3c518dba5b5b349ecdfce7d2c233d63ced03330f2278ee',
+            ],
+            'App\\Models\\About' => [
+                0 => 1,
+                1 => 'cae8730ec77b810c76c52eb7df3b021a76ae25eb859549af5cd9f115a8f3238c',
+            ],
+            'App\\Models\\AboutPriority' => [
+                0 => 3,
+                1 => '6d9154b3bd72fecd70050f934be82ce64adc5044a5b1f55768409f790b0355c7',
+            ],
+            'App\\Models\\AboutCouncilMember' => [
+                0 => 12,
+                1 => '879e4406593f640bac04e91444a61731d81a4af494b1d2c9897c230a5c76b36f',
+            ],
+            'App\\Models\\AboutBarangay' => [
+                0 => 18,
+                1 => '27b88bf100cb6061b02d32cc4425792af107a77d437dcb845277bbd4ff02d96a',
+            ],
+            'App\\Models\\AboutBarangayKagawad' => [
+                0 => 126,
+                1 => '666526f0123fd2a918ff844b0974ab018d41071b0b406c614febbea0dbc90502',
+            ],
+            'App\\Models\\DostServiceContent' => [
+                0 => 10,
+                1 => '2384892d2e73f4b211e3eebb2fb8ac543e6cdb2439b5d4714033f6b141af408e',
+            ],
+            'App\\Models\\TourismContent' => [
+                0 => 1,
+                1 => '1ebc3db48970887b548b1498626c848be8cea63023a6b9f856a0d8d73aaf1e9a',
+            ],
+            'App\\Models\\SocialServiceContent' => [
+                0 => 0,
+                1 => '4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945',
+            ],
+            'App\\Models\\ProjectContent' => [
+                0 => 1,
+                1 => 'ec96cf2cb32a043f9e3aaab875bc06cd45e55a785cbd35fd1a31c4188f41f4e3',
+            ],
+            'App\\Models\\LguResourceContent' => [
+                0 => 9,
+                1 => '992bae51523ac05f45e29bae2dde8422a4c5eaabe4ca90908c037bcec7729b4e',
+            ],
+            'App\\Models\\SubCategory' => [
+                0 => 0,
+                1 => '4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945',
+            ],
+        ];
 
-        $this->assertDatabaseCount('users', 1);
-        $this->assertDatabaseCount('categories', 6);
-        $this->assertDatabaseCount('abouts', 1);
-        $this->assertDatabaseCount('about_council_members', 8);
-        $this->assertDatabaseCount('about_barangays', 18);
-        $this->assertDatabaseCount('about_barangay_kagawads', 126);
+        for ($run = 0; $run < 2; $run++) {
+            $this->seed(CurrentDatabaseSeeder::class);
 
-        $this->assertDatabaseHas('categories', [
-            'id' => 1,
-            'image' => '1788595276_tourism.jpg',
-        ]);
-        $this->assertDatabaseHas('users', [
-            'email' => 'admin.user@sb4g.com',
-            'email_verified_at' => '2026-09-05 07:32:34',
-        ]);
+            foreach ($expected as $model => [$count, $checksum]) {
+                $rows = $model::query()->orderBy('id')->get()->map(function ($record): array {
+                    $attributes = $record->getAttributes();
+                    ksort($attributes);
+
+                    return array_map(fn ($value) => $value === null ? null : (string) $value, $attributes);
+                })->all();
+
+                $this->assertCount($count, $rows, $model);
+                $this->assertSame($checksum, hash('sha256', json_encode($rows, JSON_THROW_ON_ERROR)), $model);
+            }
+        }
     }
 }

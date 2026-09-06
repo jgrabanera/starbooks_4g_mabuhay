@@ -15,7 +15,7 @@ class FixedSectionContentRequest extends FormRequest
     {
         $imageRules = ['nullable', 'image', 'max:5048', 'mimes:png,jpg,jpeg,webp'];
         $pdfRules = ['nullable', 'file', 'mimes:pdf', 'max:20480'];
-        $videoRules = ['nullable', 'file', 'mimes:mp4,webm,mov', 'max:51200'];
+        $videoRules = ['nullable', 'file', 'mimes:mp4,webm,mov', 'max:71680'];
 
         if ($this->routeIs(
             'admin.projects.store',
@@ -41,6 +41,7 @@ class FixedSectionContentRequest extends FormRequest
     public function messages(): array
     {
         return [
+            'video.max' => 'The video file must not be larger than 70 MB.',
             'pdf.max' => 'The PDF file must not be larger than 20 MB.',
         ];
     }
